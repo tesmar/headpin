@@ -10,8 +10,6 @@
 # have received a copy of GPLv2 along with this software; if not, see
 # http://www.gnu.org/licenses/old-licenses/gpl-2.0.txt.
 
-require 'pp'
-
 class Admin::UsersController < ApplicationController
   include AutoCompleteSearch
   navigation :users
@@ -36,8 +34,7 @@ class Admin::UsersController < ApplicationController
     @user = User.new(params[:user])
     
     if @user.save
-      flash[:notice] = N_("User '#{@user.username}' was created.")
-      redirect_to :action => :index
+      render :partial=>"common/list_item", :locals=>{:item=>@user, :accessor=>"username", :columns=>["username", "superAdmin"]}
     else
       errors _('There were errors creating the user:'), @user.errors.full_messages
       render :new
@@ -50,15 +47,18 @@ class Admin::UsersController < ApplicationController
   end
 
   def update
+    params[:user].delete(:password) if params[:user][:password].blank?
     @user = User.find(params[:id])
     @user.update_attributes(params[:user])
 
-    @user.save!
-
-    respond_to do |format|
-      format.html {render :text => params[:user].values.first}
-      format.js
+    if @user.save
+      render :text => @user.username and return
     end
+  end
+
+  def show
+    @user = User.find(params[:id])
+    render :partial => "common/list_update", :locals=>{:item=>@user, :accessor=>"username", :columns=>['username', 'superAdmin']}
   end
 
   def destroy
@@ -68,10 +68,19 @@ class Admin::UsersController < ApplicationController
       @user.destroy
       flash[:notice] = N_("User '#{@user.username}' was deleted.")
       redirect_to :action => 'index'
-    rescue ActiveResource::ForbiddenAccess => error
-      errors error.message
-      render :show
+    rescue Exception => error
+      flash[:error] = N_("Failed to delete '#{@user.username}'.Error: #{error.message}  ").gsub!('.','.<br>')
+      redirect_to :action => 'index'
     end
   end  
 
 end
+
+
+ #if @user.destroyed?
+ #       notice _("User '#{@user[:username]}' was deleted.")
+ #       #render and do the removal in one swoop!
+ #       render :partial => "common/list_remove", :locals => {:id => @id} and return
+ #     end
+ #     errors "", {:list_items => @user.errors.to_a}
+ #     render :text => @user.errors, :status=>:ok
