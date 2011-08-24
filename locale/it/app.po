@@ -30,7 +30,7 @@ msgstr ""
 msgid "+ New "
 msgstr ""
 
-#: config/navigation.rb:38
+#: app/views/activation_keys/index.html.haml:12 config/navigation.rb:38
 #, 
 msgid "Activation Keys"
 msgstr ""
@@ -55,6 +55,8 @@ msgstr ""
 msgid "Arch"
 msgstr ""
 
+#: app/views/common/_common_i18n.html.haml:3
+#: app/views/common/_tupane_remove.html.haml:1
 #: app/views/systems/_subscriptions.html.haml:28
 #, 
 msgid "Are you sure?"
@@ -95,6 +97,7 @@ msgstr ""
 msgid "Click to edit"
 msgstr ""
 
+#: app/views/layouts/_tupane_layout.html.haml:14
 #: app/views/layouts/_tupane_layout.html.haml:19
 #, 
 msgid "Close"
@@ -115,6 +118,7 @@ msgstr ""
 msgid "Copyright &copy; "
 msgstr ""
 
+#: app/views/admin/organizations/_new.html.haml:18
 #: app/views/admin/users/_new.html.haml:24
 #, 
 msgid "Create"
@@ -130,6 +134,7 @@ msgstr ""
 msgid "Create User"
 msgstr ""
 
+#: app/views/subscriptions/index.html.haml:4 config/navigation.rb:12
 #: config/navigation.rb:27
 #, 
 msgid "Current Subscriptions"
@@ -160,7 +165,7 @@ msgstr ""
 msgid "Error has occurred, unable to redirect to previous page."
 msgstr ""
 
-#: config/navigation.rb:53
+#: config/navigation.rb:33 config/navigation.rb:53
 #, 
 msgid "Events"
 msgstr ""
@@ -205,7 +210,7 @@ msgstr ""
 msgid "Label"
 msgstr ""
 
-#: app/views/login/new.html.haml:18
+#: app/views/login/new.html.haml:5 app/views/login/new.html.haml:18
 #, 
 msgid "Log In"
 msgstr ""
@@ -215,6 +220,7 @@ msgstr ""
 msgid "Login Successful"
 msgstr ""
 
+#: app/views/accounts/show.html.haml:6 app/views/layouts/_footer.haml:5
 #: app/views/layouts/_header.haml:19
 #, 
 msgid "Logout"
@@ -225,11 +231,17 @@ msgstr ""
 msgid "Logout Successful"
 msgstr ""
 
+#: app/views/systems/_edit_events.html.haml:16
+#: app/views/imports/index.html.haml:4
 #: app/views/admin/organizations/_edit_events.html.haml:16
 #, 
 msgid "Message"
 msgstr ""
 
+#: app/views/systems/_edit.html.haml:18
+#: app/views/activation_keys/_edit.html.haml:15
+#: app/views/activation_keys/_new.html.haml:6
+#: app/views/admin/organizations/_edit.html.haml:24
 #: app/views/admin/organizations/_new.html.haml:14
 #, 
 msgid "Name"
@@ -265,7 +277,7 @@ msgstr ""
 msgid "Org"
 msgstr ""
 
-#: config/navigation.rb:47
+#: app/views/admin/organizations/index.html.haml:8 config/navigation.rb:47
 #, 
 msgid "Organizations"
 msgstr ""
@@ -305,7 +317,7 @@ msgstr ""
 msgid "Quantity"
 msgstr ""
 
-#: config/navigation.rb:14
+#: app/views/imports/index.html.haml:1 config/navigation.rb:14
 #, 
 msgid "Recent Imports"
 msgstr ""
@@ -325,11 +337,14 @@ msgstr ""
 msgid "Remove User"
 msgstr ""
 
+#: app/views/admin/organizations/_new.html.haml:19
 #: app/views/admin/users/_new.html.haml:25
 #, 
 msgid "Reset"
 msgstr ""
 
+#: app/views/common/_edit_i18n.html.haml:3
+#: app/views/activation_keys/_new.html.haml:10
 #: app/views/admin/users/_edit.html.haml:32
 #, 
 msgid "Save"
@@ -340,7 +355,7 @@ msgstr ""
 msgid "Saving..."
 msgstr ""
 
-#: app/views/common/_panel.html.haml:33
+#: app/views/common/_panel.html.haml:29 app/views/common/_panel.html.haml:33
 #, 
 msgid "Search"
 msgstr ""
@@ -350,7 +365,8 @@ msgstr ""
 msgid "Select Result"
 msgstr ""
 
-#: app/views/imports/index.html.haml:5
+#: app/views/systems/_edit.html.haml:42 app/views/systems/_edit.html.haml:48
+#: app/views/systems/_edit.html.haml:54 app/views/imports/index.html.haml:5
 #, 
 msgid "Status"
 msgstr ""
@@ -360,7 +376,8 @@ msgstr ""
 msgid "Subscribe"
 msgstr ""
 
-#: config/navigation.rb:11
+#: app/views/dashboard/index.html.haml:6
+#: app/views/admin/organizations/_edit.html.haml:18 config/navigation.rb:11
 #, 
 msgid "Subscriptions"
 msgstr ""
@@ -375,6 +392,7 @@ msgstr ""
 msgid "Support Level"
 msgstr ""
 
+#: app/views/systems/index.html.haml:10 app/views/dashboard/index.html.haml:30
 #: config/navigation.rb:17
 #, 
 msgid "Systems"
@@ -390,6 +408,7 @@ msgstr ""
 msgid "There were errors creating the user:"
 msgstr ""
 
+#: app/views/systems/_edit_events.html.haml:15
 #: app/views/admin/organizations/_edit_events.html.haml:15
 #, 
 msgid "Time"
@@ -455,7 +474,7 @@ msgstr ""
 msgid "Username"
 msgstr ""
 
-#: config/navigation.rb:58
+#: app/views/admin/users/index.html.haml:13 config/navigation.rb:58
 #, 
 msgid "Users"
 msgstr ""
