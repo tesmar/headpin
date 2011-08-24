@@ -22,6 +22,7 @@ gem 'scoped_search', '>= 2.3.1'
 # Stuff for i18n
 gem 'gettext_i18n_rails'
 gem 'i18n_data', '>= 0.2.6', :require => 'i18n_data'
+gem 'httparty'
 # for gettext rake tasks
 gem 'gettext', '>= 1.9.3', :require => false
 gem 'ruby_parser', :require => false

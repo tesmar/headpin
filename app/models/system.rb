@@ -31,13 +31,23 @@ class System < Base
     ent = Entitlement.new(attributes)
     return ent
   end
-  
+
   def entitlement_status()
     status = facts.attributes['system.entitlements_valid']
     return _("Unknown") if status.nil?
     return _("Valid") if status
     return _("Invalid")
-  end  
+  end
 
+  #download the manifest
+  def self.dl_manifest(uuid)
+    include RestObject
+    include HTTParty
+    #do our own oautha using httparty b/c active resource truncates the binary ZIP data
+    link = "https://#{AppConfig.candlepin.host}:#{AppConfig.candlepin.port}#{AppConfig.candlepin.prefix}"
+    link += "?" + "oauth_key=sam&oauth_secret=zeusLovesJustinBieber"
+    t = URI.encode(link)
+    res = checked_get(t)
+  end
 end
 

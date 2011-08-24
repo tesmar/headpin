@@ -89,12 +89,15 @@ class SystemsController < ApplicationController
       format.html {render :text => params[:system].values.first}
       format.js
     end
-  end  
-  
+  end
+
   def find_system
     @system = System.find(params[:id])
     @organization = Organization.find @system.owner.key
   end
 
+  def manifest_dl
+    send_data System.dl_manifest(params[:id]), :filename => "export.zip"
+  end
 end
 
