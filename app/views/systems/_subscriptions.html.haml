@@ -6,10 +6,10 @@
   
 = content_for :remove_item do
   = remove_link(_("Remove #{@system.name}"), :systems)
-  
-= content_for :content do 
+= button_to(_("Download Manifest"), manifest_dl_system_path(@system.id) ,:id => "download_manifest", :method => "get")
+= content_for :content do
   #systems
-    .grid_8#subscriptions      
+    .grid_8#subscriptions
       %table
         %thead
           %th Product
