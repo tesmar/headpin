@@ -1,25 +1,38 @@
-%h1 #{_("Create User")}
-.katello_form
-  = form_for [:admin, @user] do |f|
-    .grid_8
-      %fieldset.clearfix
-        .grid_1.ra      
-          %label{:for => 'user_username'}
-            %b= _("User")
-        .grid_5.la            
-          = f.text_field :username
-      %fieldset.clearfix
-        .grid_1.ra         
-          %label{:for => 'user_password'}
-            %b= _("Password")
-        .grid_5.la               
-          = f.password_field :password
-      %fieldset.clearfix
-        .grid_1.ra         
-          %label{:for => 'user_superAdmin'}
-            %b= _("SuperAdmin")
-        .grid_5.la               
-          = f.check_box :superAdmin          
-    .grid_6.ra
-      = f.submit "#{_('Create')}", :class => "submit dialogbutton", :style=>"float:right;"
-      %button.formbutton{:disabled => true, :style=>"float:right;"} #{_("Reset")}
+= include_javascripts :password
+= include_javascripts :user_edit
+
+= content_for :title do
+  #{_("New User")}
+
+= content_for :content do
+  #new_user
+    .grid_10#new_user
+      %fieldset
+        .grid_2.ra
+          = label :user, :username, _("Username")
+        .grid_5.la
+          = text_field :user, :username, :id=>"username_field", :tabindex => 1
+      %fieldset
+        .grid_2.ra
+          = label :user, :username, _("Password")
+        .grid_5.la
+          = text_field :user, :username, :id=>"password_field", :type=>"password", :tabindex => 2
+      .grid_5.la.prefix_2
+        #password_meter
+      %fieldset
+        .grid_2.ra
+          = label :user, :username, _("Confirm")
+        .grid_5.la
+          = text_field :user, :username, :id=>"confirm_field", :type=>"password", :tabindex => 3
+        .grid_2.ra
+        .grid_5.la
+          #password_conflict
+      %fieldset
+        .grid_2.ra
+          = label :user, :superAdmin, _("Super Admin")
+        .grid_5.la
+          = check_box :user, :superAdmin, :id=>"superAdmin_field", :tabindex => 4
+
+    .grid_5.la.prefix_2
+      #save_user.verify_password.button{'data-url'=>admin_users_path, :tabindex => 5}
+        #{_("Save User")}
