@@ -1,7 +1,6 @@
 require 'spec_helper'
 
 describe Admin::OrganizationsController do
-
   include LoginHelperMethods
   include MockHelperMethods
 
@@ -65,7 +64,6 @@ describe Admin::OrganizationsController do
   describe "GET systems" do
     it 'should change the working org' do
       org = real_org()
-      #Organization.should_receive(:find).with(:all, anything()).and_return([org])
       get 'systems', :id => org.key
       session[:current_organization_id].should == org.key
     end
