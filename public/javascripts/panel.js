@@ -182,7 +182,6 @@ var list = (function(){
                 url: url,
                 dataType: 'html',
                 success: function(data) {
-                    notices.checkNotices();
                     jQid.html(data);
                 }
             });

@@ -92,19 +92,25 @@ var user_page = function() {
 
         if (verifyPassword()) {
             button.addClass('disabled');
+            var url = button.attr("data-url");
             var username = $('#username_field').val();
             var password = $('#password_field').val();
+            var superAdmin = $('#superAdmin_field').is(':checked');
             $.ajax({
-                type: "POST",
-                url: "/users/",
-                data: { "user":{"username":username, "password":password}},
-                cache: false,
+                type        : "POST",
+                url         : url,
+                data        : { "user":{"username":username, "password":password, "superAdmin":superAdmin},"authenticity_token":AUTH_TOKEN},
+                cache       : false,
                 success: function(data) {
                     button.removeClass('disabled');
                     list.add(data);
+                     $.jnotify("User " + username +" created", { type: "notify", sticky: true });
                     panel.closePanel($('#panel'));
                   },
-                error: function(){button.removeClass('disabled');}
+                error: function(){
+                  button.removeClass('disabled');
+                  $.jnotify("Failed to create user", { type: "error", sticky: true });
+                }
             });
 
         }
@@ -113,14 +119,18 @@ var user_page = function() {
         var button = $(this);
         var url = button.attr("data-url");
         var password = $('#password_field').val();
+        var superAdmin = $('#superAdmin_field').is(':checked');
         button.addClass("disabled");
         $.ajax({
-            type: "PUT",
-            url: url,
-            data: { "user":{"password":password}},
-            cache: false,
-            success: function() {
+            type        : "PUT",
+            url         : url,
+            data        : { "user":{"password":password, "superAdmin":superAdmin},"authenticity_token":AUTH_TOKEN},
+            cache       : false,
+            success: function(data) {
                 button.removeClass("disabled");
+                 $.jnotify("User " + data + " updated", { type: "notify", sticky: true });
+                list.refresh(data, url);
+                panel.closePanel($('#panel'));
             },
             error: function(e) {
                 button.removeClass('disabled');

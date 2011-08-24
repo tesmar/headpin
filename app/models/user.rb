@@ -14,23 +14,22 @@ class User < Base
   include ActiveModel::Conversion
   extend ActiveModel::Naming
 
-  self.primary_key = :username
-
+  def to_param
+    username
+  end
+  
   def initialize(attrs={})
     attrs[:superAdmin]= TRUE_VALUES.include?(attrs[:superAdmin])
     super(attrs)
   end
 
-  schema do
-    string 'username', 'password', "superAdmin"
+  def update_attributes(attrs)
+    attrs[:superAdmin]= TRUE_VALUES.include?(attrs[:superAdmin])
+    super(attrs)
   end
 
-  #  def superAdmin=(value)
-  #    attrs[:superAdmin]= TRUE_VALUES.include?(value)
-  #  end
-
-  def new?
-    attributes[:id].nil?
+  schema do
+    string 'id', 'username', 'password', "superAdmin"
   end
 
   # Fake outs. May need to persist these values
