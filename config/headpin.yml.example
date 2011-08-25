@@ -7,6 +7,8 @@
 #     example https://localhost:8443/candlepin
 # oauth_key and oauth_secre :Specify your oauth key and secret
 #   used to authenticate with Candlepin
+#DO NOT CHANGE THIS FILE AS THE JENKINS TESTS DEPEND UPON IT ACTUALLY POINTING TO A LIVE MACHINE!!!!
+#^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 candlepin:
   host: perelandra.usersys.redhat.com
   port: 8443
