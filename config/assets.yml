@@ -13,7 +13,8 @@ javascripts:
     - public/javascripts/katello.js
     - public/javascripts/application.js
     - public/javascripts/jquery/plugins/jquery.linkHover.js    
-    - public/javascripts/jquery/plugins/jquery.sparkline.min.js    
+    - public/javascripts/jquery/plugins/jquery.sparkline.min.js
+    - public/javascripts/jquery/plugins/jquery.jscrollpane.js
   html5:
     - public/javascripts/html5.js
   dashboard:

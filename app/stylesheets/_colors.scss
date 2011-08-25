@@ -1,5 +1,6 @@
 $kprimary_color: #26B3E2; /* Primary Katello ID */
 $kselected_color: darken($kprimary_color,15%); /* all selected items */
+$text_color: #1A1A1A;
 $linkfg_color: darken($kprimary_color,05%); /* default links */
 $tabon_color: darken($kselected_color, 1%);
 $taboff_color: #747474; /* unfocused tabs */
@@ -9,6 +10,7 @@ $headerbg_color: $kprimary_color;
 $formheadbg_color: #eee;
 $formheadfg_color: #333;
 $labelfg_color: #888;
+$orgbox_color: #79B9C7;
 
 $breadcrumbbg_color: #e9e9e9;
 
@@ -27,6 +29,7 @@ $lightgrey_color: #939292;
 
 $tree-container_color: #F2F2F2;
 $tree-border_color: #c0c1be;
+$changeset-promoting_color: #f6891f;
 
 $product_color: #070;
 $package_color: #666;

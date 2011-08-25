@@ -149,6 +149,62 @@ var common = (function() {
         },
         escapeId: function(myid) {
             return myid.replace(/(:|\.)/g,'\\$1');
+        },
+        orgSwitcherSetup : function() {
+            //org switcher
+            var button = $('#switcherButton');
+            var box = $('#switcherBox');
+            var form = $('#switcherForm');
+            var orgbox = $('#orgbox');
+            var orgboxapi = null;
+            button.removeAttr('href');
+            button.mouseup(function(switcher) {
+                box.fadeToggle('fast');
+                button.toggleClass('active');
+                if(button.hasClass('active')){
+                    if(!(box.hasClass('jspScrollable'))){
+                      orgbox.jScrollPane({ hideFocus: true });
+                      orgboxapi = orgbox.data('jsp');
+                    }
+                    $.ajax({
+                        type: "GET",
+                        url: orgbox.attr("data-url"),
+                        cache: false,
+                        success: function(data) {
+                          orgboxapi.getContentPane().html(data);
+                          orgboxapi.reinitialise();
+                        },
+                        error: function(data) {
+                          orgboxapi.getContentPane().html("<p>User is not allowed to access any Organizations.</p>");
+                          orgboxapi.reinitialise();
+                        }
+                    });
+                }
+            });
+            form.mouseup(function() {
+                return false;
+            });
+            $(document).mouseup(function(switcher) {
+                if(!($(switcher.target).parent('#switcherButton').length > 0)) {
+                    button.removeClass('active');
+                    box.fadeOut('fast');
+                }
+            });
+        },
+        orgFilterSetup : function(){
+            $('form.filter').submit(function(){
+                $('#orgfilter_input').change();
+                return false;
+            });
+            $('#orgfilter_input').live('change, keyup', function(){
+                if ($.trim($(this).val()).length >= 2) {
+                    $("#orgbox a:not(:contains('" + $(this).val() + "'))").filter(':not').fadeOut('fast');
+                    $("#orgbox a:contains('" + $(this).val() + "')").filter(':hidden').fadeIn('fast');
+                } else {
+                    $("#orgbox a").fadeIn('fast');
+                }
+            });
+            $('#orgfilter_input').val("").change();
         }
     };
 })();
@@ -175,3 +231,12 @@ var client_common = {
       });
     }
 };
+
+/**
+ * Document Ready function
+ */
+$(document).ready(function (){
+	  common.orgSwitcherSetup();
+    common.orgFilterSetup();
+});
+
