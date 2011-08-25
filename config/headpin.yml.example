@@ -8,7 +8,7 @@
 # oauth_key and oauth_secre :Specify your oauth key and secret
 #   used to authenticate with Candlepin
 candlepin:
-  host: transam.devel.redhat.com
+  host: perelandra.usersys.redhat.com
   port: 8443
   prefix: /candlepin
   oauth_key: sam
