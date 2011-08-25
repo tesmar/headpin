@@ -11,19 +11,19 @@
         .grid_2.ra
           = label :user, :username, _("Username")
         .grid_5.la
-          = text_field :user, :username, :id=>"username_field", :tabindex => 1
+          = text_field :user, :username, :id=>"username_field", :tabindex => auto_tab_index
       %fieldset
         .grid_2.ra
           = label :user, :username, _("Password")
         .grid_5.la
-          = text_field :user, :username, :id=>"password_field", :type=>"password", :tabindex => 2
+          = text_field :user, :username, :id=>"password_field", :type=>"password", :tabindex => auto_tab_index
       .grid_5.la.prefix_2
         #password_meter
       %fieldset
         .grid_2.ra
           = label :user, :username, _("Confirm")
         .grid_5.la
-          = text_field :user, :username, :id=>"confirm_field", :type=>"password", :tabindex => 3
+          = text_field :user, :username, :id=>"confirm_field", :type=>"password", :tabindex => auto_tab_index
         .grid_2.ra
         .grid_5.la
           #password_conflict
@@ -31,8 +31,8 @@
         .grid_2.ra
           = label :user, :superAdmin, _("Super Admin")
         .grid_5.la
-          = check_box :user, :superAdmin, :id=>"superAdmin_field", :tabindex => 4
+          = check_box :user, :superAdmin, :id=>"superAdmin_field", :tabindex => auto_tab_index
 
     .grid_5.la.prefix_2
-      #save_user.verify_password.button{'data-url'=>admin_users_path, :tabindex => 5}
+      #save_user.verify_password.button{'data-url'=>admin_users_path, :tabindex => auto_tab_index}
         #{_("Save User")}

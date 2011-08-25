@@ -87,4 +87,10 @@ module ApplicationHelper
           :link_text => link_text,
           :controller => controller}    
   end
+
+  # auto_tab_index: this method may be used to simplify adding a tabindex to UI forms.
+  def auto_tab_index
+    @current_index ||= 0
+    @current_index += 1
+  end
 end

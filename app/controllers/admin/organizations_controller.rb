@@ -22,14 +22,7 @@ class Admin::OrganizationsController < ApplicationController
   end
   
   def index
-    @organizations = @visible_orgs
-  end
-
-  def use
-    @organization = Organization.find(params[:workingorg])
-    self.working_org = @organization
-    flash[:notice] = N_("Now using organization '#{@organization.displayName}'.")
-    redirect_to :back
+    @organizations = Organization.find_by_user(logged_in_user.username)
   end
 
   def new

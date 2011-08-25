@@ -17,7 +17,6 @@ class ApplicationController < ActionController::Base
   layout 'katello'
   helper_method :working_org
   before_filter :set_gettext_locale, :set_locale
-  #before_filter :set_visible_orgs
 
   # This is a fairly giant hack to make the request
   # available to the Models for active record
@@ -96,20 +95,29 @@ class ApplicationController < ActionController::Base
     @user ||= current_user
   end
 
-  private
-
-  # Sets a variable listing all orgs the current user can access. We can safely
-  # assume that there is a logged in user at this point.
-  def set_visible_orgs
-    @visible_orgs ||= Organization.find_by_user(logged_in_user.username)
+  #begin new orgs
+  def allowed_orgs
+    render :partial=>"/layouts/allowed_orgs", :locals =>{
+        :working_org=>@organization = Organization.find(session[:current_organization_id]),
+        :visible_orgs=>Organization.find_by_user(logged_in_user.username)
+    }
   end
+
+  def set_org
+    @organization = Organization.find(params[:workingorg])
+    self.working_org = @organization
+    flash[:notice] = N_("Now using organization '#{@organization.displayName}'.")
+    redirect_to :back
+  end
+
+  private
 
   # TODO:  Refactor these two methods!
   def require_org
     # If no working org is set, just use the first one in the visible list.
     # For non-admins this will be their one and only org.
     if working_org.nil?
-      self.working_org = @visible_orgs[0]
+      self.working_org = Organization.find_by_user(logged_in_user.username).first
     end
     true
   end
@@ -128,9 +136,6 @@ class ApplicationController < ActionController::Base
 
     # Set the user so navigation can detect if tabs for admins should be shown:
     logged_in_user
-
-    # Set the list of visible orgs for this user:
-    set_visible_orgs()
 
     true
   end
