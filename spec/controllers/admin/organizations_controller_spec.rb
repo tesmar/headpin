@@ -20,7 +20,6 @@ describe Admin::OrganizationsController do
     context 'as non-admin' do
       it 'should redirect to dashboard' do
         org = real_org()
-        Organization.should_receive(:find).with(:all, anything()).and_return(org)
         mock_user = mock(User, :superAdmin? => false, :username => "admin")
         mock_user.stub_chain(:owner, :key).and_return(org.key)
         controller.stub!(:logged_in_user).and_return(mock_user)
@@ -29,17 +28,6 @@ describe Admin::OrganizationsController do
       end
     end
 
-  end
-
-  describe "use" do
-    it 'should set the current organization in the session' do
-      org = real_org()
-      Organization.should_receive(:find).with(org.key).and_return(org)
-      Organization.should_receive(:find).with(:all, anything()).and_return([org])
-      request.env['HTTP_REFERER'] = "/"
-      post :use, :workingorg => org.key
-      session[:current_organization_id].should == org.key
-    end
   end
 
   describe "GET new" do
@@ -53,7 +41,6 @@ describe Admin::OrganizationsController do
 
     it 'should create a new organization' do
       org = real_org()
-      Organization.should_receive(:find).with(:all, anything()).and_return([org])
       org.should_receive(:save).and_return(true)
       Organization.stub!(:new).and_return org
       post 'create', :organization => {:key => '', :displayName => ''}
@@ -70,7 +57,6 @@ describe Admin::OrganizationsController do
 
     it 'should redirect to top-level systems path' do
       org = real_org()
-      Organization.should_receive(:find).with(:all, anything()).and_return([org])
       Organization.should_receive(:find).with(org.key).and_return(org)
       get 'systems', :id => org.key
       response.should redirect_to(systems_path)
@@ -88,7 +74,6 @@ describe Admin::OrganizationsController do
 
     it 'should redirect to top-level systems path' do
       org = real_org()
-      Organization.should_receive(:find).with(:all, anything()).and_return([org])
       Organization.should_receive(:find).with(org.key).and_return(org)
       get 'subscriptions', :id => org.key
       response.should redirect_to(subscriptions_path)
