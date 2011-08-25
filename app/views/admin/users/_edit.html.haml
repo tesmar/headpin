@@ -19,22 +19,22 @@
         .grid_2.ra
           = label :user, :password, _("Change Password")
         .grid_5.la
-          = text_field :user, :password, :id=>"password_field", :value=>"", :type=>"password", :tabindex => 1
+          = text_field :user, :password, :id=>"password_field", :value=>"", :type=>"password", :tabindex => auto_tab_index
       .grid_6.la.prefix_2
         #password_meter           
       %fieldset
         .grid_2.ra
           = label :user, :username, _("Confirm")
         .grid_5.la
-          = text_field :user, :username, :id=>"confirm_field", :value=>"", :type=>"password", :tabindex => 2
+          = text_field :user, :username, :id=>"confirm_field", :value=>"", :type=>"password", :tabindex => auto_tab_index
       %fieldset
         .grid_2.ra
           = label :user, :superAdmin, _("Super Admin")
         .grid_5.la
-          = check_box :user, :superAdmin, :id=>"superAdmin_field", :value=>@user.superAdmin, :tabindex => 3
+          = check_box :user, :superAdmin, :id=>"superAdmin_field", :value=>@user.superAdmin, :tabindex => auto_tab_index
 
       .grid_6.la.prefix_2
-        #save_password.verify_password.button{'data-url'=>admin_user_path(@user), :tabindex => 4}
+        #save_password.verify_password.button{'data-url'=>admin_user_path(@user), :tabindex => auto_tab_index}
           #{_("Save")}
       .grid_6.la.prefix_2
         #password_conflict 
