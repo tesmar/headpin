@@ -825,27 +825,27 @@ footer {
 
 .notifications {
     tr.success {
-        @include background-image(linear-gradient(white, white, rgb(242,255,229)));
+        background-image: (linear-gradient(white, white, rgb(242,255,229)));
         &:hover {
-            @include background-image(linear-gradient(white, rgb(242,255,229)));
+            background-image: (linear-gradient(white, rgb(242,255,229)));
         }
     }
     tr.error {
-        @include background-image(linear-gradient(white, white, rgb(255,229,229)));
+        background-image: (linear-gradient(white, white, rgb(255,229,229)));
         &:hover {
-            @include background-image(linear-gradient(white, rgb(255,229,229)));
+            background-image: (linear-gradient(white, rgb(255,229,229)));
         }
     }
     tr.message {
-        @include background-image(linear-gradient(white, white, rgb(239,239,239)));
+        background-image: (linear-gradient(white, white, rgb(239,239,239)));
         &:hover {
-            @include background-image(linear-gradient(white, rgb(239,239,239)));
+            background-image: (linear-gradient(white, rgb(239,239,239)));
         }
     }
     tr.warning {
-        @include background-image(linear-gradient(white, white, rgb(255,255,229)));
+        background-image: (linear-gradient(white, white, rgb(255,255,229)));
         &:hover {
-            @include background-image(linear-gradient(white, rgb(255,255,229)));
+            background-image: (linear-gradient(white, rgb(255,255,229)));
         }
     }
 }
@@ -1822,14 +1822,14 @@ fieldset {
     margin: 10px 10px 0 0;
   }
   &.active {
-    @include background-image(linear-gradient(rgb(61, 136, 151), rgb(121, 185, 199)));
+    background-image: (linear-gradient(rgb(61, 136, 151), rgb(121, 185, 199)));
     @include border-bottom-lr-radius(0);
     .arrow_icon {
       background-position: 0 -11px;
     }
   }
   &:hover {
-    @include background-image(linear-gradient(rgb(61, 136, 151), rgb(121, 185, 199)));
+    background-image: (linear-gradient(rgb(61, 136, 151), rgb(121, 185, 199)));
     text-decoration: underline;
   }
 }
