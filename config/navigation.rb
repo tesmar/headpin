@@ -55,7 +55,8 @@ SimpleNavigation::Configuration.run do |navigation|
             end
           end
   
-        admin_sub.item :users, _("Users"), {:controller => 'admin/users'}, :class => 'users' 
+        admin_sub.item :users, _("Users"), {:controller => 'admin/users'}, :class => 'users'
+        admin_sub.item(:roles, _("Roles"), admin_roles_path) 
     end 
 
     

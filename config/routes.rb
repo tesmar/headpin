@@ -32,8 +32,19 @@ ComplianceManager::Application.routes.draw do
       end
     end
     resources :users do
-      get 'auto_complete_search' , :on => :collection         
-    end    
+      get 'auto_complete_search' , :on => :collection
+    end
+    resources :roles do
+      put "create_permission" => "roles#create_permission"
+      resources :permission, :only => {} do
+        delete "destroy_permission" => "roles#destroy_permission", :as => "destroy"
+        post "update_permission" => "roles#update_permission", :as => "update"
+      end
+      collection do
+        get :auto_complete_search
+      end
+    end
+
   end
   
   resource :account
