@@ -10,8 +10,8 @@ module ApplicationConfiguration
 
     attr_reader :config_file
 
-    def initialize 
-      @config_file = "/etc/sam/headpin.yml"
+    def initialize
+      @config_file = "/etc/headpin/headpin.yml"
       @config_file = "#{Rails.root}/config/headpin.yml" unless File.exists? @config_file
 
       config = YAML::load_file(@config_file) || {}
