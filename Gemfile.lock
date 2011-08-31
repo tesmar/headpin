@@ -43,7 +43,6 @@ GEM
       haml (>= 3.0.4)
     compass-960-plugin (0.10.0)
       compass (>= 0.10.0)
-    crack (0.1.8)
     diff-lcs (1.1.2)
     erubis (2.6.6)
       abstract (>= 1.0.0)
@@ -58,8 +57,6 @@ GEM
       activesupport (~> 3.0)
       haml (~> 3.0)
       railties (~> 3.0)
-    httparty (0.7.8)
-      crack (= 0.1.8)
     i18n (0.6.0)
     i18n_data (0.2.7)
       activesupport
@@ -156,7 +153,6 @@ DEPENDENCIES
   gettext_i18n_rails
   haml (>= 3.0.16)
   haml-rails
-  httparty
   i18n_data (>= 0.2.6)
   jammit
   json

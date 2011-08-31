@@ -41,13 +41,7 @@ class System < Base
 
   #download the manifest
   def self.dl_manifest(uuid)
-    include RestObject
-    include HTTParty
-    #do our own oautha using httparty b/c active resource truncates the binary ZIP data
-    link = "https://#{AppConfig.candlepin.host}:#{AppConfig.candlepin.port}#{AppConfig.candlepin.prefix}"
-    link += "?" + "oauth_key=#{AppConfig.candlepin.oauth_key}&oauth_secret=#{AppConfig.candlepin.oauth_secret}"
-    t = URI.encode(link)
-    res = checked_get(t)
+    Candlepin::Consumer.cert_zip(uuid)
   end
 end
 

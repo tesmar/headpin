@@ -13,7 +13,7 @@
 module OauthHelper
 
    def site
-    "https://#{AppConfig.candlepin.host}:#{AppConfig.candlepin.port}"
+    "https://#{AppConfig.candlepin.url}:#{AppConfig.candlepin.port}"
   end 
 
   def post_file(uri, file)

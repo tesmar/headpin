@@ -26,7 +26,7 @@ Warden::Strategies.add(:candlepin) do
   def authenticate!
     username = params[:username]
 
-    http = Net::HTTP.new(AppConfig.candlepin.host, AppConfig.candlepin.port)
+    http = Net::HTTP.new(AppConfig.candlepin.url, AppConfig.candlepin.port)
     req = Net::HTTP::Get.new("#{AppConfig.candlepin.prefix}/users/#{username}")
     http.use_ssl = true
     req.basic_auth username, params[:password]

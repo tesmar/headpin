@@ -19,7 +19,7 @@ class Base < OAuthActiveResource::Resource
 
   TRUE_VALUES = [true, 1, "1", "true", "yes", "TRUE", "YES", "T", "t", "Y", "y"]
   
-  self.site = "https://#{AppConfig.candlepin.host}:#{AppConfig.candlepin.port}#{AppConfig.candlepin.prefix}"
+  self.site = "https://#{AppConfig.candlepin.url}:#{AppConfig.candlepin.port}#{AppConfig.candlepin.prefix}"
   self.format = :json
 
   class << self

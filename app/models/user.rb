@@ -28,6 +28,10 @@ class User < Base
     super(attrs)
   end
 
+  def cp_oauth_header
+    { 'cp-user' => self.username }
+  end
+
   schema do
     string 'id', 'username', 'password', "superAdmin"
   end

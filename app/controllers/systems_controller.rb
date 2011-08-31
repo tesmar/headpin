@@ -97,7 +97,7 @@ class SystemsController < ApplicationController
   end
 
   def manifest_dl
-    send_data System.dl_manifest(params[:id]), :filename => "export.zip"
+    send_data(Candlepin::Consumer.cert_zip(params[:id]), :filename => "export.zip")
   end
 end
 
