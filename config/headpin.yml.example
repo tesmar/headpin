@@ -11,7 +11,16 @@
 #^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 candlepin:
   host: perelandra.usersys.redhat.com
+  fullurl: https://perelandra.usersys.redhat.com:8443/candlepin
   port: 8443
   prefix: /candlepin
   oauth_key: sam
   oauth_secret: zeusLovesJustinBieber
+  ldap:
+    host: localhost
+    base: ou=People,dc=company,dc=com
+  #warden: database
+  use_cp: true
+  use_pulp: true
+  use_ssl: true
+  rest_client_timeout: 30
