@@ -33,7 +33,13 @@ ComplianceManager::Application.routes.draw do
     end
     resources :users do
       get 'auto_complete_search' , :on => :collection
+      member do
+        put :update_roles
+        get :user_roles
+      end
     end
+
+    match 'users/:id/roles', :to => 'users#user_roles'
     resources :roles do
       put "create_permission" => "roles#create_permission"
       resources :permission, :only => {} do

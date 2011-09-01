@@ -3,6 +3,9 @@
 
 = content_for :title do
   = _("Edit User")
+
+= content_for :navigation do
+  = render_navigation(:expand_all => true, :level => 3)
   
 = content_for :remove_item do
   = remove_link(_("Remove User"), :users)

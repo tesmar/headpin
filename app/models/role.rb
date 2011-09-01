@@ -23,30 +23,9 @@ class Role < Base
   end
 
   def users_count
-    attributes[:users].count()
+    users.count()
   end
 
-  #def self.search_by_tag(key, operator, value)
-  #  permissions = Permission.all(:conditions => "tags.name #{operator} '#{value_to_sql(operator, value)}'", :include => :tags)
-  #  roles = permissions.map(&:role)
-  #  opts  = roles.empty? ? "= 'nil'" : "IN (#{roles.map(&:id).join(',')})"
-  #
-  #  return {:conditions => " roles.id #{opts} " }
-  #end
-  #
-  #
-  #def self.search_by_verb(key, operator, value)
-  #  permissions = Permission.all(:conditions => "verbs.verb #{operator} '#{value_to_sql(operator, value)}'", :include => :verbs)
-  #  roles = permissions.map(&:role)
-  #  opts  = roles.empty? ? "= 'nil'" : "IN (#{roles.map(&:id).join(',')})"
-  #
-  #  return {:conditions => " roles.id #{opts} " }
-  #end
-  #
-  #def self.value_to_sql(operator, value)
-  #  return value if (operator !~ /LIKE/i)
-  #  return (value =~ /%|\*/) ? value.tr_s('%*', '%') : "%#{value}%"
-  #end
   #
   #def self.non_self_roles
   #  #gotta be a better way to do this, but others wouldn't work
@@ -57,13 +36,7 @@ class Role < Base
   #  User.where(:own_role_id => self.id).first
   #end
   #
-  ## returns the candlepin role (for RHSM)
-  #def self.candlepin_role
-  #  Role.find_by_name('candlepin_role')
-  #end
-  #
-  #
-  
+
   #permissions
   def self.creatable?
    true

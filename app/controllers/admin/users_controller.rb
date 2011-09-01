@@ -56,6 +56,21 @@ class Admin::UsersController < ApplicationController
     end
   end
 
+  def user_roles
+    @user = User.find(params[:id])
+    @roles = @user.roles.map(&:id)
+    render :partial=>"user_roles", :layout => "tupane_layout", :locals=>{:user=>@user, :roles=>@roles}
+  end
+
+  def update_roles
+    # This doesn't work until bz#735034 is solved
+    @user = User.find(params[:id])
+    @user.update_attributes(params[:user])
+    if @user.save
+      render :text => @user.username and return
+    end
+  end
+
   def show
     @user = User.find(params[:id])
     render :partial => "common/list_update", :locals=>{:item=>@user, :accessor=>"username", :columns=>['username', 'superAdmin']}

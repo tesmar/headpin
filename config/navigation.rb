@@ -55,7 +55,12 @@ SimpleNavigation::Configuration.run do |navigation|
             end
           end
   
-        admin_sub.item :users, _("Users"), {:controller => 'admin/users'}, :class => 'users'
+        admin_sub.item :users, _("Users"), {:controller => 'admin/users'}, :class => 'users' do |user_sub|
+        if !@user.nil?
+          user_sub.item :general, _("General"), edit_admin_user_path(@user), :class => "navigation_element"
+          user_sub.item :roles_and_permissions, _("Roles & Permissions"), "/admin/users/#{@user.username}/roles", :class => "navigation_element"
+        end
+      end
         admin_sub.item(:roles, _("Roles"), admin_roles_path) 
     end 
 

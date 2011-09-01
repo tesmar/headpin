@@ -1,0 +1,19 @@
+= javascript :user_edit
+
+= content_for :title do
+  = _("Edit User")
+
+= content_for :navigation do
+  = render_navigation(:expand_all => true, :level => 3)
+
+= content_for :remove_item do
+  = remove_link(_("Remove User"), :users)
+
+= content_for :content do
+  .grid_8#role
+    %h5.grid_8 #{_("Roles")}
+    = form_tag update_roles_admin_user_path(@user), :method => "put", :id => "update_roles" do |f|
+      .grid_8
+        = select_tag "user[role_ids]", options_from_collection_for_select(Role.find(:all), :id, :name, @roles), :multiple => true, :class => 'multiselect', :style=>"width:400px; height:200px"
+      .grid_2
+        = button_to _("Save Roles"), update_roles_admin_user_path(@user), :method => :put, :id => :save_roles

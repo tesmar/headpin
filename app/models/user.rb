@@ -40,4 +40,8 @@ class User < Base
   def page_size
     20
   end
+
+  def roles
+    Role.find(:all, :from => "#{AppConfig.candlepin.prefix}/users/#{username}/roles")
+  end
 end
