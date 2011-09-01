@@ -18,49 +18,11 @@
  * Date: 09/01/2010
  */
 
+//Katello global object namespace that all others should be attached to
+var KT = {};
+
 //i18n global variable
 var i18n = {};
-
-/**
- * Document Ready function
- */
-$(document).ready(function (){
-	//Add a handler so that if any input has focus
-	//   our keyboard shortcuts don't steal it
-	$(":input").focus(function() {
-		onInputField = true;
-	}).blur(function() {
-		onInputField = false;
-	});
-
-    //Add a handler for helptips
-    $(".helptip-open").live('click', helptip.handle_close);
-    $(".helptip-close").live('click', helptip.handle_open);
-});
-
-/**
- * Window Ready function
- */
-$(window).ready(function(){
-    $('.fc').parent().css({"text-align":"center"});
-    //all purpose display loading icon for ajax calls
-    $("#loading").bind("ajaxSend", function(){
-      $(this).show();
-      $('body').css('cursor', 'wait');
-    }).bind("ajaxComplete", function(){
-      $(this).hide();
-      $('body').css('cursor', 'default');
-    });
-    $().UItoTop({ easingType: 'easeOutQuart' });
-
-    //allow all buttons with class .button to be clicked via enter or space button
-    $('.button').live('keyup', function(e){
-        if(e.which == 13 || e.which == 32)
-        {
-            $(this).click();
-        }
-    });
-});
 
 function localize(data) {
 	for (var key in data) {
@@ -95,21 +57,8 @@ function log(msg) {
     }, 0);
 }
 
-var helptip =  (function() {
-    return {
-        handle_close: function(){
-          var key = this.id.split("helptip-opened_")[1];
-          $("#helptip-opened_" + key).hide();
-          $("#helptip-closed_" + key).show();
-          helptip.disable(key); 
-        },
-        handle_open: function(){
-          var key = this.id.split("helptip-closed_")[1];
-          $("#helptip-opened_" + key).show();
-          $("#helptip-closed_" + key).hide();
-          helptip.enable(key);
-        },
-        enable: function(key) {
+KT.helptip =  (function($) {
+    var enable = function(key) {
           $.ajax({
             type: "POST",
             url: "/users/enable_helptip",
@@ -117,19 +66,66 @@ var helptip =  (function() {
             cache: false
            });
         },
-        disable: function(key) {
+        disable = function(key) {
           $.ajax({
             type: "POST",
             url: "/users/disable_helptip",
             data: { "key":key},
             cache: false
            });
-        }
+        },
+        handle_close = function(){
+          var key = this.id.split("helptip-opened_")[1];
+          $("#helptip-opened_" + key).hide();
+          $("#helptip-closed_" + key).show();
+          disable(key); 
+        },
+        handle_open = function(){
+          var key = this.id.split("helptip-closed_")[1];
+          $("#helptip-opened_" + key).show();
+          $("#helptip-closed_" + key).hide();
+          enable(key);
+        };
+        
+    return {
+        handle_close    :    handle_close,
+        handle_open     :    handle_open
     };
-})();
+})(jQuery);
+
+//override the jQuery UJS $.rails.allowAction
+$.rails.allowAction = function(element) {
+    var message = element.data('confirm'),
+    answer = false, callback;
+    if (!message) { return true; }
+
+    if ($.rails.fire(element, 'confirm')) {
+        KT.common.customConfirm(message, function() {
+            callback = $.rails.fire(element,
+                    'confirm:complete', [answer]);
+            if(callback) {
+                    var oldAllowAction = $.rails.allowAction;
+                    $.rails.allowAction = function() { return true; };
+                    element.trigger('click');
+                    $.rails.allowAction = oldAllowAction;
+            }
+        });
+    }
+    return false;
+};
+
+//make jQuery Contains case insensitive
+$.expr[':'].Contains = function(a, i, m) {
+  return $(a).text().toUpperCase()
+      .indexOf(m[3].toUpperCase()) >= 0;
+};
+$.expr[':'].contains = function(a, i, m) {
+  return $(a).text().toUpperCase()
+      .indexOf(m[3].toUpperCase()) >= 0;
+};
 
 //requires jQuery
-var common = (function() {
+KT.common = (function() {
     return {
         height: function() {
             return $(window).height();
@@ -149,6 +145,56 @@ var common = (function() {
         },
         escapeId: function(myid) {
             return myid.replace(/(:|\.)/g,'\\$1');
+        },
+        customConfirm : function (message, callback) {
+          var html = "<div style='margin:20px;'><span class='status_confirm_icon'/><div style='margin-left: 24px; display:table;height:1%;'>" + message + "</div></div>";
+          var confirmTrue = new Boolean(true);
+          var confirmFalse = new Boolean(false);
+          
+          $(html).dialog({
+            closeOnEscape: false,
+            open: function (event, ui) {
+                $('.ui-dialog-titlebar-close').hide();
+                $('.confirmation').find('.ui-button')[1].focus();
+            },
+            modal: true,
+            resizable: false,
+            width: 400,
+            title: "Confirmation",
+            dialogClass: "confirmation",
+            buttons: {
+                "Yes": function () {
+                    $(this).dialog("close");
+                    $(this).dialog("destroy");
+                    callback();
+                },
+                "No": function () {
+                    $(this).dialog("close");
+                    $(this).dialog("destroy");
+                    return confirmFalse;
+                }
+            }
+          });
+        },
+        customAlert : function(message) {
+          var html = "<div style='margin:20px;'><span class='status_exclamation_icon'/><div style='margin-left: 24px; display:table;height:1%;'>" + message + "</div></div>";
+          $(html).dialog({
+            closeOnEscape: false,
+            open: function (event, ui) { $('.ui-dialog-titlebar-close').hide(); },
+            modal: true,
+            resizable: false,
+            width: 300,
+            title: "Alert",
+            dialogClass: "alert",
+            stack: false,
+            buttons: {
+                "Ok": function () {
+                    $(this).dialog("close");
+                    $(this).dialog("destroy");
+                    return false;
+                }
+            }
+          });
         },
         orgSwitcherSetup : function() {
             //org switcher
@@ -205,6 +251,19 @@ var common = (function() {
                 }
             });
             $('#orgfilter_input').val("").change();
+        },
+        thirdLevelNavSetup : function(){
+            var firstchild = $('.third_level:first-child');
+            var li = firstchild.parent().parent();
+            var ul = firstchild.parent();
+            li.prepend($('<div class="arrow_icon_menu"></div>'));
+            li.hover(
+                function(){
+                    ul.fadeIn('fast')
+                },
+                function(){
+                    ul.fadeOut('fast')
+            });
         }
     };
 })();
@@ -236,7 +295,46 @@ var client_common = {
  * Document Ready function
  */
 $(document).ready(function (){
-	  common.orgSwitcherSetup();
-    common.orgFilterSetup();
+	//Add a handler so that if any input has focus
+	//   our keyboard shortcuts don't steal it
+	$(":input").focus(function() {
+		onInputField = true;
+	}).blur(function() {
+		onInputField = false;
+	});
+
+    //Add a handler for helptips
+    $(".helptip-open").live('click', KT.helptip.handle_close);
+    $(".helptip-close").live('click', KT.helptip.handle_open);
+
+    KT.common.orgSwitcherSetup();
+    KT.common.orgFilterSetup();
+    KT.common.thirdLevelNavSetup();
 });
 
+/**
+ * Window Ready function
+ */
+$(window).ready(function(){
+    $('.fc').parent().css({"text-align":"center"});
+    //all purpose display loading icon for ajax calls
+    $("#loading").bind("ajaxSend", function(){
+      $(this).show();
+      $('body').css('cursor', 'wait');
+    }).bind("ajaxComplete", function(){
+      $(this).hide();
+      $('body').css('cursor', 'default');
+    });
+    $().UItoTop({ easingType: 'easeOutQuart' });
+
+    //allow all buttons with class .button to be clicked via enter or space button
+    $('.button').live('keyup', function(e){
+        if(e.which == 13 || e.which == 32)
+        {
+            $(this).click();
+        }
+    });
+
+    window.alert = function(message){KT.common.customAlert(message);return false;};
+    $.rails.confirm = function(message) { KT.common.customConfirm(message); return false;};
+});
