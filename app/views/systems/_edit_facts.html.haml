@@ -19,7 +19,7 @@
           %th= _("Value")
         %tbody
           - group = nil
-          - @system.facts.attributes.sort.each do |fact, value|
+          - @system.facts.each do |fact, value|
             - new_group = fact.split(".", 2)[0]
             - if (new_group != group)
               - group = new_group

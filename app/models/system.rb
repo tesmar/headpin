@@ -17,11 +17,68 @@ class System < Base
   include ActiveModel::Conversion
   extend ActiveModel::Naming
 
+  attr_accessor :name, :entitlementCount, :entitlement_status, :uuid, :owner_key
+  attr_accessor :created, :lastCheckin, :username, :facts
+
   # Candlepin calls this resource a consumer:
   self.element_name = "consumer"
 
   # Candlepin API expects an owner key as the ID:
   self.primary_key = :uuid
+
+  def initialize(json_hash=nil)
+    @json_hash = (json_hash ||= {})
+    # rails doesn't like variables called id or type
+    if @json_hash != {}
+      @uuid = @json_hash["uuid"]
+      @owner_key = @json_hash["owner"]["key"]
+      @lastCheckin = @json_hash["owner"]["lastCheckin"]
+      @username = @json_hash["owner"]["username"]
+      @created = Date.parse(@json_hash["created"])
+      @facts = @json_hash["facts"].to_a.sort
+      @consumer_type = @json_hash["type"]
+    end
+    @entitlement_count = 0
+    #@consumed_entitlements = []
+#TEMPORARY TO GET VIEW TO WORK
+    @entitlement_status = "good"
+    @entitlementCount = 5
+    if json_hash != nil
+      @name ||= json_hash["name"]
+      #if json_hash["entitlements"] != nil
+      #  json_hash["entitlements"].each do |e|
+          #@consumed_entitlements << Entitlement.new(e)
+          #@entitlement_count = @entitlement_count + e["quantity"]
+      #  end
+      #end
+    end
+    #@entitlements = consumed_entitlements
+Rails.logger.ap "NEW SYSTEM FROM CANDLEPIN JSON:::::::::::::"
+Rails.logger.ap self
+  end
+
+  def self.retrieve(uuid)
+    sj = nil
+    begin
+      sj = JSON.parse(Candlepin::Proxy.get("/consumers/#{uuid}", {:type => "system"}))
+      return System.new(sj)
+    rescue Exception => e
+      Rails.logger.error "Unrecognized System: " + sj.to_s
+      raise "Unrecognized System: " + sj.to_s + "\n" + e.to_s
+    end
+  end
+
+  def self.retrieve_all
+    systems = []
+    JSON.parse(Candlepin::Proxy.get('/consumers', {:type => "system"})).each do |json_system|
+      begin
+        systems << System.new(json_system)
+      rescue Exception => e
+        Rails.logger.error "Unrecognized System: " + json_system.to_s
+      end
+    end
+    systems
+  end
 
   def bind(pool_id)
     # TODO: hardcoded app prefix
@@ -32,16 +89,12 @@ class System < Base
     return ent
   end
 
-  def entitlement_status()
-    status = facts.attributes['system.entitlements_valid']
-    return _("Unknown") if status.nil?
-    return _("Valid") if status
-    return _("Invalid")
-  end
+  #def entitlement_status()
+  #  status = facts.attributes['system.entitlements_valid']
+  #  return _("Unknown") if status.nil?
+  #  return _("Valid") if status
+  #  return _("Invalid")
+  #end
 
-  #download the manifest
-  def self.dl_manifest(uuid)
-    Candlepin::Consumer.cert_zip(uuid)
-  end
 end
 

@@ -20,15 +20,31 @@ class Statistic < Base
   TOTALCONSUMER = "TOTALCONSUMERS"
   TOTALSUBSCRIPTIONCOUNT = "TOTALSUBSCRIPTIONCOUNT"
   TOTALSUBSCRIPTIONCONSUMED = "TOTALSUBSCRIPTIONCONSUMED"
-  
-  def self.find_by_org(key, options={})
-    url = "#{AppConfig.candlepin.prefix}/owners/#{key}/statistics"
-    url += "/#{options[:type]}" if options[:type]
-    puts url
-    #self.find(:all, :from => url, :params => options)
-    self.find(:all, :from => url, :params => options)    
-  end
-  
 
-  
+  attr_accessor :valueType, :json_hash, :value
+
+  def initialize(json_hash=nil)
+    @json_hash = (json_hash ||= {})
+    # rails doesn't like variables called id or type
+    if @json_hash != {}
+      @valueType = @json_hash["valueType"]
+      @value = @json_hash["value"]
+    end
+  end
+
+  def self.retrieve_all_by_org(owner_id, optional_params = {})
+    oj = nil
+    stats = []
+    begin
+      oj = JSON.parse(Candlepin::Proxy.get("/owners/#{owner_id}/statistics", optional_params))
+      oj.each do |stat_json|
+        stats << Statistic.new(stat_json)
+      end
+      return stats
+    rescue Exception => e
+      Rails.logger.error "Unrecognized Stat: " + oj.to_s
+      raise "Unrecognized Stat: " + oj.to_s + "\n" + e.to_s
+    end
+  end
+
 end

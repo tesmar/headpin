@@ -27,10 +27,46 @@ class Organization < Base
     :with => /\A[^\/#]*\Z/,
     :message => _("cannot contain / or #")
 
-  def self.find_by_user(username)
-    Organization.find(:all, :from => "#{AppConfig.candlepin.prefix}/users/#{username}/owners")
+  attr_accessor :key, :displayName
+  alias :org_key= :key=
+  alias :org_key :key
+
+  def initialize(json_hash=nil)
+    @json_hash = (json_hash ||= {})
+    # rails doesn't like variables called id or type
+    if @json_hash != {}
+      @key = @json_hash["key"]
+      @displayName = @json_hash["displayName"]
+    end
+    Rails.logger.ap "NEW ORG FROM CANDLEPIN JSON:::::::::::::"
+    Rails.logger.ap self
   end
-  
+
+  def self.retrieve(owner_id)
+    oj = nil
+    begin
+      oj = JSON.parse(Candlepin::Proxy.get("/owners/#{owner_id}"))
+      return Organization.new(oj)
+    rescue Exception => e
+      Rails.logger.error "Unrecognized Srg: " + oj.to_s
+      raise "Unrecognized Org: " + oj.to_s + "\n" + e.to_s
+    end
+  end
+
+  def self.find_by_user(username)
+    oj = JSON.parse(Candlepin::Proxy.get("/users/#{username}/owners"))
+    orgs = []
+    oj.each do |json_org|
+      begin
+        orgs << Organization.new(json_org)
+      rescue Exception => e
+        Rails.logger.error "Unrecognized Org: " + oj.to_s
+        raise "Unrecognized Org: " + oj.to_s + "\n" + e.to_s
+      end
+    end
+    orgs
+  end
+
   def org_id
     @attributes[:id]
   end

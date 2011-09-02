@@ -21,7 +21,7 @@ module ApplicationHelper
   end  
 
   def two_panel(collection, options)
-    options[:accessor] ||= "id"
+    options[:accessor] ||= "uuid"
     enable_create = options[:enable_create]
     enable_create = true if enable_create.nil?
     enable_sort = options[:enable_sort] ? options[:enable_sort] : false

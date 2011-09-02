@@ -20,7 +20,7 @@ class Admin::OrganizationsController < ApplicationController
   def section_id
     'admin'
   end
-  
+
   def index
     @organizations = Organization.find_by_user(logged_in_user.username)
   end

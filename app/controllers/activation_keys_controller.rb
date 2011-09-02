@@ -13,12 +13,12 @@
 class ActivationKeysController < ApplicationController
   include AutoCompleteSearch
   respond_to :html, :js
-    
+
   navigation :systems
   before_filter :require_user
   before_filter :require_org
   before_filter :find_activation_key, :only => [:edit, :update, :destroy] 
-    
+
   def section_id
     'admin'
   end
@@ -26,16 +26,15 @@ class ActivationKeysController < ApplicationController
   def new
     render :partial=>"new"
   end
-  
+
   def index
     @activation_keys = ActivationKey.find_by_org(working_org.key)
   end
-  
+
   def edit
-    puts @activation_key.to_json()    
-    render :partial => 'edit', :layout => "tupane_layout"  
-  end   
-  
+    render :partial => 'edit', :layout => "tupane_layout"
+  end
+
   def update
     @activation_key.update_attributes(params[:activation_key])
     puts @activation_key.to_json()
@@ -45,8 +44,8 @@ class ActivationKeysController < ApplicationController
       format.html {render :text => params[:activation_key].values.first}
       format.js
     end
-  end    
-  
+  end
+
   def create
     begin
       @activation_key = ActivationKey.new(:name => params[:name])
@@ -58,8 +57,8 @@ class ActivationKeysController < ApplicationController
       render :text=> error.to_s, :status=>:bad_request and return
     end
     render :partial=>"common/list_item", :locals=>{:item=>@activation_key, :accessor=>"id", :columns=>['name', 'poolCount']}
-  end  
-  
+  end
+
   def destroy
     begin
       @activation_key.destroy
@@ -69,10 +68,10 @@ class ActivationKeysController < ApplicationController
       errors error.message
       render :show
     end
-  end    
+  end
 
   def find_activation_key
-    @activation_key = ActivationKey.find(params[:id])
-    @organization = Organization.find @activation_key.owner.key
+    @activation_key = ActivationKey.retrieve(params[:id])
+    @organization = Organization.retrieve(@activation_key.owner["key"])
   end
 end

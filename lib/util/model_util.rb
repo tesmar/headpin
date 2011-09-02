@@ -10,19 +10,21 @@
 # have received a copy of GPLv2 along with this software; if not, see
 # http://www.gnu.org/licenses/old-licenses/gpl-2.0.txt.
 
-class SubscriptionsController < ApplicationController
+module Katello
+  module ModelUtils
 
-  navigation :subscriptions
-  before_filter :require_user
-  before_filter :require_org
+    # hardcoded model names (uses kp_ prefix)
+    @@table_to_model_hash = { 
+      "kp_environment" => KPEnvironment
+    }
 
-  def section_id
-    'subscriptions'
+    # convert Rails Model name to Class or nil when no such table name exists
+    def self.table_to_class name
+      return @@table_to_model_hash[name] if @@table_to_model_hash.key? name
+      name.classify.constantize
+    rescue NameError => e
+      # constantize throws NameError
+      return nil
+    end
   end
-
-  def index
-    @subscriptions = Subscription.retrieve_all(:owner => working_org.id)
-    @subscriptions.sort! { |a,b| a.product["name"] <=> b.product["name"] }
-  end
-
 end

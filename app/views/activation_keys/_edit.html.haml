@@ -2,22 +2,19 @@
 
 = content_for :title do
   = @activation_key.name
-  
 = content_for :remove_item do
   = remove_link(_("Remove #{@activation_key.name}"), :activation_keys)
-  
-= content_for :content do 
+= content_for :content do
   #systems
     .grid_8#activation_key
       %fieldset
         .grid_1.ra
           %label{:for => 'activation_key_name'}
-            = "#{_('Name')}:"    
+            = "#{_('Name')}:"
         .grid_6.la.editable.edit_textfield{'name' => 'activation_key[name]',
-                                           'url' => activation_key_path(@activation_key.id)} #{@activation_key.name}
-                                           
+                                           'url' => activation_key_path(@activation_key.uuid)} #{@activation_key.name}
         .grid_1.ra
           %label{:for => 'activation_key_id'}
-            = "#{_('ID')}:"    
-        .grid_6.la 
-          = @activation_key.id
+            = "#{_('ID')}:"
+        .grid_6.la
+          = @activation_key.uuid

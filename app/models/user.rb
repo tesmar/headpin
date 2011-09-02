@@ -14,10 +14,18 @@ class User < Base
   include ActiveModel::Conversion
   extend ActiveModel::Naming
 
+  def self.current
+    @current ||= Thread.current[:request].env['warden'].user
+  end
+
+  def self.current=(o)
+    @current = o
+  end
+
   def to_param
     username
   end
-  
+
   def initialize(attrs={})
     attrs[:superAdmin]= TRUE_VALUES.include?(attrs[:superAdmin])
     super(attrs)

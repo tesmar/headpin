@@ -13,14 +13,37 @@
 class ActivationKey < Base
   include ActiveModel::Validations
   include ActiveModel::Conversion
+
+  attr_accessor :uuid, :name, :created, :pools, :poolCount, :owner
+
+  def initialize(json_hash=nil)
+    @json_hash = (json_hash ||= {})
+    # rails doesn't like variables called id or type
+    if @json_hash != {}
+      @uuid = @json_hash["id"]
+      @name = @json_hash["name"]
+      @created = @json_hash["created"]
+      @pools = @json_hash["pools"]
+      @poolCount = @pools.size
+      @owner = @json_hash["owner"]
+    end
+    Rails.logger.ap "NEW ACTIVATION KEY FROM CANDLEPIN JSON:::::::::::::"
+    Rails.logger.ap self
+  end
   extend ActiveModel::Naming
 
   def self.find_by_org(key)
     self.find(:all, :from => "#{AppConfig.candlepin.prefix}/owners/#{key}/activation_keys")
   end
-  
-  def poolCount
-    @attributes['pools'].nil? ? 0 : @attributes['pools'].size()
-  end
 
+  def self.retrieve(ak_id)
+    oj = nil
+    begin
+      oj = JSON.parse(Candlepin::Proxy.get("/activation_keys/#{ak_id}"))
+      return ActivationKey.new(oj)
+    rescue Exception => e
+      Rails.logger.error "Unrecognized Activation Key: " + oj.to_s
+      raise "Unrecognized Activation Key: " + oj.to_s + "\n" + e.to_s
+    end
+  end
 end

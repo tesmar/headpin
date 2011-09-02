@@ -14,10 +14,10 @@ class SystemsController < ApplicationController
   include AutoCompleteSearch
 
   respond_to :html, :js
-  
-  before_filter :require_user 
+
+  before_filter :require_user
   before_filter :require_org
-  before_filter :find_system, :only => [:edit, :facts, :subscriptions, 
+  before_filter :find_system, :only => [:edit, :facts, :subscriptions,
     :available_subscriptions, :unbind, :destroy, :update,
     :events]
 
@@ -26,21 +26,26 @@ class SystemsController < ApplicationController
   end
 
   def index
-    @systems = System.find(:all, :params => {:owner => working_org.key, 
-      :type => :system})
+    @systems = System.retrieve_all
   end
-  
+
+  def new
+    @system = System.new
+    render :partial=>"new", :layout => "tupane_layout", :locals=>{:system=>@system}
+  end
+
+
   def edit
-    render :partial => 'edit', :layout => "tupane_layout"  
-  end 
-  
+    render :partial => 'edit', :layout => "tupane_layout"
+  end
+
   def facts
-    render :partial => 'edit_facts', :layout => "tupane_layout"  
-  end  
-  
+    render :partial => 'edit_facts', :layout => "tupane_layout"
+  end
+
   def events
     @events = Event.find_by_consumer(@system.uuid)
-    render :partial => 'edit_events', :layout => "tupane_layout"  
+    render :partial => 'edit_events', :layout => "tupane_layout"
   end
 
   def subscriptions
@@ -55,13 +60,13 @@ class SystemsController < ApplicationController
     end
 
     @entitlements = Entitlement.find(:all, :params => {:consumer => @system.uuid})
-    
-    render :partial => "subscriptions", :layout => "tupane_layout"  
+
+    render :partial => "subscriptions", :layout => "tupane_layout"
   end
 
   def available_subscriptions
     @subscriptions = Subscription.find(:all, :params => {:consumer => @system.uuid})
-    render :partial => "available_subscriptions" , :layout => "tupane_layout"     
+    render :partial => "available_subscriptions" , :layout => "tupane_layout"
   end
 
   def unbind
@@ -79,7 +84,7 @@ class SystemsController < ApplicationController
     flash[:notice] = _("Deleted system #{@system.name}.")
     redirect_to systems_path
   end
-  
+
   def update
     @system.update_attributes(params[:system])
 
@@ -92,8 +97,8 @@ class SystemsController < ApplicationController
   end
 
   def find_system
-    @system = System.find(params[:id])
-    @organization = Organization.find @system.owner.key
+    @system = System.retrieve(params[:id])
+    @organization = Organization.find @system.owner_key
   end
 
   def manifest_dl
