@@ -7,3 +7,4 @@ public/stylesheets/compiled
 locale/*/LC_MESSAGES
 .project
 .idea/
+coverage/
