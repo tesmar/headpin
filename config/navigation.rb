@@ -42,7 +42,7 @@ SimpleNavigation::Configuration.run do |navigation|
 
     # Hide this entire section if user is not an admin:
     top_level.item :administration, _("Admin"), "/admin", 
-      :if => Proc.new { not @user.nil?  and @user.superAdmin? } do |admin_sub|
+      :if => Proc.new { @logged_in_user and @logged_in_user.superAdmin? } do |admin_sub|
 
         admin_sub.item :organizations, _("Organizations"), 
           {:controller => 'admin/organizations'}, :class => 'organizations' do | org_sub |
