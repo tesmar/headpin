@@ -44,4 +44,20 @@ class User < Base
   def roles
     Role.find(:all, :from => "#{AppConfig.candlepin.prefix}/users/#{username}/roles")
   end
+
+  def update_roles(new_roles)
+    old_roles = Role.find(:all, :from => "#{AppConfig.candlepin.prefix}/users/#{username}/roles").map(&:id)
+
+    to_remove = old_roles - new_roles
+    to_remove.each do |role_id|
+      connection.delete( "#{AppConfig.candlepin.prefix}/roles/#{role_id}/users/#{username}")
+    end
+
+    to_add = new_roles - old_roles
+    to_add.each do |role_id|
+      connection.post( "#{AppConfig.candlepin.prefix}/roles/#{role_id}/users/#{username}")
+    end
+    
+    return true
+  end
 end

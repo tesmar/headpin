@@ -63,11 +63,13 @@ class Admin::UsersController < ApplicationController
   end
 
   def update_roles
-    # This doesn't work until bz#735034 is solved
     @user = User.find(params[:id])
-    @user.update_attributes(params[:user])
-    if @user.save
-      render :text => @user.username and return
+    # This doesn't work until bz#735034 is solved
+    #@user.update_attributes(params[:user])
+    #if @user.save
+    if params[:user] && @user.update_roles(params[:user][:role_ids])
+      flash[:notice] = N_("User '#{@user.username}' roles updated successfully.")
+       redirect_to :action => 'index'
     end
   end
 
