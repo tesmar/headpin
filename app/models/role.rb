@@ -14,28 +14,11 @@ class Role < Base
   include ActiveModel::Conversion
   extend ActiveModel::Naming
 
-  def to_param
-    name
-  end
 
-  schema do
-    string 'id', 'name'
-  end
 
   def users_count
     users.count()
   end
-
-  #
-  #def self.non_self_roles
-  #  #gotta be a better way to do this, but others wouldn't work
-  #  Role.all(:conditions=>{"users.own_role_id"=>nil}, :include=> :owner)
-  #end
-  #
-  #def self_role_for_user
-  #  User.where(:own_role_id => self.id).first
-  #end
-  #
 
   #permissions
   def self.creatable?
