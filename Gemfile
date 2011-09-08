@@ -37,4 +37,8 @@ gem 'ruby_parser', :require => false
 group :development, :test do
   #gem 'webrat'
   gem 'rspec-rails'
+
+  gem 'ruby-debug-base'
+  gem 'ruby-debug-ide'
 end
+
