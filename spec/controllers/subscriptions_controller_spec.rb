@@ -3,6 +3,7 @@ require 'spec_helper'
 describe SubscriptionsController do
   include LoginHelperMethods
   include MockHelperMethods
+  render_views
 
   before (:each) do
     login_user
