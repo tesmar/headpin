@@ -26,16 +26,20 @@ Warden::Strategies.add(:candlepin) do
   def authenticate!
     username = params[:username]
 
-    http = Net::HTTP.new(AppConfig.candlepin.url, AppConfig.candlepin.port)
-    req = Net::HTTP::Get.new("#{AppConfig.candlepin.prefix}/users/#{username}")
-    http.use_ssl = true
-    req.basic_auth username, params[:password]
-    response = http.request(req)
+    begin
+      http = Net::HTTP.new(AppConfig.candlepin.url, AppConfig.candlepin.port)
+      req = Net::HTTP::Get.new("#{AppConfig.candlepin.prefix}/users/#{username}")
+      http.use_ssl = true
+      req.basic_auth username, params[:password]
+      response = http.request(req)
+    rescue
+      return fail! _("Request failed. Check that Candlepin is properly configured and running.")
+    end
     
     if response.code == '200'
       success! User.new(JSON.parse(response.body()))
     else
-      fail!("Username or password is not correct")
+      fail! _("You've entered an incorrect username or password combination, please try again.")
     end
 
   end
