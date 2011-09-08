@@ -6,7 +6,7 @@
 %global confdir extras/fedora
 
 Name:             headpin
-Version:	      0.0.01
+Version:	      0.0.2
 Release:	      1%{?dist}
 Summary:	      Front End to the candlepin engine
 	
@@ -194,3 +194,6 @@ if [ $1 -eq 0 ] ; then
 fi
 
 %changelog
+* Thu Sep 08 2011 Bryan Kearney <bkearney@redhat.com> 0.0.2-1
+- new package built with tito
+
