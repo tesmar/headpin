@@ -141,9 +141,7 @@ rm -f %{buildroot}%{homedir}/public/stylesheets/.gitkeep
 rm -f %{buildroot}%{homedir}/vendor/plugins/.gitkeep
 
 #remove development tasks
-rm %{buildroot}%{homedir}/lib/tasks/rcov.rake
-rm %{buildroot}%{homedir}/lib/tasks/yard.rake
-rm %{buildroot}%{homedir}/lib/tasks/hudson.rake
+rm %{buildroot}%{homedir}/lib/tasks/pretty_routes.rake
 
 #correct permissions
 find %{buildroot}%{homedir} -type d -print0 | xargs -0 chmod 755
