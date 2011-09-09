@@ -97,7 +97,7 @@ install -d -m0755 %{buildroot}%{_localstatedir}/log/%{name}
 
 #copy the application to the target directory
 mkdir .bundle
-mv ./extras/bundle-config .bundle/config
+mv ./deploy/bundle-config .bundle/config
 cp -R .bundle * %{buildroot}%{homedir}
 
 #copy configs and other var files (will be all overwriten with symlinks)
