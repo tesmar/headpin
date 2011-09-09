@@ -60,8 +60,8 @@ GEM
     i18n (0.6.0)
     i18n_data (0.2.7)
       activesupport
-    jammit (0.6.3)
-      yui-compressor (>= 0.9.3)
+    jammit (0.5.4)
+      yui-compressor (>= 0.9.1)
     json (1.5.2)
     linecache (0.46)
       rbx-require-relative (> 0.0.4)
