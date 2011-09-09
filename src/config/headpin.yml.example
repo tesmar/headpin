@@ -8,8 +8,8 @@
 # oauth_key and oauth_secre :Specify your oauth key and secret
 #   used to authenticate with Candlepin
 candlepin:
-  url: perelandra.usersys.redhat.com
-  fullurl: https://perelandra.usersys.redhat.com:8443/candlepin
+  url: localhost
+  fullurl: https://localhost:8443/candlepin
   port: 8443
   prefix: /candlepin
   oauth_key: sam
