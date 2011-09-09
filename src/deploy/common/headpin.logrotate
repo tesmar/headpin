@@ -1,0 +1,12 @@
+/var/log/headpin/production*log {
+  missingok
+  notifempty
+  create 0644 headping headpin
+  sharedscripts
+  rotate 5
+  compress
+  weekly
+  postrotate
+    [ -e /etc/init.d/headpin ] && /etc/init.d/headpin restart >/dev/null 2>&1 || true
+  endscript
+}
