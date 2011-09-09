@@ -38,9 +38,10 @@ class LoginController < ApplicationController
     redirect_to new_login_url
   end
 
+  # Warden callback
   def unauthenticated
     # The error message, already wrapped in _(), was passed to the fail! call; display it.
-    flash[:error] = env["warden"].winning_strategy.message
+    flash[:error] = env['warden'].winning_strategy.message
     redirect_to new_login_url
     false
   end
