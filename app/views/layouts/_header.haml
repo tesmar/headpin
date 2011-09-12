@@ -6,6 +6,7 @@
   #loading.fr
     %img{:src => '/images/spinner_head.gif', :alt => 'Spinning Work Indicator'}
 .grid_13
+  = hidden_field_tag 'root_url', nil, 'data-url' => root_path
   - if current_user
     - if working_org
       %div.org
