@@ -12,7 +12,7 @@
 
 require 'json'
 
-class System < Base
+class System < Tableless
   include ActiveModel::Validations
   include ActiveModel::Conversion
   extend ActiveModel::Naming
@@ -72,10 +72,10 @@ class System < Base
   def bind(pool_id)
     # TODO: hardcoded app prefix
     path = "/candlepin/consumers/#{uuid}/entitlements?pool=#{pool_id}"
-    results = connection.post(path, "", Base.headers)
-    attributes = JSON.parse(results.body)[0]
-    ent = Entitlement.new(attributes)
-    return ent
+   # results = connection.post(path, "", Base.headers)
+   # attributes = JSON.parse(results.body)[0]
+   # ent = Entitlement.new(attributes)
+       raise "fix me"
   end
 
   #def entitlement_status()
