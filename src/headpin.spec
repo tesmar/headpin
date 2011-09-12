@@ -126,7 +126,7 @@ ln -sv %{datadir}/tmp %{buildroot}%{homedir}/tmp
 ln -svf %{datadir}/Gemfile.lock %{buildroot}%{homedir}/Gemfile.lock
 
 #re-configure database to the /var/lib/headpin directory
-sed -Ei 's/\s*database:\s+db\/(.*)$/  database: \/var\/lib\/headpin\/\1/g' %{buildroot}%{homedir}/config/database.yml
+#sed -Ei 's/\s*database:\s+db\/(.*)$/  database: \/var\/lib\/headpin\/\1/g' %{buildroot}%{homedir}/config/database.yml
 
 #remove files which are not needed in the homedir
 rm -rf %{buildroot}%{homedir}/README
@@ -150,8 +150,6 @@ chmod +x %{buildroot}%{homedir}/script/*
 rm -rf %{buildroot}
 
 %post
-#%{homedir}/script/reset-oauth
-
 #Add /etc/rc*.d links for the script
 /sbin/chkconfig --add %{name}
 
