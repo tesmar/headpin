@@ -10,8 +10,6 @@
 # have received a copy of GPLv2 along with this software; if not, see
 # http://www.gnu.org/licenses/old-licenses/gpl-2.0.txt.
 
-require 'active_resource/exceptions'
-
 class ApplicationController < ActionController::Base
   protect_from_forgery
   layout 'katello'
@@ -24,8 +22,13 @@ class ApplicationController < ActionController::Base
 
   # Global error handling, parsed bottom-up so most specific goes at the end:
   #rescue_from Exception, :with =>  :handle_generic_error
-  rescue_from ActiveResource::ServerError, :with =>  :handle_candlepin_server_error
   rescue_from Errno::ECONNREFUSED, :with => :handle_candlepin_connection_error
+  rescue_from RestClient::Exception do | e |
+    j = ActiveSupport::JSON
+    data = j.decode(e.response())
+    flash[:error] = data["displayMessage"]
+    redirect_back
+  end
 
   # Generic handler triggered whenever a controller action doesn't explicitly
   # do it's own error handling:
@@ -82,7 +85,7 @@ class ApplicationController < ActionController::Base
   
   def working_org
     org_id = session[:current_organization_id]
-    @working_org ||= Organization.find(org_id) unless org_id.nil?
+    @working_org ||= Organization.retrieve(org_id) unless org_id.nil?
     @working_org
   end
 
@@ -98,13 +101,13 @@ class ApplicationController < ActionController::Base
   #begin new orgs
   def allowed_orgs
     render :partial=>"/layouts/allowed_orgs", :locals =>{
-        :working_org=>@organization = Organization.find(session[:current_organization_id]),
-        :visible_orgs=>Organization.find_by_user(logged_in_user.username)
+        :working_org=>@organization = Organization.retrieve(session[:current_organization_id]),
+        :visible_orgs=>Organization.retrieve_by_user(logged_in_user.username)
     }
   end
 
   def set_org
-    @organization = Organization.find(params[:workingorg])
+    @organization = Organization.retrieve(params[:workingorg])
     self.working_org = @organization
     flash[:notice] = N_("Now using organization '#{@organization.displayName}'.")
     redirect_to :back
@@ -126,11 +129,9 @@ class ApplicationController < ActionController::Base
     if current_user.nil?
       #user not logged
       flash[:notice] = _("You must be logged in to access that page.")
-
       #save original uri and redirect to login page
       session[:original_uri] = request.request_uri
       redirect_to new_login_url
-      
       return false
     end
 
@@ -161,14 +162,7 @@ class ApplicationController < ActionController::Base
   def set_locale
     I18n.locale = extract_locale_from_accept_language_header
   end
-  
-  rescue_from RestClient::Exception do | e |
-    j = ActiveSupport::JSON
-    data = j.decode(e.response())
-    flash[:error] = data["displayMessage"] 
-    redirect_back
-  end
-  
+
   # XXX like in katello, this is temporary. we need a more robust method,
   # such rack middleware or a rails plugin
   def extract_locale_from_accept_language_header

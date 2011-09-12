@@ -20,41 +20,30 @@ class System < Base
   attr_accessor :name, :entitlementCount, :entitlement_status, :uuid, :owner_key
   attr_accessor :created, :lastCheckin, :username, :facts
 
-  # Candlepin calls this resource a consumer:
-  self.element_name = "consumer"
-
-  # Candlepin API expects an owner key as the ID:
-  self.primary_key = :uuid
-
   def initialize(json_hash=nil)
-    @json_hash = (json_hash ||= {})
-    # rails doesn't like variables called id or type
+    @json_hash = super(json_hash)
+    #extra fields specific to systems
     if @json_hash != {}
-      @uuid = @json_hash["uuid"]
+      @name ||= @json_hash["name"]
       @owner_key = @json_hash["owner"]["key"]
       @lastCheckin = @json_hash["owner"]["lastCheckin"]
       @username = @json_hash["owner"]["username"]
       @created = Date.parse(@json_hash["created"])
       @facts = @json_hash["facts"].to_a.sort
-      @consumer_type = @json_hash["type"]
-    end
-    @entitlement_count = 0
-    #@consumed_entitlements = []
-#TEMPORARY TO GET VIEW TO WORK
-    @entitlement_status = "good"
-    @entitlementCount = 5
-    if json_hash != nil
-      @name ||= json_hash["name"]
+      #@consumed_entitlements = []
+      #TEMPORARY TO GET VIEW TO WORK
+      @entitlement_status = "good"
+      @entitlement_count = 0
+      @entitlementCount = 5
       #if json_hash["entitlements"] != nil
       #  json_hash["entitlements"].each do |e|
           #@consumed_entitlements << Entitlement.new(e)
           #@entitlement_count = @entitlement_count + e["quantity"]
       #  end
-      #end
+      #@entitlements = consumed_entitlements
     end
-    #@entitlements = consumed_entitlements
-Rails.logger.ap "NEW SYSTEM FROM CANDLEPIN JSON:::::::::::::"
-Rails.logger.ap self
+    Rails.logger.ap "NEW SYSTEM FROM CANDLEPIN JSON:::::::::::::"
+    Rails.logger.ap self
   end
 
   def self.retrieve(uuid)

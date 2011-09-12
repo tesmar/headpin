@@ -15,13 +15,6 @@ class Organization < Base
   include ActiveModel::Conversion
   extend ActiveModel::Naming
 
-  # Candlepin calls this resource an owner:
-  self.element_name = "owner"
-
-  schema do
-    string 'key', 'displayName'
-  end
-
   validates_presence_of :key
   validates_format_of :displayName,
     :with => /\A[^\/#]*\Z/,
@@ -53,7 +46,7 @@ class Organization < Base
     end
   end
 
-  def self.find_by_user(username)
+  def self.retrieve_by_user(username)
     oj = JSON.parse(Candlepin::Proxy.get("/users/#{username}/owners"))
     orgs = []
     oj.each do |json_org|

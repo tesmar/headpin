@@ -10,9 +10,19 @@
 # have received a copy of GPLv2 along with this software; if not, see
 # http://www.gnu.org/licenses/old-licenses/gpl-2.0.txt.
 
-class User < Base
+class User < Tableless
   include ActiveModel::Conversion
   extend ActiveModel::Naming
+
+  attr_accessor :username
+
+  def initialize(attrs={})
+    @json_hash =  super(attrs)
+    @superAdmin = TRUE_VALUES.include?(@json_hash["superAdmin"])
+    @username = @json_hash["username"]
+    Rails.logger.ap "NEW USER FROM CANDLEPIN JSON:::::::::::::"
+    Rails.logger.ap self
+  end
 
   def self.current
     @current ||= Thread.current[:request].env['warden'].user
@@ -26,9 +36,8 @@ class User < Base
     username
   end
 
-  def initialize(attrs={})
-    attrs[:superAdmin]= TRUE_VALUES.include?(attrs[:superAdmin])
-    super(attrs)
+  def superAdmin?
+    @superAdmin == true
   end
 
   def update_attributes(attrs)
@@ -40,9 +49,9 @@ class User < Base
     { 'cp-user' => self.username }
   end
 
-  schema do
-    string 'id', 'username', 'password', "superAdmin"
-  end
+#  schema do
+#    string 'id', 'username', 'password', "superAdmin"
+#  end
 
   # Fake outs. May need to persist these values
   def page_size
