@@ -20,6 +20,14 @@ class Role < Base
     users.count()
   end
 
+  def add_user(user)
+    connection.post( "#{AppConfig.candlepin.prefix}/roles/#{id}/users/#{user.username}")
+  end
+  
+  def remove_user(user)
+    connection.delete( "#{AppConfig.candlepin.prefix}/roles/#{id}/users/#{user.username}")
+  end
+
   #permissions
   def self.creatable?
    true

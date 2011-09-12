@@ -49,16 +49,17 @@ class Admin::RolesController < ApplicationController
   end
 
   def update
+    @role = Role.find(params[:id])
     return if @role.name == "admin"
     
     if params[:update_users]
+      user = User.find(params[:update_users][:user_id])
       if params[:update_users][:adding] == "true"
-        @role.users << User.find(params[:update_users][:user_id])
-        @role.save!
+        @role.add_user(user)
       else
-        @role.users.delete(User.find(params[:update_users][:user_id]))
-        @role.save!
+        @role.remove_user(user)
       end
+      params[:update_users][:user_id] = user.id
       render :json => params[:update_users]
     elsif @role.update_attributes(params[:role])
       notice _("Role updated.")
