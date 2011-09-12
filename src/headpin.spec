@@ -151,7 +151,7 @@ rm -rf %{buildroot}
 
 %post
 #Add /etc/rc*.d links for the script
-/sbin/chkconfig --add %{name}
+#/sbin/chkconfig --add %{name}
 
 %postun
 if [ "$1" -ge "1" ] ; then
