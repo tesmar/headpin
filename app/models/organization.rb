@@ -74,8 +74,7 @@ class Organization < Base
 
   def info
     # TODO: hardcoded app prefix
-    path = "/candlepin/owners/#{key}/info"
-    @info ||= connection.get(path, Base.headers)
+    @info ||= JSON.parse(Candlepin::Proxy.get("/owners/#{key}/info"))
     @info
   end
 
@@ -88,7 +87,7 @@ class Organization < Base
   end  
 
   def subscriptions
-    @subscriptions ||= Subscription.find(:all, :params => { :owner => org_id })
+    @subscriptions ||= Subscription.retrieve(:all, :params => { :owner => org_id })
   end
   
   def total_consumer_stats

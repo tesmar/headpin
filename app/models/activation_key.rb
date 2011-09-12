@@ -32,8 +32,20 @@ class ActivationKey < Base
   end
   extend ActiveModel::Naming
 
-  def self.find_by_org(key)
-    self.find(:all, :from => "#{AppConfig.candlepin.prefix}/owners/#{key}/activation_keys")
+  def self.retrieve_by_org(key)
+    oj = nil
+    akeys = []
+    begin
+      oj = JSON.parse(Candlepin::Proxy.get("/owners/#{key}/activation_keys"))
+      oj.each do |akey_json|
+        akeys << ActivationKey.new(akey_json)
+      end
+      return akeys
+    rescue Exception => e
+      Rails.logger.error "Unrecognized Activation Key: " + oj.to_s
+      raise "Unrecognized Activation Key: " + oj.to_s + "\n" + e.to_s
+    end
+    oj
   end
 
   def self.retrieve(ak_id)

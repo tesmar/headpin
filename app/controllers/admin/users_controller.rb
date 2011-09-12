@@ -22,7 +22,7 @@ class Admin::UsersController < ApplicationController
   end
   
   def index
-    @users = User.find(:all)
+    @users = User.retrieve_all
   end
 
   def new
@@ -42,7 +42,7 @@ class Admin::UsersController < ApplicationController
   end
 
   def edit
-    @user = User.find(params[:id])
+    @user = User.retrieve(params[:id])
     render :partial => 'edit', :layout => "tupane_layout" 
   end
 
@@ -57,12 +57,12 @@ class Admin::UsersController < ApplicationController
   end
 
   def show
-    @user = User.find(params[:id])
+    @user = User.retrieve(params[:id])
     render :partial => "common/list_update", :locals=>{:item=>@user, :accessor=>"username", :columns=>['username', 'superAdmin']}
   end
 
   def destroy
-    @user = User.find(params[:id])
+    @user = User.retrieve(params[:id])
 
     begin
       @user.destroy

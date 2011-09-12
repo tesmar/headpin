@@ -14,7 +14,7 @@ class User < Tableless
   include ActiveModel::Conversion
   extend ActiveModel::Naming
 
-  attr_accessor :username
+  attr_accessor :username, :superAdmin
 
   def initialize(attrs={})
     @json_hash =  super(attrs)
@@ -22,6 +22,31 @@ class User < Tableless
     @username = @json_hash["username"]
     Rails.logger.ap "NEW USER FROM CANDLEPIN JSON:::::::::::::"
     Rails.logger.ap self
+  end
+
+  def self.retrieve(user_id)
+    oj = nil
+    begin
+      oj = JSON.parse(Candlepin::Proxy.get("/users/#{user_id}"))
+      return User.new(oj)
+    rescue Exception => e
+      Rails.logger.error "Unrecognized USer: " + oj.to_s
+      raise "Unrecognized User: " + oj.to_s + "\n" + e.to_s
+    end
+  end
+
+  def self.retrieve_all
+    oj = JSON.parse(Candlepin::Proxy.get("/users"))
+    users = []
+    oj.each do |json_org|
+      begin
+        users << User.new(json_org)
+      rescue Exception => e
+        Rails.logger.error "Unrecognized User: " + oj.to_s
+        raise "Unrecognized User: " + oj.to_s + "\n" + e.to_s
+      end
+    end
+    users
   end
 
   def self.current

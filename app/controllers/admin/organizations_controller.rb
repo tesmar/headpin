@@ -22,7 +22,7 @@ class Admin::OrganizationsController < ApplicationController
   end
 
   def index
-    @organizations = Organization.find_by_user(logged_in_user.username)
+    @organizations = Organization.retrieve_by_user(logged_in_user.username)
   end
 
   def new
