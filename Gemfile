@@ -2,6 +2,8 @@ source 'http://repos.fedorapeople.org/repos/katello/gems/'
 source "http://rubygems.org"
 
 gem 'rails', '3.0.5'
+gem 'thin', '>=1.2.11'
+
 gem 'rcov'
 gem 'awesome_print'
 gem 'json'
