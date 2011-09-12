@@ -16,18 +16,21 @@ class Subscription < Base
   include ActiveModel::Conversion
   extend ActiveModel::Naming
 
-  attr_accessor :name, :displayName, :product, :uuid, :owner
+  attr_accessor :name, :displayName, :product, :uuid, :owner, :prodAttributes
   attr_accessor :consumed, :quantity, :contractNumber, :startDate, :endDate
 
   # Our subscription is actually a pool in the Candlepin API:
   def initialize(json_hash=nil)
     @json_hash = (json_hash ||= {})
     # rails doesn't like variables called id or type
+
     if @json_hash != {}
-      @name = @json_hash["name"]
+      #convert the array of hashes into a hash you can access by name
+      @prodAttributes = @json_hash["productAttributes"].inject({}) {|result,element| result[element["name"]] = element; result }
+      @name = @json_hash["productId"]
       @uuid = @json_hash["id"]
       @displayName = @json_hash["displayName"]
-      @product = @json_hash["product"]
+      @product = Product.retrieve(@json_hash["productId"])
       @owner = @json_hash["owner"]
       @startDate = DateTime.parse(@json_hash["startDate"])
       @endDate= DateTime.parse(@json_hash["endDate"])
@@ -35,11 +38,13 @@ class Subscription < Base
       @quantity = @json_hash["quantity"]
       @contractNumber = @json_hash["contractNumber"]
     end
+    Rails.logger.ap "NEW Sub FROM CANDLEPIN JSON:::::::::::::"
+    Rails.logger.ap self
   end
 
   def self.retrieve_all(optional_params = {})
     subs = []
-    JSON.parse(Candlepin::Proxy.get('/subscriptions', optional_params)).each do |json_sub|
+    JSON.parse(Candlepin::Proxy.get('/pools', optional_params)).each do |json_sub|
       begin
         subs << Subscription.new(json_sub)
       rescue Exception => e

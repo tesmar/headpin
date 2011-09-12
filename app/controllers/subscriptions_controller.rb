@@ -22,7 +22,7 @@ class SubscriptionsController < ApplicationController
 
   def index
     @subscriptions = Subscription.retrieve_all(:owner => working_org.id)
-    @subscriptions.sort! { |a,b| a.product["name"] <=> b.product["name"] }
+    @subscriptions.sort! { |a,b| a.product.name <=> b.product.name }
   end
 
 end

@@ -120,7 +120,7 @@ class ApplicationController < ActionController::Base
     # If no working org is set, just use the first one in the visible list.
     # For non-admins this will be their one and only org.
     if working_org.nil?
-      self.working_org = Organization.find_by_user(logged_in_user.username).first
+      self.working_org = Organization.retrieve_by_user(logged_in_user.username).first
     end
     true
   end

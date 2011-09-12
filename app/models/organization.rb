@@ -20,7 +20,7 @@ class Organization < Base
     :with => /\A[^\/#]*\Z/,
     :message => _("cannot contain / or #")
 
-  attr_accessor :key, :displayName
+  attr_accessor :key, :displayName, :org_id
   alias :org_key= :key=
   alias :org_key :key
 
@@ -29,6 +29,7 @@ class Organization < Base
     # rails doesn't like variables called id or type
     if @json_hash != {}
       @key = @json_hash["key"]
+      @org_id = @json_hash["id"]
       @displayName = @json_hash["displayName"]
     end
     Rails.logger.ap "NEW ORG FROM CANDLEPIN JSON:::::::::::::"
@@ -60,10 +61,6 @@ class Organization < Base
     orgs
   end
 
-  def org_id
-    @attributes[:id]
-  end
-
   # ActiveResource assumes anything with an ID is a pre-existing
   # resource, ID in our case is key, and key is manually assigned at creation,
   # so we must override the new check to force active record to persist our
@@ -81,53 +78,53 @@ class Organization < Base
   def system_count
     info['consumerGuestCounts']['physical']
   end
-  
+
   def guest_count
     info['consumerGuestCounts']['guest']
-  end  
+  end
 
   def subscriptions
-    @subscriptions ||= Subscription.retrieve(:all, :params => { :owner => org_id })
+    @subscriptions ||= Subscription.retrieve_all( { :owner => @cp_id})
   end
-  
+
   def total_consumer_stats
-    @total_consumer_stats ||= Statistic.find_by_org(self.key, :type => Statistic::TOTALCONSUMERS)
+    @total_consumer_stats ||= Statistic.retrieve_all_by_org(@key, :type => Statistic::TOTALCONSUMERS)
   end
-  
+
   def total_subscription_stats
-    @total_consumer_stats ||= Statistic.find_by_org(self.key, :type => Statistic::TOTALSUBSCRIPTIONCOUNT)
-  end  
-  
+    @total_consumer_stats ||= Statistic.retrieve_all_by_org(@key, :type => Statistic::TOTALSUBSCRIPTIONCOUNT)
+  end
+
   def subscription_consumed_stats
-    @subscription_consumed_stats ||= 
-      Statistic.find_by_org(self.key, 
-        :type => Statistic::TOTALSUBSCRIPTIONCONSUMED).select do |stat|
-          stat.valueType = "RAW"
-        end
-  end  
-  
+    @subscription_consumed_stats ||=
+      Statistic.retrieve_all_by_org(@key,
+                            :type => Statistic::TOTALSUBSCRIPTIONCONSUMED).select do |stat|
+      stat.valueType = "RAW"
+                            end
+  end
+
   def subscription_percent_consumed_stats
-    @subscription_percent_consumed_stats ||= 
-      Statistic.find_by_org(self.key, 
-        :type => Statistic::TOTALSUBSCRIPTIONCONSUMED).select do |stat|
-          stat.valueType = "PERCENTAGECONSUMED"
-        end
-  end    
+    @subscription_percent_consumed_stats ||=
+      Statistic.retrieve_all_by_org(@key,
+                            :type => Statistic::TOTALSUBSCRIPTIONCONSUMED).select do |stat|
+      stat.valueType = "PERCENTAGECONSUMED"
+                            end
+  end
 
   # TODO: Fetching all subscriptions for the owner here (active today). This
   # could be optimized by adding new info to OwnerInfo in Candlepin.
   def subscriptions_summary
-    @subscription_summary ||= 
+    @subscription_summary ||=
       { :available => subscriptions.inject(0) do |quantity, sub|
-          quantity += sub.quantity
-        end,
+      quantity += sub.quantity
+      end,
         :used => subscriptions.inject(0) do |consumed, sub|
-          consumed += sub.consumed
+        consumed += sub.consumed
         end
-      }
+    }
   end
-  
-  
+
+
   def to_json(options = {})
     options.merge(:except => [:id])
     super(options)

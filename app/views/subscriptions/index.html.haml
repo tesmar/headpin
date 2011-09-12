@@ -19,11 +19,11 @@
           %th= _('Expires')
         %tbody         
           - @subscriptions.each do |sub|
-            - new_group = sub.product["id"]
+            - new_group = sub.product.cp_id
             - if (new_group != group)
-              - group = sub.product["id"]
+              - group = sub.product.cp_id
               %tr{:id => group}
-                %td= sub.product["name"]
+                %td= sub.product.name
                 %td
                 %td
                 %td
@@ -32,7 +32,7 @@
                 %td
                 %td
             %tr{:class => "child-of-#{group}", :id => sub.uuid}
-              %td= sub.product["name"]
+              %td= sub.product.name
               %td
                 = sub.consumed
                 = "/"
@@ -40,7 +40,7 @@
               %td
                 =stats_line(sub.consumed_stats) 
               %td=sub.contractNumber
-              %td=sub.product["support_level"]
-              %td=sub.product["arch"]
+              %td= sub.product.attributes["support_level"] ? sub.product.attributes["support_level"]["value"] : ""
+              %td= sub.product.attributes["arch"]["value"]
               %td=l sub.startDate
               %td=l sub.endDate
