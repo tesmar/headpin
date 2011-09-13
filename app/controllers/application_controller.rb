@@ -23,12 +23,13 @@ class ApplicationController < ActionController::Base
   # Global error handling, parsed bottom-up so most specific goes at the end:
   #rescue_from Exception, :with =>  :handle_generic_error
   rescue_from Errno::ECONNREFUSED, :with => :handle_candlepin_connection_error
-  rescue_from RestClient::Exception do | e |
-    j = ActiveSupport::JSON
-    data = j.decode(e.response())
-    flash[:error] = data["displayMessage"]
-    redirect_back
-  end
+  #rescue_from RestClient::Exception do | e |
+#raise e
+    #j = ActiveSupport::JSON
+    #data = j.decode(e.response())
+    #flash[:error] = data["displayMessage"]
+    #redirect_back
+#  end
 
   # Generic handler triggered whenever a controller action doesn't explicitly
   # do it's own error handling:
