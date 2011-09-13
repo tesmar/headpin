@@ -356,7 +356,7 @@ var panel = (function(){
                 list.append(jQuery('<div/>', {
                     'id': "list-spinner"
                 }));
-                $('#list-spinner').html( "<img src='/images/spinner.gif' class='ajax_scroll'>");
+                $('#list-spinner').html( "<img src='images/spinner.gif' class='ajax_scroll'>");
 
                 $.ajax({
                     type: "GET",
@@ -387,8 +387,6 @@ var panel = (function(){
             
             offset = offset ? offset : 10;
             offset += $('#maincontent').offset().left;
-
-            console.log(container.find('.left').height() );
 
             if(jQPanel.length > 0){
                 if( container.find('.left').height() > 550 ){

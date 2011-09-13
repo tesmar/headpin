@@ -48,7 +48,11 @@ var user_page = function() {
         var checkbox = $(this);
         var name = $(this).attr("name");
         var options = {};
-        options[name] = checkbox.attr("checked");
+        if (checkbox.attr("checked") !== undefined) {
+            options[name] = "1";
+        } else {
+            options[name] = "0";
+        }
         var url = checkbox.attr("data-url");
         $.ajax({
             type: "PUT",
@@ -92,24 +96,23 @@ var user_page = function() {
 
         if (verifyPassword()) {
             button.addClass('disabled');
-            var url = button.attr("data-url");
             var username = $('#username_field').val();
             var password = $('#password_field').val();
             var superAdmin = $('#superAdmin_field').is(':checked');
             $.ajax({
-                type        : "POST",
-                url         : url,
-                data        : { "user":{"username":username, "password":password, "superAdmin":superAdmin},"authenticity_token":AUTH_TOKEN},
-                cache       : false,
+                type: "POST",
+                url: button.attr('data-url'),
+                data: { "user":{"username":username, "password":password, "superAdmin":superAdmin}},
+                cache: false,
                 success: function(data) {
-                    button.removeClass('disabled');
-                    list.add(data);
+                     button.removeClass('disabled');
+                     list.add(data);
                      $.jnotify("User " + username +" created", { type: "notify", sticky: true });
-                    panel.closePanel($('#panel'));
-                  },
+                     panel.closePanel($('#panel'));
+                },
                 error: function(){
-                  button.removeClass('disabled');
-                  $.jnotify("Failed to create user", { type: "error", sticky: true });
+                   button.removeClass('disabled');
+                   $.jnotify("Failed to create user", { type: "error", sticky: true });
                 }
             });
 
@@ -122,15 +125,14 @@ var user_page = function() {
         var superAdmin = $('#superAdmin_field').is(':checked');
         button.addClass("disabled");
         $.ajax({
-            type        : "PUT",
-            url         : url,
-            data        : { "user":{"password":password, "superAdmin":superAdmin},"authenticity_token":AUTH_TOKEN},
-            cache       : false,
+            type: "PUT",
+            url: url,
+            data: { "user":{"password":password, "superAdmin":superAdmin}},
+            cache: false,
             success: function(data) {
                 button.removeClass("disabled");
-                 $.jnotify("User " + data + " updated", { type: "notify", sticky: true });
+                $.jnotify("User " + data + " updated", { type: "notify", sticky: false });
                 list.refresh(data, url);
-                panel.closePanel($('#panel'));
             },
             error: function(e) {
                 button.removeClass('disabled');

@@ -28,8 +28,8 @@ var roles_page = (function($) {
 
         $.ajax({
             type: "POST",
-            url: "/admin/roles/",
-            data: { "role":{"name":$('#role_name_field').val()},"authenticity_token":AUTH_TOKEN},
+            url: button.attr('data-url'),
+            data: { "role":{"name":$('#role_name_field').val()}},
             cache: false,
             success: function(data) {
                   list.add(data);
@@ -41,6 +41,6 @@ var roles_page = (function($) {
 
 
     return {
-        create_new_role : create_new_role,
+        create_new_role : create_new_role
     }
 })(jQuery);
