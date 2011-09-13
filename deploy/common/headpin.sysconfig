@@ -1,0 +1,32 @@
+# the location where headpin is installed
+#HEADPIN_HOME=/usr/share/headpin
+
+# the location where headpin has data
+#HEADPIN_DATA_DIR=/var/lib/headpin
+
+# the prefix added as part of the base path for accessing
+# the headpin web application (e.g. http://0.0.0.0/headpin)
+#HEADPIN_PREFIX=/headpin
+
+# the port which headpin web server is running at
+# note that if the headpin user is not root, it has to be a > 1024
+#HEADPIN_PORT=3000
+
+# the group which runs the web interface
+#HEADPIN_GROUP=headpin
+
+# the user which runs the web interface
+#HEADPIN_USER=headpin
+
+# the rails environment in which headpin runs
+# (please note the only supported setting is "production")
+#HEADPIN_ENV=production
+
+# rails logging level (debug, info, warn, error, and fatal)
+#HEADPIN_LOGGING=info
+
+# number of headpin-job service background workers
+#HEADPIN_JOB_WORKERS=1
+
+# additional headpin-job service options for delayed_jobs
+#HEADPIN_JOB_WORKERS=-m -p headpin
