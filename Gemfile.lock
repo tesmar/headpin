@@ -51,6 +51,7 @@ GEM
       abstract (>= 1.0.0)
     eventmachine (0.12.10)
     fast_gettext (0.5.11)
+    fssm (0.2.7)
     gettext (2.1.0)
       locale (>= 2.0.5)
     gettext_i18n_rails (0.2.20)
@@ -158,11 +159,11 @@ PLATFORMS
 
 DEPENDENCIES
   awesome_print
-  compass (>= 0.10.5)
-  compass-960-plugin (>= 0.10.0)
+  compass (>= 0.11.5)
+  compass-960-plugin (>= 0.10.4)
   gettext (>= 1.9.3)
   gettext_i18n_rails
-  haml (>= 3.0.16)
+  haml (>= 3.1.2)
   haml-rails
   i18n_data (>= 0.2.6)
   jammit
@@ -178,6 +179,6 @@ DEPENDENCIES
   ruby-debug-base
   ruby-debug-ide
   ruby_parser
-  scoped_search (>= 2.3.1)
-  simple-navigation (= 3.1.0)
+  scoped_search (>= 2.3.3)
+  simple-navigation (= 3.3.4)
   thin (>= 1.2.11)

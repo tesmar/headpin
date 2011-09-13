@@ -29,7 +29,7 @@ class LoginController < ApplicationController
     if logged_in?
       User.current = current_user
       flash[:notice] = _("Login Successful")
-      redirect_to(session.delete(:original_uri) || '/dashboard')
+      redirect_to(session.delete(:original_uri) || dashboard_url)
     end
   end
 
