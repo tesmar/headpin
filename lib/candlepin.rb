@@ -18,13 +18,13 @@ require 'http_resource'
 module Candlepin
 
   class Proxy
-    def self.post path, body
+    def self.post(path, body = "")
       Rails.logger.debug "Sending POST request to Candlepin: #{path}"
-      client = CandlepinResource.rest_client(Net::HTTP::Post, :post, path_with_cp_prefix(path))
+      client = CandlepinResource.rest_client(Net::HTTP::Post, :post, path_with_cp_prefix(path), nil)
       client.post body, {:accept => :json, :content_type => :json}.merge(User.current.cp_oauth_header)
     end
 
-    def self.delete path
+    def self.delete(path)
       Rails.logger.debug "Sending DELETE request to Candlepin: #{path}"
       client = CandlepinResource.rest_client(Net::HTTP::Delete, :delete, path_with_cp_prefix(path))
       client.delete({:accept => :json, :content_type => :json}.merge(User.current.cp_oauth_header))
@@ -36,7 +36,7 @@ module Candlepin
       client.get({:accept => :json}.merge(User.current.cp_oauth_header).merge(additional_headers))
     end
 
-    def self.path_with_cp_prefix path
+    def self.path_with_cp_prefix(path)
       CandlepinResource.prefix + path
     end
 

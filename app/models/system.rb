@@ -17,8 +17,8 @@ class System < Tableless
   include ActiveModel::Conversion
   extend ActiveModel::Naming
 
-  attr_accessor :name, :entitlementCount, :entitlement_status, :uuid, :owner_key
-  attr_accessor :created, :lastCheckin, :username, :facts
+  attr_accessor :name, :entitlementCount, :uuid, :owner_key
+  attr_accessor :created, :lastCheckin, :username, :facts, :owner
 
   def initialize(json_hash=nil)
     @json_hash = super(json_hash)
@@ -29,12 +29,11 @@ class System < Tableless
       @lastCheckin = @json_hash["owner"]["lastCheckin"]
       @username = @json_hash["owner"]["username"]
       @created = Date.parse(@json_hash["created"])
-      @facts = @json_hash["facts"].to_a.sort
+      @owner = @json_hash["owner"]
+      @facts = @json_hash["facts"]
+      @entitlementCount = @json_hash["entitlementCount"]
+
       #@consumed_entitlements = []
-      #TEMPORARY TO GET VIEW TO WORK
-      @entitlement_status = "good"
-      @entitlement_count = 0
-      @entitlementCount = 5
       #if json_hash["entitlements"] != nil
       #  json_hash["entitlements"].each do |e|
           #@consumed_entitlements << Entitlement.new(e)
@@ -71,19 +70,34 @@ class System < Tableless
 
   def bind(pool_id)
     # TODO: hardcoded app prefix
-    path = "/candlepin/consumers/#{uuid}/entitlements?pool=#{pool_id}"
-   # results = connection.post(path, "", Base.headers)
-   # attributes = JSON.parse(results.body)[0]
-   # ent = Entitlement.new(attributes)
-       raise "fix me"
+    params = {"pool" => pool_id, "quantity" => 1}
+    path = "/consumers/#{uuid}/entitlements?" + params.to_query
+    results = JSON.parse(Candlepin::Proxy.post(path))[0]
+    Entitlement.new(results)
   end
 
-  #def entitlement_status()
-  #  status = facts.attributes['system.entitlements_valid']
-  #  return _("Unknown") if status.nil?
-  #  return _("Valid") if status
-  #  return _("Invalid")
-  #end
+  def unbind(ent_id)
+    # TODO: hardcoded app prefix
+    path = "/consumers/#{uuid}/entitlements/#{ent_id}"
+    resp = Candlepin::Proxy.delete(path) #returns an empty string
+    resp == "" ? true : false
+  end
 
+
+  def entitlement_status
+    return _("Unknown") unless @facts.blank?
+    status = @facts['system.entitlements_valid']
+    return _("Unknown") if status.nil?
+    return _("Valid") if status
+    return _("Invalid")
+  end
+
+  def create(new_system_info = {})
+    #we need the org_id to create the consumer 
+    #options[:query] = { :username => auth_info[:user], :owner => user.org_id } 
+    new_system_info = {"type" => "system", "arch" => "i386", "name" => "System1test"}
+    #options[:body] = @json_hash.to_json
+    return Candlepin::Proxy.post('/consumers?' + {:owner => @owner_key, :username => @owner_key }.to_query, new_system_info.to_json)
+  end
 end
 

@@ -5,7 +5,7 @@ $(document).ready(function() {
   }
 
   $('.panelform').live('submit', function(e) {
-    e.preventDefault();    	
+    e.preventDefault();
     $(this).ajaxSubmit(upload_options);
   });
 

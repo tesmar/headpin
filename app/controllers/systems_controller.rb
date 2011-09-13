@@ -55,28 +55,33 @@ class SystemsController < ApplicationController
       pool_id = params['pool_id']
       Rails.logger.info "#{@system.uuid} binding to pool #{pool_id}"
       ent = @system.bind(pool_id)
-      product_name = Subscription.find(ent.pool.id).productName
+      product_name = Subscription.retrieve(ent.pool["id"]).product.name
       flash[:notice] = _("Subscribed to #{product_name}.")
     end
 
-    @entitlements = Entitlement.find(:all, :params => {:consumer => @system.uuid})
+    @entitlements = Entitlement.retrieve_all(@system.uuid)
 
     render :partial => "subscriptions", :layout => "tupane_layout"
   end
 
   def available_subscriptions
-    @subscriptions = Subscription.find(:all, :params => {:consumer => @system.uuid})
+    @subscriptions = Subscription.retrieve_by_consumer_id(@system.uuid)
     render :partial => "available_subscriptions" , :layout => "tupane_layout"
   end
 
   def unbind
     ent_id = params['entitlement_id']
-    ent = Entitlement.find(ent_id, :system_id => @system.uuid)
+    ent = Entitlement.retrieve(ent_id)
     Rails.logger.info "#{@system.uuid} unbinding entitlement #{ent_id}"
-    product_name = Subscription.find(ent.pool.id).productName
-    ent.destroy
-    flash[:notice] = _("Unsubscribed from #{product_name}.")
-    redirect_to subscriptions_system_path(params['id'])
+    product_name = Subscription.retrieve(ent.pool["id"]).product.name
+    successful = @system.unbind(ent_id)
+    if successful
+      #TODO fix the flash message
+      flash[:notice] = _("Unsubscribed from #{product_name}.")
+      redirect_to subscriptions_system_path(params['id'])
+    else
+      flash[:warning] = _("Failed to unsubscribe from #{product_name}.")
+    end
   end
 
   def destroy
@@ -98,7 +103,7 @@ class SystemsController < ApplicationController
 
   def find_system
     @system = System.retrieve(params[:id])
-    @organization = Organization.find @system.owner_key
+    @organization = Organization.retrieve(@system.owner_key)
   end
 
   def manifest_dl
