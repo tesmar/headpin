@@ -6,7 +6,7 @@
 %global confdir deploy/common
 
 Name:             headpin
-Version:	      0.0.4
+Version:	      0.0.5
 Release:	      1%{?dist}
 Summary:	      Front End to the candlepin engine
 	
@@ -188,6 +188,9 @@ if [ $1 -eq 0 ] ; then
 fi
 
 %changelog
+* Tue Sep 13 2011 Devan Goodwin <dgoodwin@rm-rf.ca> 0.0.5-1
+- Initial tag.
+
 * Fri Sep 09 2011 Bryan Kearney <bkearney@redhat.com> 0.0.4-1
 - Add a commit in src (bkearney@redhat.com)
 - move it again (bkearney@redhat.com)
