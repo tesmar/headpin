@@ -26,6 +26,11 @@ describe LoginController do
 
     it 'should redirect invalid username/password' do
       # This is what warden will do internally
+      # Mock the Warden's call to unauthenticated 
+      strategy = mock(Object, {:message => "incorrect username or password"})
+      warden = mock(Warden::Proxy, {:winning_strategy => strategy})
+      controller.env = {'warden' => warden}
+
       controller.stub!(:authenticate!) { controller.unauthenticated }
       controller.stub!(:logged_in?).and_return false
 
@@ -35,6 +40,11 @@ describe LoginController do
     end
 
     it 'should notify user of invalid username/password' do
+      # Mock the Warden's call to unauthenticated 
+      strategy = mock(Object, {:message => "incorrect username or password"})
+      warden = mock(Warden::Proxy, {:winning_strategy => strategy})
+      controller.env = {'warden' => warden}
+
       controller.stub!(:authenticate!) { controller.unauthenticated }
       controller.stub!(:logged_in?).and_return false
 

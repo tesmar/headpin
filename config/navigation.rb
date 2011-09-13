@@ -40,25 +40,27 @@ SimpleNavigation::Configuration.run do |navigation|
     end
 
     # Hide this entire section if user is not an admin:
-    top_level.item :administration, _("Admin"), "/admin", 
-      :if => Proc.new { not @user.nil?  and @user.superAdmin? } do |admin_sub|
+    top_level.item :administration, _("Admin"), "/admin",
+      :if => Proc.new { @logged_in_user and @logged_in_user.superAdmin? } do |admin_sub|
 
-      admin_sub.item :organizations, _("Organizations"), 
-        {:controller => 'admin/organizations'}, :class => 'organizations' do | org_sub |
-        if (not @organization.nil?) 
-          org_sub.item :edit, ("General"),
-            edit_admin_organization_path(@organization.key), :class => 'navigation_element'
+        admin_sub.item :organizations, _("Organizations"),
+          {:controller => 'admin/organizations'}, :class => 'organizations' do | org_sub |
+            if (not @organization.nil?)
+              org_sub.item :edit, ("General"),
+                edit_admin_organization_path(@organization.key), :class => 'navigation_element'
 
-          org_sub.item :events, _("Events"), 
-            "/admin/organizations/#{@organization.key}/events", :class => 'navigation_element'              
+              org_sub.item :events, _("Events"),
+                "/admin/organizations/#{@organization.key}/events", :class => 'navigation_element'
+            end
+          end
+
+        admin_sub.item :users, _("Users"), {:controller => 'admin/users'}, :class => 'users' do |user_sub|
+        if !@user.nil?
+          user_sub.item :general, _("General"), edit_admin_user_path(@user), :class => "navigation_element"
+          user_sub.item :roles_and_permissions, _("Roles & Permissions"), "/admin/users/#{@user.username}/roles", :class => "navigation_element"
         end
-        end
-
-      admin_sub.item :users, _("Users"), {:controller => 'admin/users'}, :class => 'users' 
-      end 
-
-
-
-  end 
-
-end 
+      end
+        admin_sub.item(:roles, _("Roles"), admin_roles_path) 
+    end
+  end
+end

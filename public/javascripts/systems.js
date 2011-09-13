@@ -1,23 +1,52 @@
-$(document).ready(function() {
+/**
+ Copyright 2011 Red Hat, Inc.
 
-  var upload_options = {
-    success: system.successful_post
-  }
+ This software is licensed to you under the GNU General Public
+ License as published by the Free Software Foundation; either version
+ 2 of the License (GPLv2) or (at your option) any later version.
+ There is NO WARRANTY for this software, express or implied,
+ including the implied warranties of MERCHANTABILITY,
+ NON-INFRINGEMENT, or FITNESS FOR A PARTICULAR PURPOSE. You should
+ have received a copy of GPLv2 along with this software; if not, see
+ http://www.gnu.org/licenses/old-licenses/gpl-2.0.txt.
+*/
 
   $('.panelform').live('submit', function(e) {
     e.preventDefault();
     $(this).ajaxSubmit(upload_options);
   });
 
-  $("#factsTable").treeTable({
-    initialState: "collapsed"
+/*
+ * A small javascript file needed to load system subscription related stuff
+ *
+ */
+
+$(document).ready(function() {
+  $('#update_subscriptions').live('submit', function(e) {
+     e.preventDefault();
+     var button = $(this).find('input[type|="submit"]');
+      button.attr("disabled","disabled");
+     $(this).ajaxSubmit({
+         success: function(data) {
+               button.removeAttr('disabled');
+               notices.checkNotices();
+         }, error: function(e) {
+               button.removeAttr('disabled');
+               notices.checkNotices();
+         }});
   });
+  // check if we are viewing systems by environment 
+  if (window.env_select !== undefined) {
+    env_select.click_callback = systems_page.env_change;
+  }
+
 });
 
-var system = (function(){
+var systems_page = (function() {
   return {
-    successful_post: function(responseText) {
-      $("#panel-content").html(responseText);
+    env_change : function(env_id, element) {
+      var url = element.attr("data-url");
+      window.location = url;
     }
-  };
+  }
 })();

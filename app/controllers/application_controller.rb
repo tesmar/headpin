@@ -96,7 +96,7 @@ class ApplicationController < ActionController::Base
   end
   
   def logged_in_user
-    @user ||= current_user
+    @logged_in_user ||= current_user
   end
 
   #begin new orgs

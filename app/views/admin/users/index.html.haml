@@ -1,8 +1,6 @@
 = include_javascripts :user, :password, :edit, :form, :multiselect
 
 :javascript
-  var current_username = '#{_(@user.username)}';
-  //what button should be disabled when passwords don't match
 
   localize({
     "password_match": '#{_('The passwords do not match')}',

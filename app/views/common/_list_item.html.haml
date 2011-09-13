@@ -4,5 +4,8 @@
       - if col.to_s == "name" && item.send(col)
         = item.send(col)[0...32]
       - else
+        - Rails.logger.ap ":ITEMMMMMMMMMMMMMMMMMMMMMMMM"
+        - Rails.logger.ap item
+        - Rails.logger.ap col
         = item.send(col)
   .arrow-right

@@ -56,6 +56,23 @@ class Admin::UsersController < ApplicationController
     end
   end
 
+  def user_roles
+    @user = User.find(params[:id])
+    @roles = @user.roles.map(&:id)
+    render :partial=>"user_roles", :layout => "tupane_layout", :locals=>{:user=>@user, :roles=>@roles}
+  end
+
+  def update_roles
+    @user = User.find(params[:id])
+    # This doesn't work until bz#735034 is solved
+    #@user.update_attributes(params[:user])
+    #if @user.save
+    if params[:user] && @user.update_roles(params[:user][:role_ids])
+      flash[:notice] = N_("User '#{@user.username}' roles updated successfully.")
+       redirect_to :action => 'index'
+    end
+  end
+
   def show
     @user = User.retrieve(params[:id])
     render :partial => "common/list_update", :locals=>{:item=>@user, :accessor=>"username", :columns=>['username', 'superAdmin']}
@@ -75,12 +92,3 @@ class Admin::UsersController < ApplicationController
   end  
 
 end
-
-
- #if @user.destroyed?
- #       notice _("User '#{@user[:username]}' was deleted.")
- #       #render and do the removal in one swoop!
- #       render :partial => "common/list_remove", :locals => {:id => @id} and return
- #     end
- #     errors "", {:list_items => @user.errors.to_a}
- #     render :text => @user.errors, :status=>:ok

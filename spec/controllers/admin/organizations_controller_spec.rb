@@ -3,6 +3,7 @@ require 'spec_helper'
 describe Admin::OrganizationsController do
   include LoginHelperMethods
   include MockHelperMethods
+  render_views
 
   before (:each) do
     login_user
@@ -46,6 +47,35 @@ describe Admin::OrganizationsController do
       response.should redirect_to admin_organizations_path
     end
   end
+
+  describe "POST update" do
+    it 'should update organization' do
+      org = real_org()
+      Organization.stub!(:save!).and_return org
+      post 'update', {:id => org.key, :organization => {:displayName => random_string("orgname")}}
+      response.should be_success
+    end
+  end
+
+  describe "GET edit" do
+    it 'should be successful' do
+      org = real_org()
+      get 'edit', :id => org.key
+      response.should be_success
+    end
+  end
+
+=begin
+  TODO: This really doesn't work yet
+
+  describe "GET events" do
+    it 'should be successful' do
+      org = real_org()
+      get 'events', :id => org.key
+      response.should be_success
+    end
+  end
+=end
 
   describe "GET systems" do
     it 'should change the working org' do
