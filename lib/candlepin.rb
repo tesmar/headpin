@@ -24,6 +24,13 @@ module Candlepin
       client.post body, {:accept => :json, :content_type => :json}.merge(User.current.cp_oauth_header)
     end
 
+    #self.put(path(key), JSON.generate(owner), self.default_headers).body 
+    def self.put(path, payload)
+      Rails.logger.debug "Sending PUT request to Candlepin: #{path}"
+      client = CandlepinResource.rest_client(Net::HTTP::Put, :put, path_with_cp_prefix(path), nil)
+      client.put(payload, {:accept => :json, :content_type => :json}.merge(User.current.cp_oauth_header))
+    end
+
     def self.delete(path)
       Rails.logger.debug "Sending DELETE request to Candlepin: #{path}"
       client = CandlepinResource.rest_client(Net::HTTP::Delete, :delete, path_with_cp_prefix(path))

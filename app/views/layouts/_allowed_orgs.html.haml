@@ -1,5 +1,5 @@
 - for org in local_assigns[:visible_orgs]
-  - if org.id == local_assigns[:working_org].id
-    = link_to local_assigns[:working_org].displayName, set_org_path(:workingorg=>org.id), :method=>"POST", :class=>"selected fl clear", :title=>_("Current Organization")
+  - if org.key == local_assigns[:working_org].key
+    = link_to local_assigns[:working_org].displayName, set_org_path(:workingorg=>org.key), :method=>"POST", :class=>"selected fl clear", :title=>_("Current Organization")
   - else
-    = link_to org.displayName, set_org_path(:workingorg=>org.id), :method=>"POST", :class=>"fl clear"
+    = link_to org.displayName, set_org_path(:workingorg=>org.key), :method=>"POST", :class=>"fl clear"

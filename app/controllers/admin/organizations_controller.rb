@@ -42,13 +42,13 @@ class Admin::OrganizationsController < ApplicationController
   end
 
   def edit
-    @organization = Organization.find(params[:id])
-    render :partial => 'edit', :layout => "tupane_layout"    
+    @organization = Organization.retrieve(params[:id])
+    render :partial => 'edit', :layout => "tupane_layout"
   end
 
   def update
-    @organization = Organization.find(params[:id])
-    @organization.update_attributes(params[:organization])
+    @organization = Organization.retrieve(params[:id])
+    @organization.update(params[:organization])
 
     @organization.save!
 

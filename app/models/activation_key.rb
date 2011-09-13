@@ -13,6 +13,7 @@
 class ActivationKey < Tableless
   include ActiveModel::Validations
   include ActiveModel::Conversion
+  extend ActiveModel::Naming
 
   attr_accessor :uuid, :name, :created, :pools, :poolCount, :owner
 
@@ -30,7 +31,6 @@ class ActivationKey < Tableless
     Rails.logger.ap "NEW ACTIVATION KEY FROM CANDLEPIN JSON:::::::::::::"
     Rails.logger.ap self
   end
-  extend ActiveModel::Naming
 
   def self.retrieve_by_org(key)
     oj = nil

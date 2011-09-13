@@ -61,6 +61,15 @@ class Organization < Tableless
     orgs
   end
 
+  def update(new_values)
+    begin
+      update_json = JSON.parse(Candlepin::Proxy.put("/owners/#{org_id}", new_values))
+      return update_json
+    rescue Exception => e
+      Rails.logger.error "Error updating org: " + update_json.to_s
+      raise "Error updating org: " + update_json.to_s + "\n" + e.to_s
+    end
+  end
   # ActiveResource assumes anything with an ID is a pre-existing
   # resource, ID in our case is key, and key is manually assigned at creation,
   # so we must override the new check to force active record to persist our

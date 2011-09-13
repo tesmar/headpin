@@ -15,8 +15,8 @@ module MockHelperMethods
 
   def real_activation_key
     #since admin has many....
-    org = Organization.find_by_user("admin")[0]
-    ActivationKey.find_by_org(org.key)[0]
+    org = Organization.retrieve_by_user("admin")[0]
+    ActivationKey.retrieve_by_org(org.key)[0]
   end
 
   def random_string(prefix=nil)

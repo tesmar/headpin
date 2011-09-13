@@ -28,7 +28,7 @@ describe ActivationKeysController do
   describe "GET edit" do
     it 'should be successful' do
       activation_key = real_activation_key
-      get 'edit', :id => activation_key.id
+      get 'edit', :id => activation_key.uuid
       response.should be_success
     end
   end
