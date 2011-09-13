@@ -10,7 +10,7 @@ module MockHelperMethods
 
   def real_org
     #since admin has many....
-    Organization.find_by_user("admin")[0]
+    Organization.retrieve_by_user("admin")[0]
   end
 
   def random_string(prefix=nil)

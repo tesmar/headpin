@@ -72,19 +72,19 @@ class Admin::OrganizationsController < ApplicationController
   end  
 
   def systems
-    @organization = Organization.find(params[:id])
+    @organization = Organization.retrieve(params[:id])
     self.working_org = @organization
     redirect_to systems_path
   end
 
   def subscriptions
-    @organization = Organization.find(params[:id])
+    @organization = Organization.retrieve(params[:id])
     self.working_org = @organization
     redirect_to subscriptions_path
   end
   
   def events
-    @organization = Organization.find(params[:id])    
+    @organization = Organization.retrieve(params[:id])    
     @events = Event.find_by_org(@organization.key)
     render :partial => 'edit_events', :layout => "tupane_layout"   
   end  

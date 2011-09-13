@@ -11,6 +11,7 @@
 # http://www.gnu.org/licenses/old-licenses/gpl-2.0.txt.
 
 class User < Tableless
+  include ActiveModel::Validations
   include ActiveModel::Conversion
   extend ActiveModel::Naming
 
@@ -73,10 +74,6 @@ class User < Tableless
   def cp_oauth_header
     { 'cp-user' => self.username }
   end
-
-#  schema do
-#    string 'id', 'username', 'password', "superAdmin"
-#  end
 
   # Fake outs. May need to persist these values
   def page_size

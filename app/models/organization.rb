@@ -129,8 +129,4 @@ class Organization < Tableless
     options.merge(:except => [:id])
     super(options)
   end
-
-  def id
-    key
-  end
 end

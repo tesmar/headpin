@@ -11,7 +11,6 @@ describe Admin::OrganizationsController do
   describe "GET index" do
     context 'with no existing organizations' do
       it 'should be successful' do
-        #Organization.should_receive(:find).with(:all, anything()).and_return([])
         get 'index'
         response.should be_success
       end
@@ -57,7 +56,7 @@ describe Admin::OrganizationsController do
 
     it 'should redirect to top-level systems path' do
       org = real_org()
-      Organization.should_receive(:find).with(org.key).and_return(org)
+      Organization.should_receive(:retrieve).with(org.key).and_return(org)
       get 'systems', :id => org.key
       response.should redirect_to(systems_path)
     end
@@ -74,7 +73,7 @@ describe Admin::OrganizationsController do
 
     it 'should redirect to top-level systems path' do
       org = real_org()
-      Organization.should_receive(:find).with(org.key).and_return(org)
+      Organization.should_receive(:retrieve).with(org.key).and_return(org)
       get 'subscriptions', :id => org.key
       response.should redirect_to(subscriptions_path)
     end

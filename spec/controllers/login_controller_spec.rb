@@ -44,8 +44,9 @@ describe LoginController do
     end
 
     it 'should redirect back to the original uri on successful login' do
-      controller.stub! :authenticate! 
+      controller.stub! :authenticate!
       controller.stub!(:logged_in?).and_return true
+      controller.stub!(:current_user).and_return(Object.new)
       controller.session[:original_uri] = '/systems'
 
       post 'create'
@@ -56,7 +57,8 @@ describe LoginController do
     it 'should redirect to the dashboard if no original uri is set' do
       controller.stub! :authenticate! 
       controller.stub!(:logged_in?).and_return true
-     
+      controller.stub!(:current_user).and_return(Object.new)
+
       post 'create'
 
       response.should redirect_to(:controller => :dashboard, :action => :index)

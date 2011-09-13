@@ -6,7 +6,7 @@ describe User do
     end
 
     it 'should be able to be made superAdmin' do
-      u = User.new({:superAdmin => true})
+      u = User.new({"superAdmin" => true})
       u.should be_valid
       u.superAdmin.should eql(true)
     end
