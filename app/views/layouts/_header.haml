@@ -1,6 +1,6 @@
 .grid_3
   = link_to dashboard_index_path :class => "logo" do
-    = image_tag("logo.png", :alt => _('Katello Logo'))
+    = image_tag("headpin_logo.png", :alt => _('Katello Logo'))
     %span{:class => 'pipe'}
     %h1 Headpin
   #loading.fr
@@ -17,5 +17,4 @@
           %strong
             = current_user.username
       %li.logout
-        %a{ :href => "/logout"}
-          #{_("Logout")}
+        = link_to _("Logout"), logout_path
