@@ -4,7 +4,7 @@
 .modalbox
   %h2 #{_('Log In')}
   .katello_form
-    = form_tag('/login', :id=>:login_form, :method => "post") do
+    = form_tag(login_index_path, :id=>:login_form, :method => "post") do
       %fieldset
         = label_tag :username
         = text_field_tag :username, params[:username]
