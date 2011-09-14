@@ -4,7 +4,7 @@
     %span{:class => 'pipe'}
     %h1 Headpin
   #loading.fr
-    %img{:src => '/images/spinner_head.gif', :alt => 'Spinning Work Indicator'}
+    =image_tag("spinner.gif", :alt => _('Spinning Work Indicator'))
 .grid_13
   = hidden_field_tag 'root_url', nil, 'data-url' => root_path
   - if current_user

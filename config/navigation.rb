@@ -28,10 +28,10 @@ SimpleNavigation::Configuration.run do |navigation|
             subscriptions_system_path(@system.uuid), :class => 'navigation_element'
 
           details_sub.item :avail_subscriptions, _("Available Subscriptions"),
-            "/systems/#{@system.uuid}/available_subscriptions", :class => 'navigation_element'
+            available_subscriptions_system_path(@system.uuid), :class => 'navigation_element'
 
           details_sub.item :events, _("Events"), 
-            "/systems/#{@system.uuid}/events", :class => 'navigation_element' 
+            events_system_path(@system.uuid), :class => 'navigation_element' 
         end
       end
 
@@ -50,14 +50,14 @@ SimpleNavigation::Configuration.run do |navigation|
                 edit_admin_organization_path(@organization.key), :class => 'navigation_element'
 
               org_sub.item :events, _("Events"),
-                "/admin/organizations/#{@organization.key}/events", :class => 'navigation_element'
+                events_admin_organization_path(@organization.key), :class => 'navigation_element'
             end
           end
 
         admin_sub.item :users, _("Users"), admin_users_path, :class => 'users' do |user_sub|
         if !@user.nil?
           user_sub.item :general, _("General"), edit_admin_user_path(@user), :class => "navigation_element"
-          user_sub.item :roles_and_permissions, _("Roles & Permissions"), "/admin/users/#{@user.username}/roles", :class => "navigation_element"
+          user_sub.item :roles_and_permissions, _("Roles & Permissions"), admin_path(@user.username), :class => "navigation_element"
         end
       end
         admin_sub.item(:roles, _("Roles"), admin_roles_path) 
