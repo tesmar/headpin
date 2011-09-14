@@ -15,17 +15,46 @@ class Event < Tableless
   include ActiveModel::Conversion
   extend ActiveModel::Naming
 
-  def self.find_by_org(key)
-    self.find(:all, :from => "#{AppConfig.candlepin.prefix}/owners/#{key}/events")
+  attr_accessor :messageText, :timestamp
+
+  def initialize(json_hash=nil)
+    @json_hash = (json_hash ||= {})
+    # rails doesn't like variables called id or type
+    if @json_hash != {}
+      @uuid = @json_hash["id"]
+      @messageText = @json_hash["messageText"]
+      @timestamp = @json_hash["timestamp"]
+    end
+    Rails.logger.ap "NEW EVENT FROM CANDLEPIN JSON:::::::::::::"
+    Rails.logger.ap self
   end
-  
-  def self.find_by_consumer(key)
-    self.find(:all, :from => "#{AppConfig.candlepin.prefix}/consumers/#{key}/events")
-  end  
-  
+
+  def self.retrieve_by_org(key)
+    self.retrieve_by("/owners/#{key}/events")
+  end
+
+  def self.retrieve_by_consumer(key)
+    self.retrieve_by("/consumers/#{key}/events")
+  end
+
   def timestamp
-    DateTime.parse @attributes['timestamp']
+    DateTime.parse @timestamp
   end
-  
+
+  private
+
+  def self.retrieve_by(uri)
+    events = []
+    begin
+      json_events = JSON.parse(Candlepin::Proxy.get(uri))
+      json_events.each do |json_event|
+        events << Event.new(json_event)
+      end
+    rescue Exception => e
+      Rails.logger.error "Unrecognized Event: " + json_events.to_s
+      raise "Unrecognized Event: " + json_events.to_s + "\n" + e.to_s
+    end
+    events
+  end
 
 end

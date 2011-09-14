@@ -44,7 +44,7 @@ class SystemsController < ApplicationController
   end
 
   def events
-    @events = Event.find_by_consumer(@system.uuid)
+    @events = Event.retrieve_by_consumer(@system.uuid)
     render :partial => 'edit_events', :layout => "tupane_layout"
   end
 
@@ -107,7 +107,7 @@ class SystemsController < ApplicationController
   end
 
   def manifest_dl
-    send_data(Candlepin::Consumer.cert_zip(params[:id]), :filename => "export.zip")
+    send_data(Candlepin::Consumer.cert_zip(params[:id]), :filename => "certificates.zip")
   end
 end
 
