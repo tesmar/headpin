@@ -60,6 +60,7 @@ class Admin::RolesController < ApplicationController
         @role.remove_user(user)
       end
       params[:update_users][:user_id] = user.id
+      notice _("Role updated.")
       render :json => params[:update_users]
     elsif @role.update_attributes(params[:role])
       notice _("Role updated.")

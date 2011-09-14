@@ -34,6 +34,7 @@ class Admin::UsersController < ApplicationController
     @user = User.new(params[:user])
 
     if @user.save
+      notice @user.username + _(" created successfully.")
       render :partial=>"common/list_item", :locals=>{:item=>@user, :accessor=>"username", :columns=>["username", "superAdmin"], :name=>'user'}
     else
       errors _('There were errors creating the user:'), @user.errors.full_messages
@@ -52,6 +53,7 @@ class Admin::UsersController < ApplicationController
     @user.update_attributes(params[:user])
 
     if @user.save
+      notice _("User updated successfully.")
       render :text => @user.username and return
     end
   end
@@ -68,8 +70,8 @@ class Admin::UsersController < ApplicationController
     #@user.update_attributes(params[:user])
     #if @user.save
     if params[:user] && @user.update_roles(params[:user][:role_ids])
-      flash[:notice] = N_("User '#{@user.username}' roles updated successfully.")
-       redirect_to :action => 'index'
+      notice _("User roles updated successfully.")
+      redirect_to :action => 'index'
     end
   end
 

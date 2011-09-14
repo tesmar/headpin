@@ -7,6 +7,7 @@
     =image_tag("spinner.gif", :alt => _('Spinning Work Indicator'))
 .grid_13
   = hidden_field_tag 'root_url', nil, 'data-url' => root_path
+  = hidden_field_tag 'get_notices_url', nil, 'data-url' => notices_get_new_path
   - if current_user
     - if working_org
       %div.org

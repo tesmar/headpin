@@ -1,7 +1,8 @@
 ComplianceManager::Application.routes.draw do
   # The priority is based upon order of creation:
   # first created -> highest priority.
-
+  get "notices/get_new"
+  
   resources :systems do
     get 'auto_complete_search' , :on => :collection    
     member do

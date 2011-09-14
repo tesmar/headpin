@@ -107,12 +107,12 @@ var user_page = function() {
                 success: function(data) {
                      button.removeClass('disabled');
                      list.add(data);
-                     $.jnotify("User " + username +" created", { type: "notify", sticky: true });
+
                      panel.closePanel($('#panel'));
                 },
                 error: function(){
                    button.removeClass('disabled');
-                   $.jnotify("Failed to create user", { type: "error", sticky: true });
+
                 }
             });
 
@@ -131,7 +131,7 @@ var user_page = function() {
             cache: false,
             success: function(data) {
                 button.removeClass("disabled");
-                $.jnotify("User " + data + " updated", { type: "notify", sticky: false });
+                
                 list.refresh(data, url);
             },
             error: function(e) {

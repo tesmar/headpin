@@ -32,6 +32,9 @@ javascripts:
   panel:
     - public/javascripts/jquery/plugins/jquery.ba-resize.js
     - public/javascripts/panel.js
+  notices:
+    - public/javascripts/notices.js
+    - public/javascripts/jquery/plugins/jquery.periodicalupdater.js
   password:
     - public/javascripts/jquery/plugins/jquery.simplePassMeter.js
   user:

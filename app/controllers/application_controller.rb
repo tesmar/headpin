@@ -20,6 +20,8 @@ class ApplicationController < ActionController::Base
   # available to the Models for active record
   before_filter :store_request_in_thread
 
+  after_filter :flash_to_headers
+
   # Global error handling, parsed bottom-up so most specific goes at the end:
   #rescue_from Exception, :with =>  :handle_generic_error
   rescue_from Errno::ECONNREFUSED, :with => :handle_candlepin_connection_error
@@ -172,4 +174,140 @@ class ApplicationController < ActionController::Base
       if not request.env['HTTP_ACCEPT_LANGUAGE'].nil?
     return locale
   end
+
+ # Generate a notice:
+  #
+  # notice:              The text to include
+  # options:             Optional hash containing various optional parameters.  This includes:
+  #   level:               The type of notice to be generated.  Supported values include:
+  #                        :message, :success (Default), :warning, :error
+  #   synchronous_request: true. if this notice is associated with an event where
+  #                        the user would expect to receive a response immediately
+  #                        as part of a response. This typically applies for events
+  #                        involving things such as create, update and delete.
+  #   persist:             true, if this notice should be stored via ActiveRecord.
+  #                        Note: this option only applies when synchronous_request is true.
+  #   list_items:          Array of items to include with the generated notice (text).  If included,
+  #                        the array will be converted to a string (separated by newlines) and
+  #                        concatenated with the notice text.  This is useful in scenarios where
+  #                        there are several validation errors occur from a single form submit.
+  #   details:             String containing additional details.  This would typically be to store
+  #                        information such as a stack trace that is in addition to the notice text.
+  def notice notice, options = {}
+
+    notice = "" if notice.nil?
+
+    # set the defaults
+    level = :success
+    synchronous_request = true
+
+    persist = true
+    global = false
+    details = nil
+
+    unless options.nil?
+      level = options[:level] unless options[:level].nil?
+      synchronous_request = options[:synchronous_request] unless options[:synchronous_request].nil?
+      persist = options[:persist] unless options[:persist].nil?
+      global = options[:global] unless options[:global].nil?
+      details = options[:details] unless options[:details].nil?
+    end
+
+    notice_dialog = build_notice notice, options[:list_items]
+
+    notice_string = notice_dialog["notices"].join("<br />")
+    if notice_dialog.has_key?("validation_errors")
+      notice_string = notice_string + notice_dialog["validation_errors"].join("<br />")
+    end
+
+    if synchronous_request
+      # On a sync request, the client should expect to receive a notification
+      # immediately without polling.  In order to support this, we will send a flash
+      # notice.
+      if !details.nil?
+        notice_dialog["notices"].push( _("#{self.class.helpers.link_to('Click here', notices_path)} for more details."))
+      end
+
+      flash[level] = notice_dialog.to_json
+
+    else
+      # On an async request, the client shouldn't expect to receive a notification
+      # immediately. As a result, we'll store the notification and it will be
+      # retrieved by the client on it's next polling interval.
+      #
+      # create & store notice... and mark as 'not viewed'
+      Notice.create!(:text => notice_string, :details => details, :level => level, :global => global, :user_notices => [UserNotice.new(:user => current_user, :viewed=>false)])
+
+    end
+  end
+
+  # Generate an error notice:
+  #
+  # summary:             the text to include
+  # options:             Hash containing various optional parameters.  This includes:
+  #   level:               The type of notice to be generated.  Supported values include:
+  #                        :message, :success (Default), :warning, :error
+  #   synchronous_request: true. if this notice is associated with an event where
+  #                        the user would expect to receive a response immediately
+  #                        as part of a response. This typically applies for events
+  #                        involving things such as create, update and delete.
+  #   persist:             true, if this notice should be stored via ActiveRecord.
+  #                        Note: this option only applies when synchronous_request is true.
+  #   list_items:          Array of items to include with the generated notice.  If included,
+  #                        the array will be converted to a string (separated by newlines) and
+  #                        concatenated with the notice text.  This is useful in scenarios where
+  #                        there are several validation errors occur from a single form submit.
+  #   details:             String containing additional details.  This would typically be to store
+  #                        information such as a stack trace that is in addition to the notice text.
+  def errors summary, options = {}
+    options[:level] = :error
+    notice summary, options
+  end
+
+  def build_notice notice, list_items
+    items = { "notices" => [] }
+
+    if notice.kind_of? Array
+      notice.each do |item|
+        handle_notice_type item, items
+      end
+    elsif notice.kind_of? String
+      unless list_items.nil? or list_items.length == 0
+        notice = notice + list_items.join("<br />")
+      end
+      items["notices"].push(notice)
+    else
+      handle_notice_type notice, items
+    end
+    return items
+  end
+
+  def handle_notice_type notice, items
+    if notice.kind_of? ActiveRecord::RecordInvalid
+      items["validation_errors"] = notice.record.errors.full_messages.to_a
+      return items
+    elsif notice.kind_of? RestClient::InternalServerError
+      items["notices"].push(notice.response)
+      return items
+    elsif notice.kind_of? RuntimeError
+      items["notices"].push(notice.message)
+    else
+      items["notices"].push(notice)
+    end
+  end
+
+  def flash_to_headers
+    return if @_response.nil? or @_response.response_code == 302
+    return if flash.blank?
+    [:error, :warning, :success, :message].each do |type|
+      unless flash[type].nil? or flash[type].blank?
+        @enc = CGI::escape(flash[type].gsub("\n","<br \\>"))
+        response.headers['X-Message'] = @enc
+        response.headers['X-Message-Type'] = type.to_s
+        flash.delete(type)  # clear the flash
+        return
+      end
+    end
+  end
+
 end

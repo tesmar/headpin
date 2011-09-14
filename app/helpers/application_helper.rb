@@ -95,4 +95,10 @@ module ApplicationHelper
     @current_index ||= 0
     @current_index += 1
   end
+
+   def notification_polling_time()
+    time  = AppConfig.notification && AppConfig.notification.polling_seconds
+    return time.to_i  * 1000 if time
+    return 45000
+ end
 end
