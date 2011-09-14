@@ -6,7 +6,7 @@ SimpleNavigation::Configuration.run do |navigation|
 
   navigation.items do |top_level|
 
-    top_level.item :dashboard, _("Dashboard"), "/dashboard"
+    top_level.item :dashboard, _("Dashboard"), dashboard_index_path
 
     top_level.item :subscriptions, _('Subscriptions'), subscriptions_path do |sub|
       sub.item :current, _('Current Subscriptions'), subscriptions_path
@@ -40,11 +40,11 @@ SimpleNavigation::Configuration.run do |navigation|
     end
 
     # Hide this entire section if user is not an admin:
-    top_level.item :administration, _("Admin"), "/admin",
+    top_level.item :administration, _("Admin"), admin_organizations_path,
       :if => Proc.new { @logged_in_user and @logged_in_user.superAdmin? } do |admin_sub|
 
         admin_sub.item :organizations, _("Organizations"),
-          {:controller => 'admin/organizations'}, :class => 'organizations' do | org_sub |
+          admin_organizations_path, :class => 'organizations' do | org_sub |
             if (not @organization.nil?)
               org_sub.item :edit, ("General"),
                 edit_admin_organization_path(@organization.key), :class => 'navigation_element'
@@ -54,7 +54,7 @@ SimpleNavigation::Configuration.run do |navigation|
             end
           end
 
-        admin_sub.item :users, _("Users"), {:controller => 'admin/users'}, :class => 'users' do |user_sub|
+        admin_sub.item :users, _("Users"), admin_users_path, :class => 'users' do |user_sub|
         if !@user.nil?
           user_sub.item :general, _("General"), edit_admin_user_path(@user), :class => "navigation_element"
           user_sub.item :roles_and_permissions, _("Roles & Permissions"), "/admin/users/#{@user.username}/roles", :class => "navigation_element"
