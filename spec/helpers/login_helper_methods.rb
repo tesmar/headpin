@@ -10,4 +10,6 @@ module LoginHelperMethods
     User.current = user_obj
   end
 
+  module_function :login_user
+
 end
