@@ -26,7 +26,7 @@ class Admin::RolesController < ApplicationController
   def index
     @roles = Role.find(:all)
   end
-    
+
   def new
     @role = Role.new
     render :partial=>"new", :layout => "tupane_layout", :locals=>{:role=>@role}
@@ -51,9 +51,9 @@ class Admin::RolesController < ApplicationController
   def update
     @role = Role.find(params[:id])
     return if @role.name == "admin"
-    
+
     if params[:update_users]
-      user = User.find(params[:update_users][:user_id])
+      user = User.retrieve(params[:update_users][:user_id])
       if params[:update_users][:adding] == "true"
         @role.add_user(user)
       else
@@ -106,10 +106,10 @@ class Admin::RolesController < ApplicationController
       new_params[:all_tags] = true
       new_params[:all_verbs] = true
     end
-    
+
     new_params[:resource_type] = ResourceType.find_or_create_by_name(:name=>type_name)
     new_params.merge! params[:permission]
-    
+
     begin
       @perm = Permission.create! new_params
       to_return = { :type => @perm.resource_type.name }

@@ -15,12 +15,37 @@ class ImportRecord < Tableless
   include ActiveModel::Conversion
   extend ActiveModel::Naming
 
-  def timestamp
-    DateTime.parse @attributes['updated']
+  attr_accessor :created, :updated, :statusMessage, :status
+
+  def initialize(json_hash=nil)
+    @json_hash = (json_hash ||= {})
+    # rails doesn't like variables called id or type
+    if @json_hash != {}
+      @created = @json_hash["created"]
+      @updated = @json_hash["updated"]
+      @status = @json_hash["status"]
+      @statusMessage = @json_hash["statusMessage"]
+    end
+    Rails.logger.ap "NEW IMPORT RECORD FROM CANDLEPIN JSON:::::::::::::"
+    Rails.logger.ap self
   end
 
-  def self.find_by_org(key)
-    self.find(:all, :from => "#{AppConfig.candlepin.prefix}/owners/#{key}/imports")
+  def timestamp
+    DateTime.parse @updated
+  end
+
+  def self.retrieve_by_org(key)
+    import_records = []
+    begin
+      json_import_records = JSON.parse(Candlepin::Proxy.get("/owners/#{key}/imports"))
+      json_import_records.each do |json_import_record|
+        import_records << ImportRecord.new(json_import_record)
+      end
+    rescue Exception => e
+      Rails.logger.error "Unrecognized Import Record: " + json_import_records.to_s
+      raise "Unrecognized Activation Key: " + json_import_records.to_s + "\n" + e.to_s
+    end
+    import_records
   end
 
 end
