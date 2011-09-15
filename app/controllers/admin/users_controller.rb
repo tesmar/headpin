@@ -20,19 +20,19 @@ class Admin::UsersController < ApplicationController
   def section_id
     'admin'
   end
-  
+
   def index
     @users = User.retrieve_all
   end
 
   def new
     @user = User.new
-    render :partial => 'new', :layout => "tupane_layout" 
+    render :partial => 'new', :layout => "tupane_layout"
   end
 
   def create
     @user = User.new(params[:user])
-    
+
     if @user.save
       render :partial=>"common/list_item", :locals=>{:item=>@user, :accessor=>"username", :columns=>["username", "superAdmin"]}
     else
@@ -43,7 +43,7 @@ class Admin::UsersController < ApplicationController
 
   def edit
     @user = User.retrieve(params[:id])
-    render :partial => 'edit', :layout => "tupane_layout" 
+    render :partial => 'edit', :layout => "tupane_layout"
   end
 
   def update
@@ -89,6 +89,6 @@ class Admin::UsersController < ApplicationController
       flash[:error] = N_("Failed to delete '#{@user.username}'.Error: #{error.message}  ").gsub!('.','.<br>')
       redirect_to :action => 'index'
     end
-  end  
+  end
 
 end

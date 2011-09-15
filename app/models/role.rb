@@ -14,7 +14,62 @@ class Role < Tableless
   include ActiveModel::Conversion
   extend ActiveModel::Naming
 
+  attr_accessor :name, :users
 
+  def initialize(json_hash=nil)
+    @json_hash = (json_hash ||= {})
+    # rails doesn't like variables called id or type
+    if @json_hash != {}
+      @name = @json_hash["name"]
+      @users = @json_hash["users"]
+    end
+    Rails.logger.ap "NEW ROLE FROM CANDLEPIN JSON:::::::::::::"
+    Rails.logger.ap self
+  end
+
+  # TODO: .find(:all)
+  # TODO: .find(:all, :from => "#{AppConfig.candlepin.prefix}/users/#{username}/roles")
+  def self.retrieve(r_id)
+    role = nil
+    begin
+      json_role = JSON.parse(Candlepin::Proxy.get("/roles/#{r_id}"))
+      role = Role.new(json_role)
+    rescue Exception => e
+      Rails.logger.error "Unrecognized Role: " + json_role.to_s
+      raise "Unrecognized Role: " + json_role.to_s + "\n" + e.to_s
+    end
+    Rails.logger.ap "NEW ROLE FROM CANDLEPIN JSON:::::::::::::"
+    Rails.logger.ap self
+    role
+  end
+
+  def self.retrieve_all
+    roles = []
+    begin
+      json_roles = JSON.parse(Candlepin::Proxy.get("/roles"))
+      json_roles.each do |json_role|
+        roles << Role.new(json_role)
+      end
+    rescue Exception => e
+      Rails.logger.error "Unrecognized Role: " + json_roles.to_s
+      raise "Unrecognized Role: " + json_roles.to_s + "\n" + e.to_s
+    end
+    roles
+  end
+
+  def self.retrieve_all_by_user(key)
+    roles = []
+    begin
+      json_roles = JSON.parse(Candlepin::Proxy.get("/users/#{key}/roles"))
+      json_roles.each do |json_role|
+        roles << Role.new(json_role)
+      end
+    rescue Exception => e
+      Rails.logger.error "Unrecognized Role: " + json_roles.to_s
+      raise "Unrecognized Role: " + json_roles.to_s + "\n" + e.to_s
+    end
+    roles
+  end
 
   def users_count
     users.count()
@@ -23,7 +78,7 @@ class Role < Tableless
   def add_user(user)
     connection.post( "#{AppConfig.candlepin.prefix}/roles/#{id}/users/#{user.username}")
   end
-  
+
   def remove_user(user)
     connection.delete( "#{AppConfig.candlepin.prefix}/roles/#{id}/users/#{user.username}")
   end

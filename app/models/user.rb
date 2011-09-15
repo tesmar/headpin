@@ -81,11 +81,11 @@ class User < Tableless
   end
 
   def roles
-    Role.find(:all, :from => "#{AppConfig.candlepin.prefix}/users/#{username}/roles")
+    Role.retrieve_all_by_user(username)
   end
 
   def update_roles(new_roles)
-    old_roles = Role.find(:all, :from => "#{AppConfig.candlepin.prefix}/users/#{username}/roles").map(&:id)
+    old_roles = Role.retrieve_all_by_user(username).map(&:id)
 
     to_remove = old_roles - new_roles
     to_remove.each do |role_id|
@@ -96,7 +96,7 @@ class User < Tableless
     to_add.each do |role_id|
       connection.post( "#{AppConfig.candlepin.prefix}/roles/#{role_id}/users/#{username}")
     end
-    
+
     return true
   end
 end

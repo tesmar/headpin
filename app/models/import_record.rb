@@ -43,7 +43,7 @@ class ImportRecord < Tableless
       end
     rescue Exception => e
       Rails.logger.error "Unrecognized Import Record: " + json_import_records.to_s
-      raise "Unrecognized Activation Key: " + json_import_records.to_s + "\n" + e.to_s
+      raise "Unrecognized Import Record: " + json_import_records.to_s + "\n" + e.to_s
     end
     import_records
   end
