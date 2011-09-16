@@ -24,7 +24,7 @@ describe Admin::OrganizationsController do
         mock_user.stub_chain(:owner, :key).and_return(org.key)
         controller.stub!(:logged_in_user).and_return(mock_user)
         get 'index'
-        response.should redirect_to '/dashboard'
+        response.should redirect_to dashboard_index_url
       end
     end
 
