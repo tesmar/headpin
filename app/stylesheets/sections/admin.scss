@@ -3,93 +3,141 @@
 #admin {
   .panel-custom {
     @extend .panel;
-
+    
     border: none;
     background-color: transparent;
-
+    
     #panel_main { margin: 0; }
+  }
+  .roles-selected-border {
+    border: 2px solid $kselected_color;
   }
   #roles_tree {
     .close { right: 10px; top: 12px; }
     .search_button { right: 40px; }
-    .block { width: 35px; border-bottom: none; height: 20px; &:hover { background: inherit; color: $kselected_color; }}
-    #remove_role { a { color: #000; } }
-
-    .sliding_container { background: #FFF; .slider { overflow-y: auto; } }
-
-    .permission_detail {
-      border-bottom: 2px solid #B5B5B5;
-      .permission_detail_container { height: 30px; width: 100%; }
+    #global{ color: $global_permission_color; }
+    #remove_role { a { color: $black_color; } }
+    .breadcrumb_search { border: none; }
+    
+    .cs_action { 
+       border-left: none; 
+       border-bottom: none;
+       border-right: 1px solid #B5B5B5;
+       margin-right: 0px;
+     }
+     .cs_action:last-child { width: 161px;  border-right: none; }
+    
+    .block { 
+      width: 35px; 
+      border-bottom: none; 
+      height: 20px; 
+      
+      &:hover { background: inherit; color: $kselected_color; }
     }
-
+    
+    .sliding_container { 
+      background: $white_color;
+      border-right: none;
+      border-left: none; 
+      
+      .slider { overflow-y: auto; } 
+    }
+    
+    .permission_detail {
+      border-bottom: 2px solid $tree-border_color;
+      
+      .permission_detail_container { 
+        width: 100%;
+        min-height: 24px;
+        overflow: auto;
+        margin: 3px 0;
+        
+        ul {
+          float: left;
+         
+          li {
+            height: 17px;
+            border: none;
+            padding: 0;
+            cursor: auto;
+            
+            &:hover { background: none; }
+          }
+        }
+      }
+    }
+    
     #roles_status {
-      border: 1px solid #B5B5B5;
+      border-bottom: 1px solid $tree-border_color;
       margin-top: -1px;
       //height: 2em;
       padding: 0.4em 0 0 0;
       text-align: center;
     }
     #add_permission_icon {
-      background: $add_icon_black;
-      @include sliding-tree-actionbar-image-spacing();
+      @include action-icon($add_icon_black);
     }
-    #edit_role_icon {
-      background: $edit_icon_black;
-      @include sliding-tree-actionbar-image-spacing();
+    #edit_icon {
+      @include action-icon($edit_icon_black);
     }
     #remove_role_icon {
-      background: $circle_x_icon_black;
-      @include sliding-tree-actionbar-image-spacing();
+      @include action-icon($circle_x_icon_black);
     }
     #placeholder {
       width: 25.2%;
       cursor: auto;
-
+      
       &:hover { background: $tree-container_color; }
     }
 
+    
     .slide_up_container {
       position: absolute;
       display: none;
       //float: left;
-      bottom: 33px;
+      bottom: 2px;
       left: 0px;
       z-index: 300;
-      margin-left: 1px;
       height: 250px;
-      background-color:#F5FAFA;;
-      border-top: 1px solid #B5B5B5;
+      margin-left: 0px;
+      background-color: $tree-slideup-background_color;
+      border-top: 1px solid $tree-border_color;    
     }
-
-    #permission_add {
+    
+    #permission_widget {
       height: 470px;
       overflow: auto;
-      .validation_error { color: red; font-weight: 500; }
-
-      .permission_add_container {
+      
+      .validation_error { color: $validation_error_color; font-weight: 600; font-size: 110%; }
+      .input_error { border: 2px solid $validation_error_color; }
+      .info_text { margin-left: 15px; }
+      input { width: 175px; }
+      .active-step { color: $kselected_color; }
+      h5 { font-size: 135%; margin-left: 0px; }
+      
+      .permission_widget_container { 
         float: none;
         width: 90%;
-        margin: 10px auto;
-
-        label {
-          width: 100px;
+        margin: 10px auto; 
+        
+        label { 
+          width: 100px; 
         }
         select, input, textarea {
           margin-left: 15px;
         }
       }
-
-      span { margin-left: 85px; word-wrap: break-word; }
-
+    
+      span { word-wrap: break-word; }
+    
       #permission_button_bar {
         width: 90%;
         margin: 0 auto;
       }
     }
   }
-
+  
   #maincontent {
     min-height: 675px;
   }
 }
-

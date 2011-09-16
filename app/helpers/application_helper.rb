@@ -15,20 +15,21 @@ module ApplicationHelper
   def project_name
     _("Headpin")
   end
-  
+
   def default_title
     _("Open Source Subscription Management")
-  end  
+  end
 
   def two_panel(collection, options)
     options[:accessor] ||= "uuid"
+    options[:left_panel_width] ||= nil
     enable_create = options[:enable_create]
     enable_create = true if enable_create.nil?
     enable_sort = options[:enable_sort] ? options[:enable_sort] : false
-    render :partial => "common/panel", 
+    render :partial => "common/panel",
            :locals => {
-             :title => options[:title], 
-             :name => options[:name], 
+             :title => options[:title],
+             :name => options[:name],
              :create => options[:create],
              :enable_create => enable_create,
              :enable_sort => enable_sort,
@@ -36,7 +37,8 @@ module ApplicationHelper
              :custom_rows => options[:custom_rows],
              :collection => collection,
              :accessor=>options[:accessor],
-             :url=>options[:url], 
+             :url=>options[:url],
+             :left_panel_width=>options[:left_panel_width],
              :ajax_scroll =>options[:ajax_scroll]}
   end
 
@@ -64,12 +66,12 @@ module ApplicationHelper
   def include_editable_i18n
     render :partial=> "common/edit_i18n"
   end
-  
+
   def stats_line(stats, options ={})
     render :partial => "common/stats_line",
       :locals => {:stats => stats}
   end
-  
+
   def to_value_list(stats)
     list = ""
     prepend = ""
@@ -80,12 +82,12 @@ module ApplicationHelper
     end
     list
   end
-  
+
   def remove_link(link_text, controller)
-    render :partial => "common/tupane_remove", 
+    render :partial => "common/tupane_remove",
       :locals => {
           :link_text => link_text,
-          :controller => controller}    
+          :controller => controller}
   end
 
   # auto_tab_index: this method may be used to simplify adding a tabindex to UI forms.

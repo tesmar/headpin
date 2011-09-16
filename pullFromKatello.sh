@@ -11,6 +11,11 @@ cp $KATELLO/src/app/stylesheets/fancyqueries.scss ./app/stylesheets
 cp $KATELLO/src/app/stylesheets/_*.scss ./app/stylesheets
 cp $KATELLO/src/app/stylesheets/sections/loginpage.scss ./app/stylesheets/sections
 
+# Need to change the section name from operations to admin
+sed '0,/RE/s/#operations/#admin/' $KATELLO/src/app/stylesheets/sections/operations.scss > ./app/stylesheets/sections/admin.scss 
+
+cp $KATELLO/src/app/stylesheets/widgets/_multiselect.scss ./app/stylesheets/widgets
+
 cp $KATELLO/src/public/stylesheets/images/* ./public/stylesheets/images
 
 cp $KATELLO/src/app/views/layouts/katello.haml ./app/views/layouts
@@ -31,6 +36,10 @@ cp $KATELLO/src/public/javascripts/scroll_pane.js ./public/javascripts
 
 cp $KATELLO/src/public/fakedata.html ./public
 cp -r $KATELLO/src/public/images ./public
+rm ./public/images/favicon.png
+rm ./public/images/boxshadow.png
+rm ./public/images/icons/check_icon.png
+rm ./public/images/katello.png
 
 cp $KATELLO/src/app/controllers/auto_complete_search.rb ./app/controllers
 cp $KATELLO/src/app/helpers/search_helper.rb ./app/helpers
