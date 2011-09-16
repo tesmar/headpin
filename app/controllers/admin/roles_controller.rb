@@ -24,7 +24,7 @@ class Admin::RolesController < ApplicationController
    end
 
   def index
-    @roles = Role.find(:all)
+    @roles = Role.retrieve_all
   end
 
   def new
@@ -33,7 +33,7 @@ class Admin::RolesController < ApplicationController
   end
 
   def edit
-    @role = Role.find(params[:id])
+    @role = Role.retrieve(params[:id])
     render :partial=>"edit", :layout => "tupane_layout", :locals=>{:role=>@role }
   end
 
@@ -49,7 +49,7 @@ class Admin::RolesController < ApplicationController
   end
 
   def update
-    @role = Role.find(params[:id])
+    @role = Role.retrieve(params[:id])
     return if @role.name == "admin"
 
     if params[:update_users]
@@ -92,7 +92,7 @@ class Admin::RolesController < ApplicationController
   end
 
   def update_permission
-    @permission = Permission.find(params[:permission_id])
+    @permission = Permission.retrieve(params[:permission_id])
     @permission.update_attributes(params[:permission])
     notice _("Permission '#{@permission.name}' updated.")
     render :partial => "permission", :locals =>{:perm => @permission, :role=>@role, :data_new=> false}
@@ -126,13 +126,13 @@ class Admin::RolesController < ApplicationController
     if params[:perm_id].nil?
       permission = Permission.new(:role=> @role, :resource_type => ResourceType.new)
     else
-      permission = Permission.find(params[:perm_id])
+      permission = Permission.retrieve(params[:perm_id])
     end
     render :partial=>"permission", :locals=>{:perm=>permission, :role=>@role, :data_new=>permission.new_record?}
   end
 
   def destroy_permission
-    permission = Permission.find(params[:permission_id])
+    permission = Permission.retrieve(params[:permission_id])
     permission.destroy
     notice _("Permission '#{permission.name}' removed.")
     render :json => params[:permission_id]
@@ -140,8 +140,8 @@ class Admin::RolesController < ApplicationController
 
   private
   def find_role
-    @role =  Role.find(params[:role_id]) if params.has_key? :role_id
-    @role =  Role.find(params[:id]) unless params.has_key? :role_id
+    @role =  Role.retrieve(params[:role_id]) if params.has_key? :role_id
+    @role =  Role.retrieve(params[:id]) unless params.has_key? :role_id
   rescue Exception => error
     render :text=>errors.to_s, :status=>:bad_request and return false
   end
