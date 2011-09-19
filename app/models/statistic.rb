@@ -35,8 +35,10 @@ class Statistic < Tableless
   def self.retrieve_all_by_org(owner_id, optional_params = {})
     oj = nil
     stats = []
+    url = "/owners/#{owner_id}/statistics"
+    url += "/#{optional_params[:type]}" if optional_params[:type]
     begin
-      oj = JSON.parse(Candlepin::Proxy.get("/owners/#{owner_id}/statistics", optional_params))
+      oj = JSON.parse(Candlepin::Proxy.get(url))
       oj.each do |stat_json|
         stats << Statistic.new(stat_json)
       end
