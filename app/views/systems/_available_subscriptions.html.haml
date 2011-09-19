@@ -8,28 +8,27 @@
   = remove_link(_("Remove #{@system.name}"), :systems)
   
 = content_for :content do 
-  #systems
-    .grid_8#available_subscriptions        
-      %table
-        %thead
-          %th Product
-          %th Available
-          %th Contract 
-          %th Expires
-          %th Actions
-        - @subscriptions.each do |sub|
-          %tr{:class => cycle(nil, 'alt')}
-            %td
-              = sub.product.name
-            %td
-              = sub.quantity.to_i - sub.consumed.to_i
-            %td
-              = sub.contractNumber
-            %td
-              = l sub.endDate
-            %td
-              = form_tag subscriptions_system_path(@system.uuid), :class => "panelform" do
-                = hidden_field_tag("pool_id", sub.uuid)
-                .actions
-                  = submit_tag _("Subscribe")
+  #systems     
+    %table
+      %thead
+        %th Product
+        %th Available
+        %th Contract 
+        %th Expires
+        %th Actions
+      - @subscriptions.each do |sub|
+        %tr{:class => cycle(nil, 'alt')}
+          %td
+            = sub.product.name
+          %td
+            = sub.quantity.to_i - sub.consumed.to_i
+          %td
+            = sub.contractNumber
+          %td
+            = l sub.endDate
+          %td
+            = form_tag subscriptions_system_path(@system.uuid), :class => "panelform" do
+              = hidden_field_tag("pool_id", sub.uuid)
+              .actions
+                = submit_tag _("Subscribe")
 
