@@ -13,6 +13,10 @@ class Tableless
     @json_hash
   end
 
+  def id
+    @json_hash["id"]
+  end
+
   def update_attributes(attr ={})
     attr.each_pair do |key, value|
       @json_hash[key] = value

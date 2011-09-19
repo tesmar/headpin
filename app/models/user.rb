@@ -58,10 +58,6 @@ class User < Tableless
     @current = o
   end
 
-  def to_param
-    username
-  end
-
   def superAdmin?
     @superAdmin == true
   end
@@ -73,6 +69,16 @@ class User < Tableless
 
   def cp_oauth_header
     { 'cp-user' => self.username }
+  end
+
+  def save
+    if @json_hash['id']
+      ret = JSON.parse(Candlepin::Proxy.put("/users/#{username}",@json_hash.to_json))
+    else
+      ret = JSON.parse(Candlepin::Proxy.post("/users",@json_hash.to_json))
+      @json_hash['id'] = ret['id']
+    end
+    ret
   end
 
   # Fake outs. May need to persist these values
@@ -89,12 +95,12 @@ class User < Tableless
 
     to_remove = old_roles - new_roles
     to_remove.each do |role_id|
-      connection.delete( "#{AppConfig.candlepin.prefix}/roles/#{role_id}/users/#{username}")
+      Candlepin::Proxy.delete( "/roles/#{role_id}/users/#{username}")
     end
 
     to_add = new_roles - old_roles
     to_add.each do |role_id|
-      connection.post( "#{AppConfig.candlepin.prefix}/roles/#{role_id}/users/#{username}")
+      Candlepin::Proxy.post( "/roles/#{role_id}/users/#{username}", @json_hash.to_json)
     end
 
     return true
