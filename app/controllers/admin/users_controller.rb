@@ -34,7 +34,7 @@ class Admin::UsersController < ApplicationController
     @user = User.new(params[:user])
 
     if @user.save
-      render :partial=>"common/list_item", :locals=>{:item=>@user, :accessor=>"username", :columns=>["username", "superAdmin"]}
+      render :partial=>"common/list_item", :locals=>{:item=>@user, :accessor=>"username", :columns=>["username", "superAdmin"], :name=>'user'}
     else
       errors _('There were errors creating the user:'), @user.errors.full_messages
       render :new
