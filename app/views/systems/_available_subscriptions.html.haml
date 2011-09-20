@@ -21,7 +21,7 @@
         - @subscriptions.each do |sub|
           %tr{:class => cycle(nil, 'alt')}
             %td
-              = #{sub.product.name}
+              = sub.product.name
             %td
               = sub.quantity.to_i - sub.consumed.to_i
             %td
