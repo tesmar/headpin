@@ -9,34 +9,35 @@
 = content_for :remove_item do
   = remove_link(_("Remove #{@system.name}"), :systems)
   
-= content_for :content do 
+= content_for :content do
   #systems
     .grid_8#system
       %fieldset
         .grid_1.ra
           %label{:for => 'system_name'}
-            = "#{_('Name')}:"    
-        .grid_6.la.editable.edit_textfield{'name' => 'system[name]',
-                                           'url' => system_path(@system.uuid)} #{@system.name}
-                                           
+            = "#{_('Name')}:"
+        /.grid_6.la.editable.edit_textfield{'name' => 'system[name]',
+        .grid_6.la{'name' => 'system[name]',
+                                           'data-url' => system_path(@system.uuid)} #{@system.name}
+
         .grid_1.ra
           %label{:for => 'system_uuid'}
-            = "#{_('UUID')}:"    
-        .grid_6.la 
+            = "#{_('UUID')}:"
+        .grid_6.la
           = @system.uuid
-        
+
         .grid_1.ra
           %label{:for => 'system_org'}
-            = "#{_('Org')}:"    
-        .grid_6.la 
-          = link_to @organization.displayName, admin_organization_path(@organization.id)      
-                                                     
+            = "#{_('Org')}:"
+        .grid_6.la
+          = link_to @organization.displayName, admin_organization_path(@organization.id)
+
         .grid_1.ra
           %label{:for => 'system_org'}
-            = "#{_('Type')}:"    
-        .grid_6.la 
+            = "#{_('Type')}:"
+        .grid_6.la
           = @system.type
-          
+
         .grid_1.ra
           %label{:for => 'system_status'}
             = "#{_('Status')}:"    

@@ -125,13 +125,11 @@ GEM
       activesupport (~> 3.0)
       railties (~> 3.0)
       rspec (~> 2.6.0)
-    ruby-debug (0.10.4)
+    ruby-debug (0.10.3)
       columnize (>= 0.1)
-      ruby-debug-base (~> 0.10.4.0)
-    ruby-debug-base (0.10.4)
+      ruby-debug-base (~> 0.10.3.0)
+    ruby-debug-base (0.10.3)
       linecache (>= 0.3)
-    ruby-debug-ide (0.4.16)
-      rake (>= 0.8.1)
     ruby_parser (2.3.0)
       sexp_processor (~> 3.0)
     sass (3.1.7)
@@ -175,9 +173,7 @@ DEPENDENCIES
   rcov
   rest-client
   rspec-rails
-  ruby-debug
-  ruby-debug-base
-  ruby-debug-ide
+  ruby-debug (= 0.10.3)
   ruby_parser
   scoped_search (>= 2.3.3)
   simple-navigation (= 3.3.4)

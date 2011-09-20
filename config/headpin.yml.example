@@ -19,7 +19,6 @@ candlepin:
     base: ou=People,dc=company,dc=com
   #warden: database
   use_cp: true
-  use_pulp: true
   use_ssl: true
   rest_client_timeout: 30
 

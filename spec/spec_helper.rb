@@ -5,6 +5,7 @@ require 'rspec/rails'
 
 require 'helpers/login_helper_methods'
 require 'helpers/mock_helper_methods'
+require 'helpers/system_controller_test_helper'
 
 
 # Requires supporting ruby files with custom matchers and macros, etc,

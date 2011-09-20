@@ -5,10 +5,13 @@ ComplianceManager::Application.routes.draw do
   
   resources :systems do
     get 'auto_complete_search' , :on => :collection    
+    delete :delete
     member do
       get :facts
       get :subscriptions
       post :subscriptions
+      post :create
+      delete :delete
       delete :subscriptions
       get :available_subscriptions
       get :events      
@@ -21,6 +24,7 @@ ComplianceManager::Application.routes.draw do
   end
 
   match 'systems/:id/unbind/:entitlement_id', :to => 'systems#unbind'
+  #match 'systems/create', :to => 'systems#create'
 
   namespace "admin" do
     resources :organizations do

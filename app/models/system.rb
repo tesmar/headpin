@@ -17,8 +17,20 @@ class System < Tableless
   include ActiveModel::Conversion
   extend ActiveModel::Naming
 
+  class << self
+    def architectures
+      { 'x86' => :'i386', 'Itanium' => :'ia64', 'x86_64' => :x86_64, 'PowerPC' => :ppc,
+      'IBM S/390' => :s390, 'IBM System z' => :s390x,  'SPARC Solaris' => :'sparc64' }
+    end
+
+    def virtualized
+      { "physical" => N_("Physical"), "virtualized" => N_("Virtual") }
+    end
+  end
+
   attr_accessor :name, :entitlementCount, :uuid, :owner_key
   attr_accessor :created, :lastCheckin, :username, :facts, :owner
+  attr_accessor :arch, :sockets, :virtualized
 
   def initialize(json_hash=nil)
     @json_hash = super(json_hash)
@@ -28,7 +40,7 @@ class System < Tableless
       @owner_key = @json_hash["owner"]["key"]
       @lastCheckin = @json_hash["owner"]["lastCheckin"]
       @username = @json_hash["owner"]["username"]
-      @created = Date.parse(@json_hash["created"])
+      @created = DateTime.parse(@json_hash["created"])
       @owner = @json_hash["owner"]
       @facts = @json_hash["facts"]
       @entitlementCount = @json_hash["entitlementCount"]
@@ -92,12 +104,32 @@ class System < Tableless
     return _("Invalid")
   end
 
-  def create(new_system_info = {})
-    #we need the org_id to create the consumer 
-    #options[:query] = { :username => auth_info[:user], :owner => user.org_id } 
-    new_system_info = {"type" => "system", "arch" => "i386", "name" => "System1test"}
-    #options[:body] = @json_hash.to_json
-    return Candlepin::Proxy.post('/consumers?' + {:owner => @owner_key, :username => @owner_key }.to_query, new_system_info.to_json)
+  def update(new_values)
+
+    begin
+      update_json = Candlepin::Consumer.update(uuid,new_values) #either :facts => or just straight values
+      #update_json = JSON.parse(Candlepin::Proxy.put("/consumers/#{uuid}", new_values, uuid))
+      return update_json
+    rescue Exception => e
+      Rails.logger.error "Error updating System: " + update_json.to_s
+      raise "Error updating System: " + update_json.to_s + "\n" + e.to_s
+    end
+  end
+
+  def create
+    new_system_info = {"type" => "system",
+                       "name" => name,
+                        :facts => {"uname.machine" => arch,
+                                   "cpu.cpu_socket(s)" => sockets,
+                                   "virt.is_guest" => (virtualized == 'virtual'),
+                                   "network.hostname" => name
+                                   }}
+    f = Candlepin::Proxy.post('/consumers?' + {:owner => owner.key, :username => owner.key }.to_query, new_system_info.to_json)
+    System.new(JSON.parse(f))
+  end
+
+  def destroy
+    return Candlepin::Proxy.delete("/consumers/#{uuid}")
   end
 end
 

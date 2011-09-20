@@ -1,6 +1,6 @@
 %h1 #{_("Create Organization")}
 .katello_form
-  = form_for [:admin, @organization] do |f|
+  = form_tag [:admin, @organization] do |f|
     .grid_8
       %fieldset.clearfix
         .grid_1.ra      

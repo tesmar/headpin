@@ -34,6 +34,27 @@ class SystemsController < ApplicationController
     render :partial=>"new", :layout => "tupane_layout", :locals=>{:system=>@system}
   end
 
+  def create
+    begin
+      #{"method"=>"post", "system"=>{"name"=>"asdfsdf", "sockets"=>"asdfasdf", "arch"=>"asdfasdfasdf", "virtualized"=>"asdfasd"}, "authenticity_token"=>"n7hXf3d+YZZnvxqcjhQjPaDgSdl+xz2Xrzh2lCMRItI=", "utf8"=>"✓", "action"=>"create", "id"=>"new_system_form", "controller"=>"systems"}
+      @system = System.new
+      @system.arch = params["arch"]["arch_id"]
+      @system.sockets = params["system"]["sockets"]
+      @system.virtualized = params["system_type"]["virtualized"]
+      @system.name = params["system"]["name"]
+      @system.owner = working_org
+      #create it in candlepin, parse the JSON and create a new ruby object to pass to the view
+      @system = @system.create
+      #find the newly created system
+      flash[:notice] = N_("System '#{@system.name}' was created.")
+    rescue Exception => error
+      errors error.to_s
+      Rails.logger.info error.backtrace.join("\n")
+      render :text=> error.to_s, :status=>:bad_request and return
+    end
+    render :partial=>"common/list_item", :locals=>{:item=>@system, :accessor=>"uuid", :name => @system.name,
+                                                   :columns=>['name', 'uuid']}
+  end
 
   def edit
     render :partial => 'edit', :layout => "tupane_layout"
@@ -91,9 +112,7 @@ class SystemsController < ApplicationController
   end
 
   def update
-    @system.update_attributes(params[:system])
-
-    @system.save!
+    @system.update(params[:system])
 
     respond_to do |format|
       format.html {render :text => params[:system].values.first}

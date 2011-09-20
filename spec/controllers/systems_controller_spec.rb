@@ -1,8 +1,10 @@
 require 'spec_helper'
 
+
 describe SystemsController do
   include LoginHelperMethods
   include MockHelperMethods
+  include SystemControllerTestHelper
   render_views
 
   before (:each) do
@@ -10,7 +12,6 @@ describe SystemsController do
   end
 
   describe "GET index" do
-
     it 'should be successful' do
       org = real_org
       # Get index, simulate session setting for the current organization:
@@ -29,9 +30,29 @@ describe SystemsController do
         response.should be_success
       end
     end
-
   end
 
+  describe "POST create" do
+    it "should not redirect to another page after successful creation" do
+      post 'create', post_to_headpin_create_data
+      response.should_not be_redirect
+    end
+
+    it "should flash a successful creation message upon creation" do
+      #new_s = ready_to_be_created_system.create
+      post 'create', post_to_headpin_create_data
+      flash[:notice].should =~ /System .* was created./
+    end
+
+   # it "should redirect to the dashboard and flash a warning upon a candlepin error" do
+#      s = ready_to_be_created_system
+#System.stub!(:new).and_return(s)
+#      s.should_receive(:create).and_raise(Exception)
+#      post 'create', post_to_headpin_create_data
+#      response.should redirect_to '/dashboard'
+
+    #end
+  end
 
 end
 

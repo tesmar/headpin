@@ -27,11 +27,11 @@ SimpleNavigation::Configuration.run do |navigation|
           details_sub.item :subscriptions, _("Current Subscriptions"),
             subscriptions_system_path(@system.uuid), :class => 'navigation_element'
 
-          details_sub.item :avail_subscriptions, _("Available Subscriptions"),
-            available_subscriptions_system_path(@system.uuid), :class => 'navigation_element'
+          #details_sub.item :avail_subscriptions, _("Available Subscriptions"),
+          #  available_subscriptions_system_path(@system.uuid), :class => 'navigation_element'
 
-          details_sub.item :events, _("Events"), 
-            events_system_path(@system.uuid), :class => 'navigation_element' 
+          #details_sub.item :events, _("Events"), 
+          #  events_system_path(@system.uuid), :class => 'navigation_element' 
         end
       end
 

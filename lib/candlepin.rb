@@ -28,7 +28,7 @@ module Candlepin
     def self.put(path, payload)
       Rails.logger.debug "Sending PUT request to Candlepin: #{path}"
       client = CandlepinResource.rest_client(Net::HTTP::Put, :put, path_with_cp_prefix(path), nil)
-      client.put(payload, {:accept => :json, :content_type => :json}.merge(User.current.cp_oauth_header))
+      client.put(payload, CandlepinResource.default_headers)
     end
 
     def self.delete(path)
@@ -134,7 +134,7 @@ module Candlepin
 
       def update uuid, facts
         attrs = {:facts => facts}
-        response = self.put(path(uuid), attrs.to_json, self.default_headers).body
+        response = self.put(path(uuid), attrs.to_json, self.default_headers)
         # consumer update doesn't return any data atm
         # JSON.parse(response).with_indifferent_access
       end
