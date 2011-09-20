@@ -1,4 +1,8 @@
 class Tableless
+  include ActiveModel::Validations
+  include ActiveModel::Conversion
+  extend ActiveModel::Naming
+
   TRUE_VALUES = [true, 1, "1", "true", "yes", "TRUE", "YES", "T", "t", "Y", "y"]
   attr_accessor :json_hash
 
@@ -22,5 +26,8 @@ class Tableless
       @json_hash[key] = value
     end
   end
-
+  #this is for activeModel to know this object is not persisted in the db
+  def persisted?
+    false
+  end
 end #end class
