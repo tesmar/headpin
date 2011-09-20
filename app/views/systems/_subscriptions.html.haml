@@ -1,12 +1,14 @@
 = content_for :title do
   = @system.name
-  
+
 = content_for :navigation do
-  = render_navigation(:expand_all => true, :level => 3) 
-  
+  = render_navigation(:expand_all => true, :level => 3)
+
 = content_for :remove_item do
   = remove_link(_("Remove #{@system.name}"), :systems)
+
 = button_to(_("Download Manifest"), manifest_dl_system_path(@system.uuid) ,:id => "download_manifest", :method => "get")
+
 = content_for :content do
   #systems
     .grid_8#subscriptions

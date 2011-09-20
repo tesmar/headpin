@@ -18,7 +18,7 @@ class SystemsController < ApplicationController
   before_filter :require_user
   before_filter :require_org
   before_filter :find_system, :only => [:edit, :facts, :subscriptions,
-    :available_subscriptions, :unbind, :destroy, :update,
+    :available_subscriptions, :bind, :unbind, :destroy, :update,
     :events]
 
   def section_id
@@ -70,24 +70,22 @@ class SystemsController < ApplicationController
   end
 
   def subscriptions
-
-    # Method currently used for both GET and POST, check if we're subscribing:
-    if params.has_key?("pool_id")
-      pool_id = params['pool_id']
-      Rails.logger.info "#{@system.uuid} binding to pool #{pool_id}"
-      ent = @system.bind(pool_id)
-      product_name = Subscription.retrieve(ent.pool["id"]).product.name
-      flash[:notice] = _("Subscribed to #{product_name}.")
-    end
-
     @entitlements = Entitlement.retrieve_all(@system.uuid)
-
     render :partial => "subscriptions", :layout => "tupane_layout"
   end
 
   def available_subscriptions
     @subscriptions = Subscription.retrieve_by_consumer_id(@system.uuid)
     render :partial => "available_subscriptions" , :layout => "tupane_layout"
+  end
+
+  def bind
+    pool_id = params['pool_id']
+    Rails.logger.info "#{@system.uuid} binding to pool #{pool_id}"
+    ent = @system.bind(pool_id)
+    product_name = Subscription.retrieve(ent.pool["id"]).product.name
+    flash[:notice] = _("Subscribed to #{product_name}.")
+    redirect_to available_subscriptions_system_path(params['id'])
   end
 
   def unbind

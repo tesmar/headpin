@@ -2,9 +2,9 @@ ComplianceManager::Application.routes.draw do
   # The priority is based upon order of creation:
   # first created -> highest priority.
   get "notices/get_new"
-  
+
   resources :systems do
-    get 'auto_complete_search' , :on => :collection    
+    get 'auto_complete_search' , :on => :collection
     delete :delete
     member do
       get :facts
@@ -14,13 +14,15 @@ ComplianceManager::Application.routes.draw do
       delete :delete
       delete :subscriptions
       get :available_subscriptions
-      get :events      
+      get :events
       get :manifest_dl
+      post :bind
+      get :bind
     end
   end
-  
+
   resources :activation_keys do
-    get 'auto_complete_search' , :on => :collection       
+    get 'auto_complete_search' , :on => :collection
   end
 
   match 'systems/:id/unbind/:entitlement_id', :to => 'systems#unbind'
@@ -28,7 +30,7 @@ ComplianceManager::Application.routes.draw do
 
   namespace "admin" do
     resources :organizations do
-      get 'auto_complete_search' , :on => :collection         
+      get 'auto_complete_search' , :on => :collection
       member do
         get :subscriptions
         post :subscriptions
@@ -57,7 +59,7 @@ ComplianceManager::Application.routes.draw do
     end
 
   end
-  
+
   resource :account
   resources :login, :dashboard, :subscriptions, :imports
 
@@ -68,7 +70,7 @@ ComplianceManager::Application.routes.draw do
   match 'allowed_orgs', :to => 'application#allowed_orgs'
 
   match 'admin', :to => 'admin/organizations#index'
-  
+
   resources :search, :only => {} do
     get 'show', :on => :collection
 
@@ -78,7 +80,7 @@ ComplianceManager::Application.routes.draw do
     get 'favorite', :on => :collection
     post 'favorite' => 'search#create_favorite', :on => :collection
     delete 'favorite/:id' => 'search#destroy_favorite', :on => :collection, :as => 'destroy_favorite'
-  end  
+  end
 
   # Sample of regular route:
   #   match 'products/:id' => 'catalog#view'

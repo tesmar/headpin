@@ -2,10 +2,11 @@
 = include_javascripts :treetable
 = include_javascripts :form
 = include_javascripts :multiselect
+
 .grid_16
   -# TODO put back in the system systats and the last checkin date
   = two_panel(@systems,
-  :title => _('Systems'), 
-  :name => _('system'), 
-  :col => ['name', 'entitlementCount', 'entitlement_status'], 
+  :title => _('Systems'),
+  :name => _('system'),
+  :col => ['name', 'entitlementCount', 'entitlement_status'],
   :enable_create => true)
