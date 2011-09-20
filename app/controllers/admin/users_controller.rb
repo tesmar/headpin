@@ -56,7 +56,7 @@ class Admin::UsersController < ApplicationController
     end
   end
 
-  def user_roles
+  def edit_roles
     @user = User.retrieve(params[:id])
     @roles = @user.roles.map(&:id)
     render :partial=>"user_roles", :layout => "tupane_layout", :locals=>{:user=>@user, :roles=>@roles}
