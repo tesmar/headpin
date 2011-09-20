@@ -11,9 +11,6 @@
 # http://www.gnu.org/licenses/old-licenses/gpl-2.0.txt.
 
 class User < Tableless
-  include ActiveModel::Validations
-  include ActiveModel::Conversion
-  extend ActiveModel::Naming
 
   attr_accessor :username, :superAdmin
 
@@ -21,8 +18,10 @@ class User < Tableless
     @json_hash =  super(attrs)
     @superAdmin = TRUE_VALUES.include?(@json_hash["superAdmin"])
     @username = @json_hash["username"]
-    Rails.logger.ap "NEW USER FROM CANDLEPIN JSON:::::::::::::"
-    Rails.logger.ap self
+  end
+
+  def to_param
+    username
   end
 
   def self.retrieve(user_id)
