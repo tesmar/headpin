@@ -80,6 +80,10 @@ class User < Tableless
     ret
   end
 
+  def destroy
+    Candlepin::Proxy.delete("/users/#{username}")
+  end
+
   # Fake outs. May need to persist these values
   def page_size
     20
