@@ -39,12 +39,13 @@ class Admin::RolesController < ApplicationController
 
   def create
     @role = Role.new(params[:role])
-    if @role.save
-      notice @role.name + " " + _("Role created.")
-      render :partial=>"common/list_item", :locals=>{:item=>@role, :accessor=>"id", :columns=>["name"]}
+    new_role = @role.save
+    if new_role
+      notice(new_role.name + " " + _("Role created."))
+      render :partial=>"common/list_item", :locals=>{:item=>new_role, :name => "role", :accessor=>"id", :columns=>["name"]}
     else
-      errors "", {:list_items => @role.errors.to_a}
-      render :json=>@role.errors, :status=>:bad_request
+      errors "", {:list_items => new_role.errors.to_a}
+      render :json=>new_role.errors, :status=>:bad_request
     end
   end
 
@@ -76,17 +77,19 @@ class Admin::RolesController < ApplicationController
 
   def destroy
     @id = params[:id]
+    @role = Role.retrieve(@id)
     begin
       #remove the user
-      @role.destroy
-      if @role.destroyed?
-        notice _("Role '#{@role[:name]}' was deleted.")
+      destroyed = @role.destroy
+      if destroyed
+        notice _("Role '#{@role.name}' was deleted.")
         #render and do the removal in one swoop!
-        render :partial => "common/list_remove", :locals => {:id => @id}
+        render :partial => "common/list_remove", :locals => {:id => @id, :name => "role"}
       else
         raise
       end
     rescue Exception => error
+    Rails.logger.ap error.backtrace
       errors error.to_s
       render :text=> error.to_s, :status=>:bad_request and return
     end

@@ -74,6 +74,7 @@ class Role < Tableless
     end
   end
 
+<<<<<<< HEAD
   def save_permission(level, owner)
     cp_level = (level == "all" ? "ALL" : "READ_ONLY") #these cpin stores in the DB
     owner = "global" if owner.blank?
@@ -95,6 +96,8 @@ class Role < Tableless
     end
   end
 
+=======
+>>>>>>> Now you can add and remove Roles
   def destroy
     begin
       f = Candlepin::Proxy.delete("/roles/#{cp_id}")
