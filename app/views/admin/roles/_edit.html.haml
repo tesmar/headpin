@@ -19,10 +19,10 @@
       .tree_breadcrumb
     .sliding_container
       #roles_list.list.sliding_list{"data-page_size"=>current_user.page_size}
-        #tree_loading.slider
-          .text
-            = _("Loading Permissions")
-            = image_tag ("spinner.gif")
+        -##tree_loading.slider
+        -#  .text
+        -#    = _("Loading Permissions")
+        -#    = image_tag ("spinner.gif")
         .slider_one.has_content.slider.will_have_content
         .slider_two.no_content.slider
     

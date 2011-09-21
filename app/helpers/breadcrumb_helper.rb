@@ -171,7 +171,7 @@ module BreadcrumbHelper
                       {:client_render => true}, { :count => 0})
       } if @organizations
       
-      User.all.each{ |user|
+      User.retrieve_all.each{ |user|
         add_crumb_node!(bc, user_bc_id(user), "", user.username, ['roles', 'role_users'],
                       {:client_render => true}, { :has_role => false })
       }
@@ -220,7 +220,7 @@ module BreadcrumbHelper
     end
     
     def user_bc_id user
-      "user_#{user.id}"
+      "user_#{user.username}"
     end
     
     def permission_bc_id organization, permission

@@ -232,6 +232,8 @@ KT.roles.permissionWidget = function(){
             verbs_select.append(html);
             
             html = '';
+            flow['tags'].container.find('.info_text').remove();
+            
             if( type !== 'organizations' && current_organization !== "global" ){
                 length = tags.length;
                 tags_select.empty();
@@ -240,7 +242,6 @@ KT.roles.permissionWidget = function(){
                 }
                 tags_select.append(html);
                 tags_select.show();
-                flow['tags'].container.find('.info_text').remove();
                 all_tags_button.show();
             } else {
             	tags_select.hide();
@@ -433,7 +434,6 @@ var roleActions = (function($){
                 description     = $('.edit_description'),    
                 after_function  = undefined,
                 nameBreadcrumb  = $('.tree_breadcrumb'),
-                options         = {},
                 opening         = options.opening,
                 
                 setup_edit = function() {
@@ -452,7 +452,7 @@ var roleActions = (function($){
                                 original.reset();
                             }
                         };
-                    
+
                     name_box.each(function() {
                         var settings = {
                                 type        :  'text',
@@ -597,6 +597,7 @@ var roleActions = (function($){
 	               success  : function(data){
 	                   roles_breadcrumb[current_crumb] = data[current_crumb];
 	                   KT.roles.tree.rerender_content();
+	                   KT.roles.tree.rerender_breadcrumb();
 	                   form[0].reset();
 	
 	                   if( data.type === "all" ){
@@ -660,9 +661,9 @@ var roleActions = (function($){
                dataType : 'json',
                success  : function(data){
                     if( adding ){
-                        roles_breadcrumb['user_'+data['user_id']].has_role = true;
+                        roles_breadcrumb[element.attr('data-id')].has_role = true;
                     } else {
-                        roles_breadcrumb['user_'+data['user_id']].has_role = false;
+                        roles_breadcrumb[element.attr('data-id')].has_role = false;
                     }
                     KT.roles.tree.rerender_content();
                },
@@ -859,7 +860,7 @@ var templateLibrary = (function($){
                 if( users.hasOwnProperty(item) ){
                     user = item.split("_");
                     if( user[0] === "user" ){
-                        html += usersListItem("user_"+users[item].name, users[item].name, users[item].has_role, options.no_slide, options.show_button);
+                        html += usersListItem(item, users[item].name, users[item].has_role, options.no_slide, options.show_button);
                     }
                 }
             }
@@ -1050,7 +1051,7 @@ var rolesRenderer = (function($){
 var pageActions = (function($){
     var toggle_list = {
             'role_edit'	:  { container 	: 'role_edit',
-            				setup_fn 	: roleActions.role_edit }
+            				 setup_fn 	: roleActions.role_edit }
         },
     
         registerEvents = function(){
@@ -1094,17 +1095,17 @@ var pageActions = (function($){
                 });         
             });
             
-            panel.contract_cb = function(name){
+            KT.panel.set_contract_cb(function(name){
                 $.bbq.removeState("role_edit");
                 $('#panel').removeClass('panel-custom');
                 action_bar.reset();
-            };
+            });
                     
-            panel.switch_content_cb = function(){
+            KT.panel.set_switch_content_cb(function(){
                 $.bbq.removeState("role_edit");
                 $('#panel').removeClass('panel-custom');
                 action_bar.reset();
-            };
+            });
         };
     
     return {

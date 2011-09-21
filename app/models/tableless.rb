@@ -16,7 +16,7 @@ class Tableless
     end
     @json_hash
   end
-
+  #default id, override if needed
   def id
     @json_hash["id"]
   end
@@ -26,8 +26,15 @@ class Tableless
       @json_hash[key] = value
     end
   end
+
   #this is for activeModel to know this object is not persisted in the db
   def persisted?
     false
   end
+
+  #this is for activeView, override if needed.
+  def to_param
+    id
+  end
+
 end #end class

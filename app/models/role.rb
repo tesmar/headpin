@@ -11,24 +11,19 @@
 # http://www.gnu.org/licenses/old-licenses/gpl-2.0.txt.
 
 class Role < Tableless
-  include ActiveModel::Conversion
-  extend ActiveModel::Naming
 
-  attr_accessor :name, :users
+  attr_accessor :name, :users, :permissions
 
   def initialize(json_hash=nil)
     @json_hash = (json_hash ||= {})
     # rails doesn't like variables called id or type
     if @json_hash != {}
       @name = @json_hash["name"]
-      @users = @json_hash["users"]
+      @users = @json_hash["users"].map { |u| User.new(u)}
+      @permissions = @json_hash["permissions"].map { |p| Permission.new(p)}
     end
-    Rails.logger.ap "NEW ROLE FROM CANDLEPIN JSON:::::::::::::"
-    Rails.logger.ap self
   end
 
-  # TODO: .find(:all)
-  # TODO: .find(:all, :from => "#{AppConfig.candlepin.prefix}/users/#{username}/roles")
   def self.retrieve(r_id)
     role = nil
     begin
@@ -38,8 +33,6 @@ class Role < Tableless
       Rails.logger.error "Unrecognized Role: " + json_role.to_s
       raise "Unrecognized Role: " + json_role.to_s + "\n" + e.to_s
     end
-    Rails.logger.ap "NEW ROLE FROM CANDLEPIN JSON:::::::::::::"
-    Rails.logger.ap self
     role
   end
 
@@ -76,11 +69,11 @@ class Role < Tableless
   end
 
   def add_user(user)
-    connection.post( "#{AppConfig.candlepin.prefix}/roles/#{id}/users/#{user.username}")
+    Candlepin::Proxy.post("/roles/#{id}/users/#{user.username}")
   end
 
   def remove_user(user)
-    connection.delete( "#{AppConfig.candlepin.prefix}/roles/#{id}/users/#{user.username}")
+    Candlepin::Proxy.delete( "/roles/#{id}/users/#{user.username}")
   end
 
   #permissions
