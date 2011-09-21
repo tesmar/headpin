@@ -27,112 +27,17 @@ KT.roles.permissionWidget = function(){
         all_verbs_button    = $('#all_verbs'),
         all_tags_button     = $('#all_tags'),
         
-        flow = {
-            'name'          :   { previous  : false,
-                                  next      : 'resource_type', 
-                                  container : $('#name_container'),
-                                  input		: $('#permission_name'),
-                                  validate  : function(){
-                                        if( $("#permission_name").val() === "" ){
-                                            if( !$('#name_container').find('span').hasClass('validation_error') ){
-                                                $('#name_container').append('<span class="validation_error">' + i18n.name_validation + '</span>');
-                                                $('#permission_name').addClass("input_error");
-                                            }
-                                            return false;
-                                        }  else {
-                                            $('#name_container').find('span').remove();
-                                            $('#permission_name').removeClass("input_error");
-                                            return true;
-                                        }
-                                  },
-                                  actions   : function(){
-                                        previous_button.hide();
-                                        if( mode !== 'update' ){
-                                        	$('#step_1').addClass('active-step');
-                                        	$('#step_1').show();
-                                        }
-                                        if( all_types_button.hasClass('selected') ){
-                                            handleAllTypes();
-                                        }
-                                  }
-                                },
-            'resource_type' :   { previous  : 'name', 
-                                  next      : 'verbs',
-                                  container : $('#resource_type_container'),
-                                  input     : $('#resource_type'),
-                                  validate  : function(){
-                                      return true;
-                                  },
-                                  actions   : function(){
-                                  		if( mode !== 'update' ){
-	                                  		$('#step_1').removeClass('active-step');
-	                                  		$('#step_1').hide();
-	                                  		$('#step_2').addClass('active-step');
-	                                  		$('#step_2').show();
-                                  		}
-                                  		previous_button.show();
-                                  			
-                                      	if( done_button.is(":visible") ){
-                                        	done_button.hide();
-                                          	next_button.show();
-                                      	}
-                                  }
-                                },
-            'verbs'         :   { previous  : 'resource_type',
-                                  next      : 'tags',
-                                  container : $('#verbs_container'),
-                                  input     : $('#verbs'),
-                                  validate  : function(){
-                                        if( $('#verbs').val() === null && !all_verbs_button.hasClass('selected') ){
-                                            if( !$('#verbs_container').find('span').hasClass('validation_error') ){ 
-                                                $('#verbs_container').append('<div class="permission_widget_container"><span class="validation_error">' + i18n.verb_validation + '</span></div>');
-                                            }
-                                            return false;
-                                        } else {
-                                            $('.validation_error').parent().remove();
-                                            return true;
-                                        }
-                                  },
-                                  actions   : function(){
-                                  		if( mode !== 'update' ){
-	                                  		$('#step_2').removeClass('active-step');
-	                                  		$('#step_2').hide();
-	                                  		$('#step_3').addClass('active-step');
-	                                  		$('#step_3').show();
-                                  		}
-	                                    done_button.hide();
-	                                    next_button.show();
-                                  }
-                                }, 
-            'tags'          :   { previous  : 'verbs',
-                                  next      : false,
-                                  container : $('#tags_container'),
-                                  input     : $('#tags'),
-                                  validate  : function(){
-                                        return true;
-                                  },
-                                  actions   : function(){
-                                  		if( mode !== 'update' ){
-	                                  		$('#step_3').hide();
-	                                  		$('#step_3').removeClass('active-step');
-	                                  		$('#step_4').addClass('active-step');
-	                                  		$('#step_4').show();
-                                  		}
-                                        next_button.hide();
-                                        done_button.show();
-                                  }
-                                }
-        },
+        flow = {},
     
         init = function(){
-            previous_button.hide();
-            done_button.hide();
-            next_button.unbind('click').click(handleNext);
-            previous_button.unbind('click').click(handlePrevious);
+            //previous_button.hide();
+            //done_button.hide();
+            //next_button.unbind('click').click(handleNext);
+            //previous_button.unbind('click').click(handlePrevious);
             done_button.unbind('click').click(handleDone);
-            all_types_button.unbind('click').click(function(){ handleAllTypes(); });
-            all_verbs_button.unbind('click').click(function(){ handleAllVerbs(); });
-            all_tags_button.unbind('click').click(function(){ handleAllTags(); });
+            //all_types_button.unbind('click').click(function(){ handleAllTypes(); });
+            //all_verbs_button.unbind('click').click(function(){ handleAllVerbs(); });
+            //all_tags_button.unbind('click').click(function(){ handleAllTags(); });
             current_stage = 'name';
         },
         reset = function(){
@@ -146,17 +51,17 @@ KT.roles.permissionWidget = function(){
                 }
             }
             
-            all_verbs_button.removeClass('selected');
-            all_verbs_button.html(i18n.all);
-            all_tags_button.removeClass('selected');
-            all_tags_button.html(i18n.all);
-            previous_button.hide();
-            next_button.show();
-            done_button.hide();
-            done_button.removeClass('disabled');
-            flow['verbs'].input.removeAttr('disabled');
-            flow['tags'].input.removeAttr('disabled');
-            current_stage = 'name';
+            //all_verbs_button.removeClass('selected');
+            //all_verbs_button.html(i18n.all);
+            //all_tags_button.removeClass('selected');
+            //all_tags_button.html(i18n.all);
+            //previous_button.hide();
+            //next_button.show();
+            //done_button.hide();
+            //done_button.removeClass('disabled');
+            //flow['verbs'].input.removeAttr('disabled');
+            //flow['tags'].input.removeAttr('disabled');
+            //current_stage = 'name';
             $('#add_permission_form')[0].reset();
             $('.validation_error').remove();
         },
@@ -255,30 +160,12 @@ KT.roles.permissionWidget = function(){
                 button                  = $('#add_permission');
             
             mode = 'create';
-            
+           //Headpin also only wants to be able to act on organizations 
             if( opening ){
                 reset();
-                set_types(current_organization);
-                set_verbs_and_tags(flow['resource_type'].input.val(), current_organization);
                 button.children('span').html(i18n.close_add_permission);
                 button.addClass("highlighted");
                 
-                flow['resource_type'].input.unbind('change').change(function(event){
-                    set_verbs_and_tags(event.currentTarget.value, current_organization);
-                    
-                    if( current_stage !== 'resource_type' ){
-                        flow['verbs'].actions();
-                        current_stage = 'verbs';
-                        flow['tags'].container.hide();
-                    }
-                    if( all_verbs_button.hasClass('selected') ){
-                        handleAllVerbs();
-                    }
-                    if( all_tags_button.hasClass('selected') ){
-                        handleAllTags();
-                    }
-                });
-            
                 if( current_organization === "global" ){
                     $('#permission_widget_header').html(i18n.add_header_global);
                 } else {
@@ -368,26 +255,6 @@ KT.roles.permissionWidget = function(){
         handleAllTypes = function(selected){
             selected = selected || all_types_button.hasClass('selected');
             
-            if( !selected ){
-                next_button.hide();
-                done_button.show();
-                flow['verbs'].container.hide();
-                flow['tags'].container.hide();
-                current_stage = 'resource_type';
-                flow['resource_type'].input.hide();
-                flow['resource_type'].input.val('all');
-                $('<span id="all_types_selected">' + i18n.all_types_selected + '</span>').insertBefore(all_types_button);
-                all_types_button.html(i18n.cancel);
-                all_types_button.addClass('selected');
-            } else {
-            	done_button.hide();
-            	next_button.show();
-                flow['resource_type'].input.show();
-                $('#all_types_selected').remove();
-                flow['resource_type'].input.val('organizations').change();
-                all_types_button.html(i18n.all);
-                all_types_button.removeClass('selected');
-            }
         },
         handleAllVerbs = function(selected){
             selected = selected || all_verbs_button.hasClass('selected');
@@ -519,23 +386,7 @@ var roleActions = (function($){
             }
         },
         getPermissionDetails = function(){
-            var id = current_organization.split('_')[1];
 
-            if( !roles_breadcrumb[current_organization].permission_details && current_organization !== '' && current_organization !== undefined ){
-                $('#add_permission').addClass('disabled');
-                $.ajax({
-                    type    : "GET",
-                    url     : KT.common.rootURL() + 'admin/roles/' + id + '/resource_type/verbs_and_scopes',
-                    cache   : false,
-                    dataType: 'json',
-                    success : function(data){
-                        if( roles_breadcrumb[current_organization] ){
-                            roles_breadcrumb[current_organization].permission_details = data;
-                        }
-                        $('#add_permission').removeClass('disabled');
-                    }
-                });
-            }
         },
         savePermission = function(mode, successCallback, errorCallback){
             var org_id = current_crumb.split('_')[1],
@@ -544,18 +395,6 @@ var roleActions = (function($){
             
             if( current_organization !== "global" ){
                 to_submit.find("#organization_id").val(org_id);
-            }
-            
-            if( $('#all_verbs').hasClass('selected') ){
-                to_submit = to_submit.serializeArray();
-                to_submit.push({ name : 'permission[all_verbs]', value : true });
-            }
-            
-            if( $('#all_tags').hasClass('selected') ){
-                if( !(to_submit instanceof Array) ){
-                    to_submit = to_submit.serializeArray();
-                }
-                to_submit.push({ name : 'permission[all_tags]', value : true });
             }
             
             if( to_submit instanceof Array ){
@@ -572,14 +411,14 @@ var roleActions = (function($){
 	               data     : to_submit,
 	               dataType : 'json',
 	               success  : function(data){
-	                   $.extend(roles_breadcrumb, data);
+	                   //$.extend(roles_breadcrumb, data);
 	                   KT.roles.tree.rerender_content();
 	                   form[0].reset();
 	                   roles_breadcrumb[current_organization].count += 1
 	
-	                   if( data.type === "all" ){
-	                       roles_breadcrumb[current_organization].full_access = true
-	                   }
+	                   //if( data.type === "all" ){
+	                   //    roles_breadcrumb[current_organization].full_access = true
+	                  // }
 	                   
 	                   successCallback();
 	               },
@@ -757,7 +596,7 @@ var templateLibrary = (function($){
                 options = options ? options : {},
                 full_access = false;
             
-            html += listItem('global', items['global'].name, items['global'].count, false);
+            //html += listItem('global', items['global'].name, items['global'].count, false);
             
             for( item in items){
                 if( items.hasOwnProperty(item) ){
@@ -803,31 +642,9 @@ var templateLibrary = (function($){
             var i = 0, length = 0,
                 html = '<div class="permission_detail">';
             
-            html += '<div class="permission_detail_container"><label class="grid_3 ra">Name: </label><span>' + permission.name + '</span></div>';
-            html += '<div class="permission_detail_container"><label class="grid_3 ra">Description: </label><span>' + permission.description + '</span></div>';
+            html += '<div class="permission_detail_container"><label class="grid_3 ra">ID: </label><span>' + permission.name + '</span></div>';
             html += '<div class="permission_detail_container"><label class="grid_3 ra">Permission For: </label><span>' + permission.type_name + '</span></div>';
             
-            html += '<div class="permission_detail_container"><label class="grid_3 ra">Verb(s): </label><ul>'
-            
-            if( permission.verbs === 'all'){
-            	html += '<li>All</li>';
-            } else {
-	            length = permission.verbs.length;
-	            for( i=0; i < length; i += 1){
-	                html += '<li>' + permission.verbs[i].display_name + '</li>';
-	            }
-            }
-            html += '</ul></div>';
-            
-            html += '<div class="permission_detail_container"><label class="grid_3 ra">On:</label><ul>';
-            if( permission.tags === 'all' ){
-            	html += '<li>All</li>';
-            } else {
-	            length = permission.tags.length;
-	            for( i=0; i < length; i += 1){
-	                html += '<li>' + permission.tags[i].display_name + '</li>';
-	            }
-            }
             html += '</ul></div></div>';
 
             return html;
@@ -1095,13 +912,13 @@ var pageActions = (function($){
                 });         
             });
             
-            KT.panel.set_contract_cb(function(name){
+            KT.panel.set_contract_cb = function(name){
                 $.bbq.removeState("role_edit");
                 $('#panel').removeClass('panel-custom');
                 action_bar.reset();
             });
                     
-            KT.panel.set_switch_content_cb(function(){
+            KT.panel.set_switch_content_cb = function(){
                 $.bbq.removeState("role_edit");
                 $('#panel').removeClass('panel-custom');
                 action_bar.reset();

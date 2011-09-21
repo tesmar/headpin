@@ -1,6 +1,6 @@
 = javascript do
   :javascript
-    var roles_breadcrumb = $.parseJSON('#{escape_javascript(generate_roles_breadcrumb())}');
+      var roles_breadcrumb = $.parseJSON('#{escape_javascript(generate_roles_breadcrumb())}');
 
 = javascript :role_edit
 
@@ -87,7 +87,7 @@
           %span.text
             = _("Edit Role")
       - if Role.deletable?
-        #remove_role.cs_action{ "data-confirm-text" => "#{_('Are you sure you want to remove this role?')}", "data-url" => admin_role_path(@role) }
+        #remove_role.cs_action{ "data-confirm-text" => "#{_('Are you sure you want to remove this role?')}", "data-url" => admin_role_path(@role.cp_id) }
           %span#remove_role_icon.sprite
             SPRITE
           %span.text

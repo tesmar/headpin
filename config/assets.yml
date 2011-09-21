@@ -61,8 +61,8 @@ javascripts:
   edit:
     - public/javascripts/jquery/plugins/jquery.jeditable.js
     - public/javascripts/jquery.jeditable.helpers.js
-    #- public/javascripts/jquery/plugins/jquery.jeditable.ajaxupload.js
-    #- public/javascripts/jquery/plugins/jquery.ajaxfileupload.js
+    - public/javascripts/jquery/plugins/jquery.jeditable.ajaxupload.js
+    - public/javascripts/jquery/plugins/jquery.ajaxfileupload.js
   multiselect:
     - public/javascripts/jquery/plugins/jquery.ui.multiselect.js
   fancyqueries:

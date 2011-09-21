@@ -12,15 +12,15 @@
 
 class Role < Tableless
 
-  attr_accessor :name, :users, :permissions
+  attr_accessor :name, :users, :cp_id, :permissions
 
   def initialize(json_hash=nil)
-    @json_hash = (json_hash ||= {})
+    @json_hash = super(json_hash)
     # rails doesn't like variables called id or type
     if @json_hash != {}
       @name = @json_hash["name"]
-      @users = @json_hash["users"].map { |u| User.new(u)}
-      @permissions = @json_hash["permissions"].map { |p| Permission.new(p)}
+      @users = @json_hash["users"]
+      @permissions = @json_hash["permissions"]
     end
   end
 
@@ -64,16 +64,68 @@ class Role < Tableless
     roles
   end
 
+  def save
+    new_role_info = {"name" => name }
+    begin
+      f = Candlepin::Proxy.post('/roles', new_role_info.to_json)
+      return Role.new(JSON.parse(f))
+    rescue Exception => e
+      return false
+    end
+  end
+
+  def save_permission(level, owner)
+    cp_level = (level == "all" ? "ALL" : "READ_ONLY") #these cpin stores in the DB
+    owner = "global" if owner.blank?
+    new_perm_info = {"access" =>  cp_level, "owner" => owner}
+    begin
+      f = Candlepin::Proxy.post("/roles/#{cp_id}/permissions", new_perm_info.to_json)
+      return Role.new(JSON.parse(f))
+    rescue Exception => e
+      return false
+    end
+  end
+
+  def destroy_permission(perm_id)
+    begin
+      f = Candlepin::Proxy.delete("/roles/#{cp_id}/permissions/#{perm_id}")
+      return JSON.parse(f)
+    rescue Exception => e
+      return false
+    end
+  end
+
+  def destroy
+    begin
+      f = Candlepin::Proxy.delete("/roles/#{cp_id}")
+      return true
+    rescue Exception => e
+      return false
+    end
+  end
+
   def users_count
     users.count()
   end
 
   def add_user(user)
-    Candlepin::Proxy.post("/roles/#{id}/users/#{user.username}")
+    JSON.parse(Candlepin::Proxy.post("/roles/#{cp_id}/users/#{user.username}"))
   end
 
   def remove_user(user)
-    Candlepin::Proxy.delete( "/roles/#{id}/users/#{user.username}")
+    JSON.parse(Candlepin::Proxy.delete("/roles/#{cp_id}/users/#{user.username}"))
+  end
+
+  def update(new_values)
+    begin
+      #b/c CP requires you to pass the ID in the body as well as the URL
+      new_values["id"] = @cp_id
+      update_json = JSON.parse(Candlepin::Proxy.put("/roles/#{cp_id}", new_values.to_json))
+      return update_json
+    rescue Exception => e
+      Rails.logger.error "Error updating Role: " + update_json.to_s
+      raise "Error updating Role: " + update_json.to_s + "\n" + e.to_s
+    end
   end
 
   #permissions
