@@ -63,7 +63,7 @@ class Admin::RolesController < ApplicationController
       params[:update_users][:user_id] = user.id
       notice _("Role updated.")
       render :json => params[:update_users]
-    elsif @role.update_attributes(params[:role])
+    elsif @role.update(params[:role])
       notice _("Role updated.")
       render :json=>params[:role]
     else
@@ -85,8 +85,6 @@ class Admin::RolesController < ApplicationController
         notice _("Role '#{@role.name}' was deleted.")
         #render and do the removal in one swoop!
         render :partial => "common/list_remove", :locals => {:id => @id, :name => "role"}
-      else
-        raise
       end
     rescue Exception => error
     Rails.logger.ap error.backtrace

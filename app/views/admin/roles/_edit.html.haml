@@ -33,12 +33,7 @@
       .fieldset
         .grid_2.ra
           %label #{_("Name:")}
-        .grid_3.la.editable.edit_name_text{'name' => 'role[name]'} #{@role.name}
-        %br
-        %br
-        .grid_2.ra
-          %label #{_("Description:")}
-        .grid_3.la.editable.edit_description{'name' => 'role[description]'} 'description'
+        .grid_3.la.editable.edit.edit_name_text{'name' => 'role[name]'} #{@role.name}
 
     #permission_add.slide_up_container
       %h2#permission_add_header
