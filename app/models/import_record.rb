@@ -31,7 +31,7 @@ class ImportRecord < Tableless
   end
 
   def timestamp
-    DateTime.parse @updated
+    DateTime.parse @created
   end
 
   def self.retrieve_by_org(key)
