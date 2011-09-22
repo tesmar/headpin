@@ -61,6 +61,20 @@ class Organization < Tableless
     orgs
   end
 
+  def self.retrieve_all
+    oj = JSON.parse(Candlepin::Proxy.get("/owners"))
+    orgs = []
+    oj.each do |json_org|
+      begin
+        orgs << Organization.new(json_org)
+      rescue Exception => e
+        Rails.logger.error "Unrecognized Org: " + oj.to_s
+        raise "Unrecognized Org: " + oj.to_s + "\n" + e.to_s
+      end
+    end
+    orgs
+  end
+
   def update(new_values)
     begin
       update_json = JSON.parse(Candlepin::Proxy.put("/owners/#{org_id}", new_values))

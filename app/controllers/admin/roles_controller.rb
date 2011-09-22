@@ -33,6 +33,7 @@ class Admin::RolesController < ApplicationController
   end
 
   def edit
+    @organizations = Organization.retrieve_all
     @role = Role.retrieve(params[:id])
     render :partial=>"edit", :layout => "tupane_layout", :locals=>{:role=>@role }
   end
