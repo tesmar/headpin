@@ -25,8 +25,5 @@
 # rails logging level (debug, info, warn, error, and fatal)
 #HEADPIN_LOGGING=info
 
-# number of headpin-job service background workers
-#HEADPIN_JOB_WORKERS=1
-
 # additional headpin-job service options for delayed_jobs
 #HEADPIN_JOB_WORKERS=-m -p headpin

@@ -1,7 +1,7 @@
 /var/log/headpin/production*log {
   missingok
   notifempty
-  create 0644 headping headpin
+  create 0644 headpin headpin
   sharedscripts
   rotate 5
   compress

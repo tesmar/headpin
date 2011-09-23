@@ -1,0 +1,165 @@
+#!/bin/bash
+#
+# Init script for headpin
+#
+# chkconfig: - 86 14
+# description: Init script for headpin
+
+
+# Source function library.
+. /etc/rc.d/init.d/functions
+
+if [ -f /etc/sysconfig/headpin ]; then
+    . /etc/sysconfig/headpin
+fi
+
+prog=headpin
+THIN=/usr/share/headpin/script/thin
+RETVAL=0
+HEADPIN_PREFIX=${HEADPIN_PREFIX:-/headpin}
+HEADPIN_PORT=${HEADPIN_PORT:-3000}
+HEADPIN_USER=${HEADPIN_USER:-headpin}
+HEADPIN_GROUP=${HEADPIN_GROUP:-headpin}
+HEADPIN_HOME=${HEADPIN_HOME:-/usr/share/headpin}
+HEADPIN_DATA_DIR=${HEADPIN_DATA_DIR:-/var/lib/headpin}
+HEADPIN_ENV=${HEADPIN_ENV:-production}
+HEADPIN_PID=${HEADPIN_PID:-${HEADPIN_HOME}/tmp/pids/thin.5000.pid}
+export HEADPIN_LOGGING=${HEADPIN_LOGGING:-info}
+
+export RAILS_RELATIVE_URL_ROOT=$HEADPIN_PREFIX
+
+check_privilege() {
+    runuser -s /bin/sh ${HEADPIN_USER} -c "echo x > /dev/null" 2> /dev/null || RETVAL=4
+    if [ $RETVAL = 4 ]; then
+        echo "User had insufficient privilege";
+        exit $RETVAL
+    fi
+}
+
+check_permissions() {
+    if [ -f "$HEADPIN_PID" ] && [ "$(stat -c %U $HEADPIN_PID)" != "$HEADPIN_USER" ]; then
+        echo "Incorrect permissions, please do not run headpin as root"
+        echo "Correct permission of all log files and pid file to 'headpin' user:"
+        echo "chown headpin:headpin $HEADPIN_PID"
+        echo "chown -R headpin:headpin $HEADPIN_DATA_DIR"
+        exit 1
+    fi
+}
+
+status() {
+    #check if pid file exists
+    if [ -f ${HEADPIN_PID} ]; then
+        pid=`cat ${HEADPIN_PID}`
+        #check if proces with pid from the file is running
+        if `ps -p $pid > /dev/null`; then
+            echo "$prog is running."
+            RETVAL=0
+        else
+            echo "$prog is not running."
+            RETVAL=1
+        fi
+    else
+        echo "$prog is not running."
+        RETVAL=3
+    fi
+
+    return $RETVAL
+}
+
+status_q() {
+    status &> /dev/null
+    return $?
+}
+
+start() {
+    check_privilege
+    check_permissions
+
+    echo -n $"Starting $prog: "
+    if status_q; then
+        echo -n $"$prog is already running. "
+        RETVAL=0
+        echo_success
+    else
+        cd ${HEADPIN_HOME} #rails expects you to run from the root of the app
+        # delete Gemfile.lock (it will be regenerated)
+        rm -f $HEADPIN_DATA_DIR/Gemfile.lock
+        export HOME=
+        daemon --user ${HEADPIN_USER} $THIN start --user ${HEADPIN_USER} --group ${HEADPIN_GROUP} --config /etc/headpin/thin.yml --rackup "${HEADPIN_HOME}/config.ru" > /var/log/headpin/startup.log 2>&1
+        RETVAL=$?
+        if [ $RETVAL = 0 ]; then
+            echo_success
+        else
+            echo_failure
+        fi
+    fi
+
+    echo
+    return $RETVAL
+}
+
+stop() {
+    $THIN --config /etc/headpin/thin.yml stop
+}
+
+restart() {
+    stop
+    start
+}
+
+condstop() {
+    if status_q; then
+        stop
+    else
+        RETVAL=0
+    fi
+}
+
+condrestart() {
+    if status_q; then
+        restart
+    else
+        RETVAL=0
+    fi
+}
+
+case "$1" in
+    start)
+        start
+        ;;
+    stop)
+        stop
+        ;;
+    restart)
+        restart
+        ;;
+    condrestart|try-restart)
+        condrestart
+        ;;
+    condstop)
+        condstop
+        ;;
+    status)
+        status
+        ;;
+    depcheck)
+        # check if required dependencies from Gemfile are installed
+        TMPDIR=$(mktemp -d)
+        pushd $HEADPIN_HOME >/dev/null
+          cp -R .bundle/ $TMPDIR
+          cp Gemfile* $TMPDIR
+        popd >/dev/null
+        pushd $TMPDIR >/dev/null
+          bundle install --without 'test development' --local
+        popd >/dev/null
+        rm -rf $TMPDIR
+        ;;
+    *)
+        echo "Usage: {start|stop|restart|condrestart|status|initdb}"
+        exit 1
+        ;;
+esac
+
+exit $RETVAL
+
+# vim:set sw=4 ts=4 et:
