@@ -30,7 +30,7 @@ gem 'ruby_parser', :require => false
 
 
 # To use debugger (ruby-debug for Ruby 1.8.7+, ruby-debug19 for Ruby 1.9.2+)
- gem 'ruby-debug', '=0.10.3'
+ gem 'ruby-debug', '=0.10.4'
 # gem 'ruby-debug19'
 
 # Bundle gems for the local environment. Make sure to

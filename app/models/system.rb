@@ -80,19 +80,30 @@ class System < Tableless
     systems
   end
 
-  def bind(pool_id)
-    # TODO: hardcoded app prefix
-    params = {"pool" => pool_id, "quantity" => 1}
-    path = "/consumers/#{uuid}/entitlements?" + params.to_query
-    results = JSON.parse(Candlepin::Proxy.post(path))[0]
-    Entitlement.new(results)
+  def bind(pool_id, quantity=1)
+    begin
+      # TODO: hardcoded app prefix
+      params = {"pool" => pool_id, "quantity" => quantity}
+      path = "/consumers/#{uuid}/entitlements?" + params.to_query
+      results = JSON.parse(Candlepin::Proxy.post(path))[0]
+      Entitlement.new(results)
+    rescue Exception => error
+      x = JSON.parse(error.response.to_s)
+      raise "Subscribe failed - #{x["displayMessage"]}"
+    end
   end
 
-  def unbind(ent_id)
-    # TODO: hardcoded app prefix
-    path = "/consumers/#{uuid}/entitlements/#{ent_id}"
-    resp = Candlepin::Proxy.delete(path) #returns an empty string
-    resp == "" ? true : false
+  def unbind(ent_id, quantity=1)
+    begin
+      # TODO: hardcoded app prefix
+      params = {"quantity" => quantity}
+      path = "/consumers/#{uuid}/entitlements/#{ent_id}?" + params.to_query
+      resp = Candlepin::Proxy.delete(path) #returns an empty string
+      resp == "" ? true : false
+    rescue Exception => error
+      x = JSON.parse(error.response.to_s)
+      raise "Unsubscribe failed - #{x["displayMessage"]}"
+    end
   end
 
 
@@ -130,6 +141,12 @@ class System < Tableless
 
   def destroy
     return Candlepin::Proxy.delete("/consumers/#{uuid}")
+  end
+
+  # Stubs carried over from Katello
+
+  def editable?
+    true
   end
 end
 

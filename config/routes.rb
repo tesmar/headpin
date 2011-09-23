@@ -18,6 +18,7 @@ ComplianceManager::Application.routes.draw do
       get :manifest_dl
       post :bind
       get :bind
+      post :update_subscriptions
     end
   end
 

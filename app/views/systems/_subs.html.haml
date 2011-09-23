@@ -1,0 +1,75 @@
+.grid_8
+  = form_tag update_subscriptions_system_path, :id=>"unsubscribe", :method=>"post", :remote=>true do
+    %h5 #{_("System Current Subscription(s)")}
+    %table
+      %thead
+        %tr
+          %th #{_("Subscription")}
+          %th #{_("Sockets")}
+          %th #{_("Guests")}
+          %th #{_("Quantity")}
+          %th #{_("Total")}
+          %th #{_("Expires")}
+      %tbody
+        - if consumed_subs.length > 0
+          - for sub in consumed_subs
+            %tr
+              %td
+                %span.fl
+                  = check_box_tag "system[#{sub.cp_id}]", value="#{sub.cp_id}", false
+                &nbsp;
+                #{sub.pool.name}
+              %td #{"--"}
+              %td #{"--"}
+              %td
+                = number_field_tag "spinner[#{sub.cp_id}]", nil, :in => 0..sub.quantity, :step=>1, :value=>sub.quantity, :class=>"ui-spinner"
+              %td
+                = "of #{sub.pool.quantity}"
+              %td #{sub.endDate}
+        - else
+          %tr
+            %td{:colspan=>5} #{_("The system is not currently consuming any subscriptions.")}
+    - if editable && consumed_subs.length > 0
+      .actions
+        %a{:class=>'dialogbutton button disabled', :id=>"fake_unsub_submit"} #{_('Unsubscribe')}
+        = submit_tag _('Unsubscribe'), :class => 'submit dialogbutton', :id=>"unsub_submit"
+.grid_8
+  = form_tag update_subscriptions_system_path, :id=>"subscribe", :method=>"post", :remote=>true do
+    %h5 #{_("Available Subscriptions")}
+    %table
+      %thead
+        %tr
+          %th #{_("Subscription")}
+          %th #{_("Contract")}
+          %th #{_("Sockets")}
+          %th #{_("Guests")}
+          %th #{_("Quantity")}
+          %th #{_("Available")}
+          %th #{_("Expires")}
+      %tbody
+        - if avail_subs.length > 0
+          - for sub in avail_subs
+            %tr
+              %td
+                %span.fl
+                  = check_box_tag "system[#{sub.uuid}]", false
+                  -#/ put the product's id in the value field so we know what product is syncing
+                  -#=check_box_tag "repo[#{r.id}]", value="#{p.id}"
+                &nbsp;
+                #{sub.name}
+              %td
+                = sub.contractNumber
+              %td #{"--"}
+              %td #{"--"}
+              %td
+                = number_field_tag "spinner[#{sub.uuid}]", nil, :in => 0..sub.quantity-sub.consumed, :step=>1, :value=>0, :class=>"ui-spinner"
+              %td
+                = "of #{sub.quantity - sub.consumed}"
+              %td #{sub.endDate}
+        - else
+          %tr
+            %td{:colspan=>5} #{_("There are no more subscriptions available.")}
+    - if editable && avail_subs.length > 0
+      .actions
+        = submit_tag _('Subscribe'), :class => 'submit dialogbutton', :id=>"sub_submit"
+        %a{:class=>'dialogbutton button disabled', :id=>"fake_sub_submit"} #{_('Subscribe')}

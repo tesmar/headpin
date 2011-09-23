@@ -23,11 +23,11 @@ class Entitlement < Tableless
 
     if @json_hash != {}
       #convert the array of hashes into a hash you can access by name
-      @pool = @json_hash["pool"]
+      @pool = Subscription.retrieve(@json_hash["pool"]["id"])
       @startDate = DateTime.parse(@json_hash["startDate"])
       @endDate= DateTime.parse(@json_hash["endDate"])
-      @consumed = @json_hash["consumed"]
-      @quantity = @json_hash["quantity"]
+      @consumed = @json_hash["consumed"].to_i
+      @quantity = @json_hash["quantity"].to_i
       @contractNumber = @json_hash["contractNumber"]
       @cp_id = @json_hash["id"]
     end

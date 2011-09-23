@@ -34,8 +34,8 @@ class Subscription < Tableless
       @owner = @json_hash["owner"]
       @startDate = DateTime.parse(@json_hash["startDate"])
       @endDate= DateTime.parse(@json_hash["endDate"])
-      @consumed = @json_hash["consumed"]
-      @quantity = @json_hash["quantity"]
+      @consumed = @json_hash["consumed"].to_i
+      @quantity = @json_hash["quantity"].to_i
       @contractNumber = @json_hash["contractNumber"]
     end
     Rails.logger.ap "NEW Sub FROM CANDLEPIN JSON:::::::::::::"

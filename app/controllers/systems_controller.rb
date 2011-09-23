@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 #
 # Copyright 2011 Red Hat, Inc.
 #
@@ -17,7 +18,7 @@ class SystemsController < ApplicationController
 
   before_filter :require_user
   before_filter :require_org
-  before_filter :find_system, :only => [:edit, :facts, :subscriptions,
+  before_filter :find_system, :only => [:edit, :facts, :subscriptions, :update_subscriptions,
     :available_subscriptions, :bind, :unbind, :destroy, :update,
     :events]
 
@@ -70,13 +71,41 @@ class SystemsController < ApplicationController
   end
 
   def subscriptions
-    @entitlements = Entitlement.retrieve_all(@system.uuid)
-    render :partial => "subscriptions", :layout => "tupane_layout"
+    @consumed_entitlements = Entitlement.retrieve_all(@system.uuid)
+    @available_subscriptions = Subscription.retrieve_by_consumer_id(@system.uuid)
+
+    facts = @system.facts.stringify_keys
+    sockets = facts['cpu.cpu_socket(s)']
+
+    render :partial => "subscriptions", :layout => "tupane_layout",
+           :locals => {:system => @system,
+                       :avail_subs => @available_subscriptions, :consumed_subs => @consumed_entitlements,
+                       :editable => @system.editable?, :sockets => sockets}
   end
 
-  def available_subscriptions
-    @subscriptions = Subscription.retrieve_by_consumer_id(@system.uuid)
-    render :partial => "available_subscriptions" , :layout => "tupane_layout"
+  def update_subscriptions
+    begin
+      if params.has_key? :system
+        params[:system].keys.each do |pool|
+          quantity = params[:spinner][pool].to_i
+          @system.bind pool, quantity if params[:commit].downcase == "subscribe" && quantity > 0
+          # TODO: Unsubscribe should take the number subscribed minus the passed in quantity and
+          #       unsubscribe from that many (eg. 3 subscribed adjusted to 1 means unsubscribe from 2)
+          # TODO: Does Candlepin handle quantity for DELETE?
+          @system.unbind pool, quantity if params[:commit].downcase == "unsubscribe"
+        end
+        @consumed_entitlements = Entitlement.retrieve_all(@system.uuid)
+        @available_subscriptions = Subscription.retrieve_by_consumer_id(@system.uuid)
+        render :partial=>"subs_update", :locals=>{:system=>@system,
+                       :avail_subs => @available_subscriptions, :consumed_subs => @consumed_entitlements,
+                       :editable => @system.editable?}
+        notice _("System subscriptions updated.")
+
+      end
+    rescue Exception => error
+      errors error.to_s, {:level => :message, :persist => false}
+      render :nothing => true
+    end
   end
 
   def bind

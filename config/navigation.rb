@@ -21,17 +21,14 @@ SimpleNavigation::Configuration.run do |navigation|
           details_sub.item :edit, ("General"),
             edit_system_path(@system.uuid), :class => 'navigation_element'
 
+          details_sub.item :subscriptions, _("Subscriptions"),
+            subscriptions_system_path(@system.uuid), :class => 'navigation_element'
+
           details_sub.item :facts, ("Facts"),
             facts_system_path(@system.uuid), :class => 'navigation_element'
 
-          details_sub.item :subscriptions, _("Current Subscriptions"),
-            subscriptions_system_path(@system.uuid), :class => 'navigation_element'
-
-          details_sub.item :avail_subscriptions, _("Available Subscriptions"),
-            available_subscriptions_system_path(@system.uuid), :class => 'navigation_element'
-
-          details_sub.item :events, _("Events"), 
-            events_system_path(@system.uuid), :class => 'navigation_element' 
+          details_sub.item :events, _("Events"),
+            events_system_path(@system.uuid), :class => 'navigation_element'
         end
       end
 
@@ -60,7 +57,7 @@ SimpleNavigation::Configuration.run do |navigation|
           user_sub.item :roles_and_permissions, _("Roles & Permissions"), "/admin/users/#{@user.username}/roles", :class => "navigation_element"
         end
       end
-        admin_sub.item(:roles, _("Roles"), admin_roles_path) 
+        admin_sub.item(:roles, _("Roles"), admin_roles_path)
     end
   end
 end

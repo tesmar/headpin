@@ -9,22 +9,25 @@ javascripts:
     - public/javascripts/jquery/plugins/jquery.ui.totop.js
     - public/javascripts/jquery-ujs/rails.js
     - public/javascripts/jquery/plugins/jquery.jnotify.js
-    - public/javascripts/jquery/plugins/jquery.ui.selectmenu.js    
+    - public/javascripts/jquery/plugins/jquery.ui.selectmenu.js
     - public/javascripts/katello.js
     - public/javascripts/application.js
-    - public/javascripts/jquery/plugins/jquery.linkHover.js    
+    - public/javascripts/jquery/plugins/jquery.linkHover.js
     - public/javascripts/jquery/plugins/jquery.sparkline.min.js
     - public/javascripts/jquery/plugins/jquery.jscrollpane.js
   html5:
     - public/javascripts/html5.js
   dashboard:
-    - public/javascripts/headpin.sparkline.js   
+    - public/javascripts/headpin.sparkline.js
   katello_client:
     - public/javascripts/katello_client.js
   login:
-    - public/javascripts/login.js    
+    - public/javascripts/login.js
   systems:
     - public/javascripts/systems.js
+    - public/javascripts/jquery/plugins/ui.spinner.js
+  system_subscriptions:
+    - public/javascripts/system_subscriptions.js
   form:
     - public/javascripts/jquery/plugins/jquery.form.js
   treetable:
@@ -54,7 +57,7 @@ javascripts:
     - public/javascripts/activation_key.js
   subscription:
     - public/javascripts/subscription.js
-    - public/javascripts/headpin.sparkline.js          
+    - public/javascripts/headpin.sparkline.js
   edit:
     - public/javascripts/jquery/plugins/jquery.jeditable.js
     - public/javascripts/jquery.jeditable.helpers.js
@@ -68,10 +71,10 @@ javascripts:
   scroll_pane:
     - public/javascripts/jquery/plugins/jquery.mousewheel.js
     - public/javascripts/jquery/plugins/jquery.jscrollpane.min.js
-    - public/javascripts/scroll_pane.js    
+    - public/javascripts/scroll_pane.js
   bbq:
     - public/javascripts/jquery/plugins/jquery.ba-bbq.js
-        
+
 stylesheets:
   common:
     - public/javascripts/jquery-ui-1.8.11.custom/css/custom-theme/jquery-ui-1.8.11.custom.css
@@ -80,18 +83,20 @@ stylesheets:
     - public/stylesheets/jquery.jnotify.css
     - public/stylesheets/jquery.treeTable.css
     - public/stylesheets/compiled/headpin.css
+    - public/stylesheets/jquery.jscrollpane.css
   fancyqueries:
     - public/stylesheets/compiled/fancyqueries.css
   loginpage:
-    - public/stylesheets/compiled/sections/loginpage.css    
+    - public/stylesheets/compiled/sections/loginpage.css
   dashboard:
     - public/stylesheets/compiled/sections/dashboard.css
   subscriptions:
     - public/stylesheets/compiled/sections/subscriptions.css
   systems:
-    - public/stylesheets/compiled/sections/systems.css    
+    - public/stylesheets/compiled/sections/systems.css
+    - public/stylesheets/ui.spinner.css
   admin:
     - public/stylesheets/compiled/sections/admin.css
   scroll_pane:
-    - public/stylesheets/jquery.jscrollpane.css    
+    - public/stylesheets/jquery.jscrollpane.css
 
