@@ -25,7 +25,7 @@
         -#    = image_tag ("spinner.gif")
         .slider_one.has_content.slider.will_have_content
         .slider_two.no_content.slider
-    
+
     #role_edit.slide_up_container
       %h2
         &nbsp; #{_("Role Details")}
@@ -34,6 +34,25 @@
         .grid_2.ra
           %label #{_("Name:")}
         .grid_3.la.editable.edit.edit_name_text{'name' => 'role[name]'} #{@role.name}
+
+    #permission_widget.slide_up_container
+      %h2#permission_widget_header
+      %form{ :id => "add_permission_form" }
+        %input{:type => "hidden", :name => "permission[organization_id]", :value => '', :id => "organization_id" }
+        #name_container
+          %h5
+          %label.ra.fl #{_("Name:")}
+          %input{ :id => 'permission_name', :name => 'permission[name]', :type => "text", :tabindex => 1 }
+          %h5
+          %label.ra.fl #{_("Permission Level:")}
+          %br
+          - [['read-only','Read Only'], ['all','All']].each do |x|
+            = radio_button_tag('perm_level',x[0],x[0] == 'read-only')
+            = x[1]
+            %br
+          .button.fr#save_permission_button{'data-url' => admin_role_create_permission_path(@role.cp_id)}
+            #{_("Done")}
+
 
     #permission_add.slide_up_container
       %h2#permission_add_header

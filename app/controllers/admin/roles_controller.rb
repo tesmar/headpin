@@ -102,26 +102,18 @@ class Admin::RolesController < ApplicationController
   end
 
   def create_permission
-    new_params = {:role => @role}
-    type_name = params[:permission][:resource_type_attributes][:name]
+    @role = Role.retrieve(params[:role_id])
+    owner = params[:permission]["organization_id"]
+    perm_level = params[:perm_level]
 
-    if type_name == "all"
-      new_params[:all_tags] = true
-      new_params[:all_verbs] = true
-    end
-
-    new_params[:resource_type] = ResourceType.find_or_create_by_name(:name=>type_name)
-    new_params.merge! params[:permission]
-
+    #candlepin does not have names for permissions
     begin
-      @perm = Permission.create! new_params
-      to_return = { :type => @perm.resource_type.name }
-      add_permission_bc(to_return, @perm, false)
-      notice _("Permission '#{@perm.name}' created.")
-      render :json => to_return
+      @role = @role.save_permission(perm_level, owner)
+      notice _("Permission for role #{@role.name} created.")
+      render :json => @role.permissions
     rescue Exception => error
       errors error
-      render :json=>@role.errors, :status=>:bad_request
+      render :json=>@role, :status=>:bad_request
     end
   end
 
