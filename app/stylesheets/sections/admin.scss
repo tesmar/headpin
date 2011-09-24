@@ -11,13 +11,17 @@
   .roles-selected-border {
     border: 2px solid $kselected_color;
   }
+  .new_perm_ml {
+      margin-left: 25px;
+  }
   #roles_tree {
     .close { right: 10px; top: 12px; }
     .search_button { right: 40px; }
     #global{ color: $global_permission_color; }
     #remove_role { a { color: $black_color; } }
     .breadcrumb_search { border: none; }
-    
+
+
     .cs_action { 
        border-left: none; 
        border-bottom: none;

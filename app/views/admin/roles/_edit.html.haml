@@ -41,10 +41,8 @@
         %input{:type => "hidden", :name => "permission[organization_id]", :value => '', :id => "organization_id" }
         #name_container
           %h5
-          %label.ra.fl #{_("Name:")}
-          %input{ :id => 'permission_name', :name => 'permission[name]', :type => "text", :tabindex => 1 }
-          %h5
-          %label.ra.fl #{_("Permission Level:")}
+            %label.ra.fl.new_perm_ml #{_("Permission Level:")}
+          %br
           %br
           - [['read-only','Read Only'], ['all','All']].each do |x|
             = radio_button_tag('perm_level',x[0],x[0] == 'read-only')
