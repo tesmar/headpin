@@ -127,10 +127,17 @@ class Admin::RolesController < ApplicationController
   end
 
   def destroy_permission
-    permission = Permission.retrieve(params[:permission_id])
-    permission.destroy
-    notice _("Permission '#{permission.name}' removed.")
-    render :json => params[:permission_id]
+    @role = Role.retrieve(params[:role_id])
+    perm_id = params[:permission_id]
+
+    begin
+      ret_json = @role.destroy_permission(perm_id)
+      notice _("Permission for role #{@role.name} destroyed.")
+      render :json => ret_json
+    rescue Exception => error
+      errors error
+      render :json=>@role, :status=>:bad_request
+    end
   end
 
   private
