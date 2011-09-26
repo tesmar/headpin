@@ -916,13 +916,13 @@ var pageActions = (function($){
                 $.bbq.removeState("role_edit");
                 $('#panel').removeClass('panel-custom');
                 action_bar.reset();
-            });
+            };
                     
             KT.panel.set_switch_content_cb = function(){
                 $.bbq.removeState("role_edit");
                 $('#panel').removeClass('panel-custom');
                 action_bar.reset();
-            });
+            };
         };
     
     return {
