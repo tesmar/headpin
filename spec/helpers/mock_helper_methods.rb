@@ -13,6 +13,15 @@ module MockHelperMethods
     Organization.retrieve_by_user("admin")[0]
   end
 
+  def real_user
+    #grab the last user for fun
+    User.retrieve_all[-1]
+  end
+
+  def real_role
+    Role.retrieve_all[-1]
+  end
+
   def real_activation_key
     #since admin has many....
     org = Organization.retrieve_by_user("admin")[0]

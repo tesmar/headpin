@@ -64,7 +64,8 @@ class Admin::RolesController < ApplicationController
       params[:update_users][:user_id] = user.id
       notice _("Role updated.")
       render :json => params[:update_users]
-    elsif @role.update(params[:role])
+    elsif params[:role]
+      @role.update(params[:role])
       notice _("Role updated.")
       render :json=>params[:role]
     else
@@ -88,17 +89,11 @@ class Admin::RolesController < ApplicationController
         render :partial => "common/list_remove", :locals => {:id => @id, :name => "role"}
       end
     rescue Exception => error
-    Rails.logger.ap error.backtrace
+      Rails.logger.ap error
+      Rails.logger.ap error.backtrace
       errors error.to_s
       render :text=> error.to_s, :status=>:bad_request and return
     end
-  end
-
-  def update_permission
-    @permission = Permission.retrieve(params[:permission_id])
-    @permission.update_attributes(params[:permission])
-    notice _("Permission '#{@permission.name}' updated.")
-    render :partial => "permission", :locals =>{:perm => @permission, :role=>@role, :data_new=> false}
   end
 
   def create_permission
@@ -110,6 +105,7 @@ class Admin::RolesController < ApplicationController
     begin
       @role = @role.save_permission(perm_level, owner)
       notice _("Permission for role #{@role.name} created.")
+      @role = Role.retrieve(params[:role_id])
       render :json => @role.permissions
     rescue Exception => error
       errors error
