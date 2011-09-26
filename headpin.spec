@@ -36,6 +36,7 @@ Requires:       rubygem(haml) >= 3.1.2
 Requires:       rubygem(haml-rails)
 Requires:       rubygem(json)
 Requires:       rubygem(rest-client)
+Requires:       rubygem(awesome_print)
 Requires:       rubygem(jammit)
 Requires:       rubygem(rails_warden)
 Requires:       rubygem(net-ldap)
