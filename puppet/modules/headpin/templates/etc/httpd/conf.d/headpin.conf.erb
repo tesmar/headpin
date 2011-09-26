@@ -1,0 +1,52 @@
+NameVirtualHost *:443
+<VirtualHost *:443>
+
+  ErrorLog /etc/httpd/logs/ssl_kt_error_log
+  TransferLog /etc/httpd/logs/ssl_kt_access_log
+  LogLevel debug
+
+  ProxyRequests Off
+  SSLEngine On
+  SSLCertificateFile <%= scope.lookupvar("headpin::params::ssl_certificate_file") %>
+  SSLCertificateKeyFile <%= scope.lookupvar("headpin::params::ssl_certificate_key_file") %>
+  SSLCaCertificateFile <%= scope.lookupvar("headpin::params::ssl_certificate_ca_file") %>
+  ProxyPreserveHost Off
+  RequestHeader set X_FORWARDED_PROTO 'https'
+
+  Timeout 5400
+  ProxyTimeout 5400
+
+  <Proxy balancer://thinservers>
+  <%- (processorcount +1).to_i.times do |i| -%>
+    <%= "BalancerMember http://127.0.0.1:#{scope.lookupvar('headpin::params::thin_start_port').to_i + i}/headpin" %>
+  <%- end -%>
+  </Proxy>
+
+  Alias /headpin/assets "/usr/share/headpin/public/assets"
+  Alias /headpin/images "/usr/share/headpin/public/images"
+  Alias /headpin/fonts "/usr/share/headpin/public/fonts"
+
+  ProxyPass /headpin/assets !
+  ProxyPass /headpin/images !
+  ProxyPass /headpin/fonts !
+  ProxyPass /headpin balancer://thinservers/
+
+  ProxyPassReverse /headpin balancer://thinservers/
+  ProxyPassReverse /headpin/assets !
+  ProxyPassReverse /headpin/images !
+  ProxyPassReverse /headpin/fonts !
+
+  <Location /headpin>
+    RequestHeader set SSL_CLIENT_CERT "%{SSL_CLIENT_CERT}s"
+    SSLVerifyClient optional
+    SSLRenegBufferSize 262144
+    SSLVerifyDepth 2
+  </Location>
+</VirtualHost>
+
+NameVirtualHost *:80
+<VirtualHost *:80>
+  RewriteEngine On
+  RewriteCond %{HTTPS} off
+  RewriteRule /headpin(.*)$ https://%{HTTP_HOST}%{REQUEST_URI}
+</VirtualHost>
