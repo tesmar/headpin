@@ -14,6 +14,7 @@ ComplianceManager::Application.routes.draw do
       delete :delete
       delete :subscriptions
       get :available_subscriptions
+      post :update_subscriptions
       get :events
       get :manifest_dl
       post :bind
