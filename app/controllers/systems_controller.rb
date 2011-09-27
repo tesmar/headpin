@@ -18,7 +18,7 @@ class SystemsController < ApplicationController
 
   before_filter :require_user
   before_filter :require_org
-  before_filter :find_system, :only => [:edit, :facts, :subscriptions, :update_subscriptions,
+  before_filter :find_system, :only => [:edit, :facts, :products, :subscriptions, :update_subscriptions,
     :available_subscriptions, :bind, :unbind, :destroy, :update,
     :events]
 
@@ -63,6 +63,10 @@ class SystemsController < ApplicationController
 
   def facts
     render :partial => 'edit_facts', :layout => "tupane_layout"
+  end
+
+  def products
+    render :partial => 'edit_products', :layout => "tupane_layout"
   end
 
   def events

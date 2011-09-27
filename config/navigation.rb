@@ -27,6 +27,9 @@ SimpleNavigation::Configuration.run do |navigation|
           details_sub.item :facts, ("Facts"),
             facts_system_path(@system.uuid), :class => 'navigation_element'
 
+          details_sub.item :facts, ("Products"),
+            products_system_path(@system.uuid), :class => 'navigation_element'
+
           details_sub.item :events, _("Events"),
             events_system_path(@system.uuid), :class => 'navigation_element'
         end

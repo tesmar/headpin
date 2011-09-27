@@ -30,7 +30,7 @@ class System < Tableless
 
   attr_accessor :name, :entitlementCount, :uuid, :owner_key
   attr_accessor :created, :lastCheckin, :username, :facts, :owner
-  attr_accessor :arch, :sockets, :virtualized
+  attr_accessor :arch, :sockets, :virtualized, :products
 
   def initialize(json_hash=nil)
     @json_hash = super(json_hash)
@@ -44,6 +44,7 @@ class System < Tableless
       @owner = @json_hash["owner"]
       @facts = @json_hash["facts"]
       @entitlementCount = @json_hash["entitlementCount"]
+      @products = @json_hash['installedProducts']
 
       #@consumed_entitlements = []
       #if json_hash["entitlements"] != nil
