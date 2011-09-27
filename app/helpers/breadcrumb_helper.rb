@@ -231,11 +231,11 @@ module BreadcrumbHelper
     end
 
     def user_bc_id(user)
-      "user_#{user.id}"
+      "user_#{user.username}"
     end
 
     def user_bc_id2(user)
-      "user_" + user["id"]
+      "user_" + user["username"]
     end
 
     def permission_bc_id(permission)
