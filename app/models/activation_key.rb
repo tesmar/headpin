@@ -33,29 +33,14 @@ class ActivationKey < Tableless
   end
 
   def self.retrieve_by_org(key)
-    oj = nil
     akeys = []
-    begin
-      oj = JSON.parse(Candlepin::Proxy.get("/owners/#{key}/activation_keys"))
-      oj.each do |akey_json|
-        akeys << ActivationKey.new(akey_json)
-      end
-      return akeys
-    rescue Exception => e
-      Rails.logger.error "Unrecognized Activation Key: " + oj.to_s
-      raise "Unrecognized Activation Key: " + oj.to_s + "\n" + e.to_s
+    JSON.parse(Candlepin::Proxy.get("/owners/#{key}/activation_keys")).each do |akey_json|
+      akeys << ActivationKey.new(akey_json)
     end
-    oj
+    akeys
   end
 
   def self.retrieve(ak_id)
-    oj = nil
-    begin
-      oj = JSON.parse(Candlepin::Proxy.get("/activation_keys/#{ak_id}"))
-      return ActivationKey.new(oj)
-    rescue Exception => e
-      Rails.logger.error "Unrecognized Activation Key: " + oj.to_s
-      raise "Unrecognized Activation Key: " + oj.to_s + "\n" + e.to_s
-    end
+      ActivationKey.new(JSON.parse(Candlepin::Proxy.get("/activation_keys/#{ak_id}")))
   end
 end

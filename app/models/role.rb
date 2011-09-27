@@ -25,41 +25,23 @@ class Role < Tableless
   end
 
   def self.retrieve(r_id)
-    role = nil
-    begin
-      json_role = JSON.parse(Candlepin::Proxy.get("/roles/#{r_id}"))
-      role = Role.new(json_role)
-    rescue Exception => e
-      Rails.logger.error "Unrecognized Role: " + json_role.to_s
-      raise "Unrecognized Role: " + json_role.to_s + "\n" + e.to_s
-    end
-    role
+    Role.new(JSON.parse(Candlepin::Proxy.get("/roles/#{r_id}")))
   end
 
   def self.retrieve_all
     roles = []
-    begin
-      json_roles = JSON.parse(Candlepin::Proxy.get("/roles"))
-      json_roles.each do |json_role|
-        roles << Role.new(json_role)
-      end
-    rescue Exception => e
-      Rails.logger.error "Unrecognized Role: " + json_roles.to_s
-      raise "Unrecognized Role: " + json_roles.to_s + "\n" + e.to_s
+    json_roles = JSON.parse(Candlepin::Proxy.get("/roles"))
+    json_roles.each do |json_role|
+      roles << Role.new(json_role)
     end
     roles
   end
 
   def self.retrieve_all_by_user(key)
     roles = []
-    begin
-      json_roles = JSON.parse(Candlepin::Proxy.get("/users/#{key}/roles"))
-      json_roles.each do |json_role|
-        roles << Role.new(json_role)
-      end
-    rescue Exception => e
-      Rails.logger.error "Unrecognized Role: " + json_roles.to_s
-      raise "Unrecognized Role: " + json_roles.to_s + "\n" + e.to_s
+    json_roles = JSON.parse(Candlepin::Proxy.get("/users/#{key}/roles"))
+    json_roles.each do |json_role|
+      roles << Role.new(json_role)
     end
     roles
   end
@@ -117,15 +99,9 @@ class Role < Tableless
   end
 
   def update(new_values)
-    begin
-      #b/c CP requires you to pass the ID in the body as well as the URL
-      new_values["id"] = @cp_id
-      update_json = JSON.parse(Candlepin::Proxy.put("/roles/#{cp_id}", new_values.to_json))
-      return update_json
-    rescue Exception => e
-      Rails.logger.error "Error updating Role: " + update_json.to_s
-      raise "Error updating Role: " + update_json.to_s + "\n" + e.to_s
-    end
+    #b/c CP requires you to pass the ID in the body as well as the URL
+    new_values["id"] = @cp_id
+    JSON.parse(Candlepin::Proxy.put("/roles/#{cp_id}", new_values.to_json))
   end
 
   #permissions

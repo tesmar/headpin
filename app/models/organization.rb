@@ -37,26 +37,14 @@ class Organization < Tableless
   end
 
   def self.retrieve(owner_id)
-    oj = nil
-    begin
-      oj = JSON.parse(Candlepin::Proxy.get("/owners/#{owner_id}"))
-      return Organization.new(oj)
-    rescue Exception => e
-      Rails.logger.error "Unrecognized Srg: " + oj.to_s
-      raise "Unrecognized Org: " + oj.to_s + "\n" + e.to_s
-    end
+    Organization.new(JSON.parse(Candlepin::Proxy.get("/owners/#{owner_id}")))
   end
 
   def self.retrieve_by_user(username)
     oj = JSON.parse(Candlepin::Proxy.get("/users/#{username}/owners"))
     orgs = []
     oj.each do |json_org|
-      begin
-        orgs << Organization.new(json_org)
-      rescue Exception => e
-        Rails.logger.error "Unrecognized Org: " + oj.to_s
-        raise "Unrecognized Org: " + oj.to_s + "\n" + e.to_s
-      end
+      orgs << Organization.new(json_org)
     end
     orgs
   end
@@ -65,24 +53,13 @@ class Organization < Tableless
     oj = JSON.parse(Candlepin::Proxy.get("/owners"))
     orgs = []
     oj.each do |json_org|
-      begin
-        orgs << Organization.new(json_org)
-      rescue Exception => e
-        Rails.logger.error "Unrecognized Org: " + oj.to_s
-        raise "Unrecognized Org: " + oj.to_s + "\n" + e.to_s
-      end
+      orgs << Organization.new(json_org)
     end
     orgs
   end
 
   def update(new_values)
-    begin
-      update_json = JSON.parse(Candlepin::Proxy.put("/owners/#{org_id}", new_values))
-      return update_json
-    rescue Exception => e
-      Rails.logger.error "Error updating org: " + update_json.to_s
-      raise "Error updating org: " + update_json.to_s + "\n" + e.to_s
-    end
+    JSON.parse(Candlepin::Proxy.put("/owners/#{org_id}", new_values))
   end
   # ActiveResource assumes anything with an ID is a pre-existing
   # resource, ID in our case is key, and key is manually assigned at creation,

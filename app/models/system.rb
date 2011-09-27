@@ -44,66 +44,35 @@ class System < Tableless
       @owner = @json_hash["owner"]
       @facts = @json_hash["facts"]
       @entitlementCount = @json_hash["entitlementCount"]
-
-      #@consumed_entitlements = []
-      #if json_hash["entitlements"] != nil
-      #  json_hash["entitlements"].each do |e|
-          #@consumed_entitlements << Entitlement.new(e)
-          #@entitlement_count = @entitlement_count + e["quantity"]
-      #  end
-      #@entitlements = consumed_entitlements
     end
-    Rails.logger.ap "NEW SYSTEM FROM CANDLEPIN JSON:::::::::::::"
-    Rails.logger.ap self
   end
 
   def self.retrieve(uuid)
-    sj = nil
-    begin
-      sj = JSON.parse(Candlepin::Proxy.get("/consumers/#{uuid}", {:type => "system"}))
-      return System.new(sj)
-    rescue Exception => e
-      Rails.logger.error "Unrecognized System: " + sj.to_s
-      raise "Unrecognized System: " + sj.to_s + "\n" + e.to_s
-    end
+    System.new(JSON.parse(Candlepin::Proxy.get("/consumers/#{uuid}", {:type => "system"})))
   end
 
   def self.retrieve_all
     systems = []
     JSON.parse(Candlepin::Proxy.get('/consumers', {:type => "system"})).each do |json_system|
-      begin
-        systems << System.new(json_system)
-      rescue Exception => e
-        Rails.logger.error "Unrecognized System: " + json_system.to_s
-      end
+      systems << System.new(json_system)
     end
     systems
   end
 
   def bind(pool_id, quantity=1)
-    begin
-      # TODO: hardcoded app prefix
-      params = {"pool" => pool_id, "quantity" => quantity}
-      path = "/consumers/#{uuid}/entitlements?" + params.to_query
-      results = JSON.parse(Candlepin::Proxy.post(path))[0]
-      Entitlement.new(results)
-    rescue Exception => error
-      x = JSON.parse(error.response.to_s)
-      raise "Subscribe failed - #{x["displayMessage"]}"
-    end
+    # TODO: hardcoded app prefix
+    params = {"pool" => pool_id, "quantity" => quantity}
+    path = "/consumers/#{uuid}/entitlements?" + params.to_query
+    results = JSON.parse(Candlepin::Proxy.post(path))[0]
+    Entitlement.new(results)
   end
 
   def unbind(ent_id, quantity=1)
-    begin
-      # TODO: hardcoded app prefix
-      params = {"quantity" => quantity}
-      path = "/consumers/#{uuid}/entitlements/#{ent_id}?" + params.to_query
-      resp = Candlepin::Proxy.delete(path) #returns an empty string
-      resp == "" ? true : false
-    rescue Exception => error
-      x = JSON.parse(error.response.to_s)
-      raise "Unsubscribe failed - #{x["displayMessage"]}"
-    end
+    # TODO: hardcoded app prefix
+    params = {"quantity" => quantity}
+    path = "/consumers/#{uuid}/entitlements/#{ent_id}?" + params.to_query
+    resp = Candlepin::Proxy.delete(path) #returns an empty string
+    resp == "" ? true : false
   end
 
 
@@ -116,15 +85,7 @@ class System < Tableless
   end
 
   def update(new_values)
-
-    begin
-      update_json = Candlepin::Consumer.update(uuid,new_values) #either :facts => or just straight values
-      #update_json = JSON.parse(Candlepin::Proxy.put("/consumers/#{uuid}", new_values, uuid))
-      return update_json
-    rescue Exception => e
-      Rails.logger.error "Error updating System: " + update_json.to_s
-      raise "Error updating System: " + update_json.to_s + "\n" + e.to_s
-    end
+    Candlepin::Consumer.update(uuid,new_values) #either :facts => or just straight values
   end
 
   def create

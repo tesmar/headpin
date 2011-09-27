@@ -11,17 +11,22 @@
 # http://www.gnu.org/licenses/old-licenses/gpl-2.0.txt.
 
 class DashboardController < ApplicationController
-  before_filter :require_user
   navigation :dashboard
-
-  before_filter :require_org
 
   def section_id
     'dashboard'
   end
-  
-  def index
-    @org = working_org
-  end
 
+  def index
+    @candlepin_up = true
+
+    begin
+      require_user
+      require_org
+      @org = working_org
+    rescue CandlepinError => e
+      @candlepin_up = false
+      @candlepin_error_message = _("Unable to properly connect to the Entitlement Server")
+    end
+  end
 end

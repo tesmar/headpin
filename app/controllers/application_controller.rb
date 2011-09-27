@@ -10,6 +10,8 @@
 # have received a copy of GPLv2 along with this software; if not, see
 # http://www.gnu.org/licenses/old-licenses/gpl-2.0.txt.
 
+class CandlepinError < Exception; end;
+
 class ApplicationController < ActionController::Base
   protect_from_forgery
   layout 'katello'
@@ -19,19 +21,11 @@ class ApplicationController < ActionController::Base
   # This is a fairly giant hack to make the request
   # available to the Models for active record
   before_filter :store_request_in_thread
-
   after_filter :flash_to_headers
 
   # Global error handling, parsed bottom-up so most specific goes at the end:
-  #rescue_from Exception, :with =>  :handle_generic_error
+  rescue_from CandlepinError, :with => :handle_candlepin_server_error
   rescue_from Errno::ECONNREFUSED, :with => :handle_candlepin_connection_error
-  #rescue_from RestClient::Exception do | e |
-#raise e
-    #j = ActiveSupport::JSON
-    #data = j.decode(e.response())
-    #flash[:error] = data["displayMessage"]
-    #redirect_back
-#  end
 
   # Generic handler triggered whenever a controller action doesn't explicitly
   # do it's own error handling:
@@ -42,7 +36,7 @@ class ApplicationController < ActionController::Base
   end
 
   # Handle ISE's from Candlepin:
-  def handle_candlepin_server_error ex
+  def handle_candlepin_server_error(ex)
     log_exception(ex)
     errors _("An error has occurred in the Entitlement Server.")
     redirect_back
@@ -58,7 +52,7 @@ class ApplicationController < ActionController::Base
     begin
       redirect_to :back
     rescue ActionController::RedirectBackError
-      render :text => _("Error has occurred, unable to redirect to previous page.")
+      redirect_to '/dashboard'
     end
   end
 
@@ -193,8 +187,7 @@ class ApplicationController < ActionController::Base
   #                        there are several validation errors occur from a single form submit.
   #   details:             String containing additional details.  This would typically be to store
   #                        information such as a stack trace that is in addition to the notice text.
-  def notice notice, options = {}
-
+  def notice(notice, options = {})
     notice = "" if notice.nil?
 
     # set the defaults

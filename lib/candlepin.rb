@@ -21,32 +21,42 @@ module Candlepin
     def self.post(path, body = "")
       Rails.logger.debug "Sending POST request to Candlepin: #{path}"
       client = CandlepinResource.rest_client(Net::HTTP::Post, :post, path_with_cp_prefix(path), nil)
-      client.post body, {:accept => :json, :content_type => :json}.merge(User.current.cp_oauth_header)
+      handle_response(client.post body, {:accept => :json, :content_type => :json}.merge(User.current.cp_oauth_header))
     end
 
-    #self.put(path(key), JSON.generate(owner), self.default_headers).body 
+    #self.put(path(key), JSON.generate(owner), self.default_headers).body
     def self.put(path, payload)
       Rails.logger.debug "Sending PUT request to Candlepin: #{path}"
       client = CandlepinResource.rest_client(Net::HTTP::Put, :put, path_with_cp_prefix(path), nil)
-      client.put(payload, CandlepinResource.default_headers)
+      handle_response(client.put(payload, CandlepinResource.default_headers))
     end
 
     def self.delete(path)
       Rails.logger.debug "Sending DELETE request to Candlepin: #{path}"
       client = CandlepinResource.rest_client(Net::HTTP::Delete, :delete, path_with_cp_prefix(path))
-      client.delete({:accept => :json, :content_type => :json}.merge(User.current.cp_oauth_header))
+      handle_response(client.delete({:accept => :json, :content_type => :json}.merge(User.current.cp_oauth_header)))
     end
 
     def self.get(path, additional_headers={})
       Rails.logger.debug "Sending GET request to Candlepin: #{path}"
       client = CandlepinResource.rest_client(Net::HTTP::Get, :get, path_with_cp_prefix(path))
-      client.get({:accept => :json}.merge(User.current.cp_oauth_header).merge(additional_headers))
+      handle_response(client.get({:accept => :json}.merge(User.current.cp_oauth_header).merge(additional_headers)))
     end
 
     def self.path_with_cp_prefix(path)
       CandlepinResource.prefix + path
     end
 
+    def self.handle_response(response)
+      case response.code
+      when 200..299
+        return response
+      when 400..404
+        raise CandlepinError, response.net_http_res.message
+      else
+        raise CandlepinError, "[" + response.code.to_s + "] [" + response.net_http_res.message + "]"
+      end
+    end
   end
 
   class CandlepinResourcePermissions < ::DefaultResourcePermissions
@@ -159,13 +169,13 @@ module Candlepin
         response = Candlepin::CandlepinResource.get(join_path(path(uuid), 'entitlements'), self.default_headers).body
         JSON.parse(response).collect { |e| e.with_indifferent_access }
       end
-      
+
       def consume_entitlement uuid, pool, quantity = nil
         uri = join_path(path(uuid), 'entitlements') + "?pool=#{pool}"
         uri += "&quantity=#{quantity}" if quantity
         self.post(uri, "", self.default_headers).body
       end
-      
+
       def remove_entitlement uuid, ent_id
         uri = join_path(path(uuid), 'entitlements') + "/#{ent_id}"
         self.delete(uri, self.default_headers).code.to_i
@@ -252,7 +262,7 @@ module Candlepin
         pool_json = super(path(pool_id), self.default_headers).body
         JSON.parse(pool_json).with_indifferent_access
       end
-      
+
       def path(id=nil)
         "/candlepin/pools/#{url_encode id}"
       end
@@ -328,16 +338,16 @@ module Candlepin
         products.collect {|p| p.with_indifferent_access }
       end
 
-      
+
       def _certificate_and_key id
         subscriptions_json = Candlepin::CandlepinResource.get('/candlepin/subscriptions', self.default_headers).body
         subscriptions = JSON.parse(subscriptions_json)
-        
+
         for sub in subscriptions
           if sub["product"]["id"] == id
             return sub["certificate"]
           end
-          
+
           for provProds in sub["providedProducts"]
             if provProds["id"] == id
               return sub["certificate"]

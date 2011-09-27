@@ -45,12 +45,7 @@ class Subscription < Tableless
   def self.retrieve_all(optional_params = {})
     subs = []
     JSON.parse(Candlepin::Proxy.get('/pools', optional_params)).each do |json_sub|
-      begin
-        subs << Subscription.new(json_sub)
-      rescue Exception => e
-        Rails.logger.error "Unrecognized Subscription: " + json_sub.to_s
-        raise "Unrecognized Subscription: " + json_sub.to_s + " " + e.to_s
-      end
+      subs << Subscription.new(json_sub)
     end
     subs
   end
@@ -58,24 +53,13 @@ class Subscription < Tableless
   def self.retrieve_by_consumer_id(consumer_id)
     subs = []
     JSON.parse(Candlepin::Proxy.get("/pools?" + {:consumer => consumer_id}.to_query)).each do |json_sub|
-      begin
-        subs << Subscription.new(json_sub)
-      rescue Exception => e
-        Rails.logger.error "Unrecognized Subscription: " + json_sub.to_s
-        raise "Unrecognized Subscription: " + json_sub.to_s + " " + e.to_s
-      end
+      subs << Subscription.new(json_sub)
     end
     subs
   end
 
   def self.retrieve(sub_id)
-    js = JSON.parse(Candlepin::Proxy.get("/pools/#{sub_id}"))
-      begin
-        return Subscription.new(js)
-      rescue Exception => e
-        Rails.logger.error "Unrecognized Subscription: " + json_sub.to_s
-        raise "Unrecognized Subscription: " + json_sub.to_s + " " + e.to_s
-      end
+    Subscription.new(JSON.parse(Candlepin::Proxy.get("/pools/#{sub_id}")))
   end
 
   def consumed_stats

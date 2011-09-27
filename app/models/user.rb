@@ -25,26 +25,14 @@ class User < Tableless
   end
 
   def self.retrieve(user_id)
-    oj = nil
-    begin
-      oj = JSON.parse(Candlepin::Proxy.get("/users/#{user_id}"))
-      return User.new(oj)
-    rescue Exception => e
-      Rails.logger.error "Unrecognized USer: " + oj.to_s
-      raise "Unrecognized User: " + oj.to_s + "\n" + e.to_s
-    end
+    User.new(JSON.parse(Candlepin::Proxy.get("/users/#{user_id}")))
   end
 
   def self.retrieve_all
     oj = JSON.parse(Candlepin::Proxy.get("/users"))
     users = []
     oj.each do |json_org|
-      begin
-        users << User.new(json_org)
-      rescue Exception => e
-        Rails.logger.error "Unrecognized User: " + oj.to_s
-        raise "Unrecognized User: " + oj.to_s + "\n" + e.to_s
-      end
+      users << User.new(json_org)
     end
     users
   end

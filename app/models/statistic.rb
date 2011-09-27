@@ -33,20 +33,12 @@ class Statistic < Tableless
   end
 
   def self.retrieve_all_by_org(owner_id, optional_params = {})
-    oj = nil
     stats = []
     url = "/owners/#{owner_id}/statistics"
     url += "/#{optional_params[:type]}" if optional_params[:type]
-    begin
-      oj = JSON.parse(Candlepin::Proxy.get(url))
-      oj.each do |stat_json|
-        stats << Statistic.new(stat_json)
-      end
-      return stats
-    rescue Exception => e
-      Rails.logger.error "Unrecognized Stat: " + oj.to_s
-      raise "Unrecognized Stat: " + oj.to_s + "\n" + e.to_s
+    JSON.parse(Candlepin::Proxy.get(url)).each do |stat_json|
+      stats << Statistic.new(stat_json)
     end
+    stats
   end
-
 end

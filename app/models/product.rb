@@ -35,14 +35,7 @@ class Product < Tableless
   end 
 
   def self.retrieve(pid = nil)
-    oj = nil
-    begin
-      oj = JSON.parse(Candlepin::Proxy.get("/products/#{pid}"))
-      return Product.new(oj)
-    rescue Exception => e
-      Rails.logger.error "Unrecognized Prod: " + oj.to_s 
-      raise "Unrecognized Prod: " + oj.to_s + "\n" + e.to_s 
-    end
+    Product.new(JSON.parse(Candlepin::Proxy.get("/products/#{pid}")))
   end
 
 
