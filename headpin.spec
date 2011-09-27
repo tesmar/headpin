@@ -42,7 +42,6 @@ Requires:       rubygem(rails_warden)
 Requires:       rubygem(net-ldap)
 Requires:       rubygem(compass) >= 0.11.5
 Requires:       rubygem(compass-960-plugin) >= 0.10.4
-Requires:       rubygem(capistrano)
 Requires:       rubygem(oauth)
 Requires:       rubygem(i18n_data) >= 0.2.6
 Requires:       rubygem(gettext_i18n_rails)
@@ -87,6 +86,7 @@ Provides a package for managing application life-cycle for Linux systems
 %build
 #configure Bundler
 rm -f Gemfile.lock
+rm -f pullFromKatello.sh
 sed -i '/@@@DEV_ONLY@@@/,$d' Gemfile
 #compile SASS files
 echo Compiling SASS files...
@@ -132,7 +132,7 @@ install -Dp -m0644 %{confdir}/%{name}.logrotate %{buildroot}%{_sysconfdir}/logro
 install -Dp -m0644 %{confdir}/%{name}.httpd.conf %{buildroot}%{_sysconfdir}/httpd/conf.d/%{name}.conf
 install -Dp -m0644 %{confdir}/thin.yml %{buildroot}%{_sysconfdir}/%{name}/
 
-#overwrite config files with symlinks to /etc/katello
+#overwrite config files with symlinks to /etc/headpin
 ln -svf %{_sysconfdir}/%{name}/headpin.yml %{buildroot}%{homedir}/config/headpin.yml
 #ln -svf %{_sysconfdir}/%{name}/database.yml %{buildroot}%{homedir}/config/database.yml
 ln -svf %{_sysconfdir}/%{name}/environment.rb %{buildroot}%{homedir}/config/environments/production.rb
@@ -157,7 +157,7 @@ rm -f %{buildroot}%{homedir}/lib/tasks/.gitkeep
 rm -f %{buildroot}%{homedir}/public/stylesheets/.gitkeep
 rm -f %{buildroot}%{homedir}/vendor/plugins/.gitkeep
 rm -f %{buildroot}%{homedir}/vendor/plugins/.gitignore
-rm -f %{buildroot}%{homedir}/vendor/plugins/pullFromKatello.sh
+rm -f %{buildroot}%{homedir}pullFromKatello.sh
 
 #remove development tasks
 rm %{buildroot}%{homedir}/lib/tasks/rcov.rake
@@ -196,7 +196,7 @@ fi
 %{_initddir}/%{name}
 %{homedir}
 
-%defattr(-, katello, katello)
+%defattr(-, headpin, headpin)
 %{_localstatedir}/log/%{name}
 %{datadir}
 

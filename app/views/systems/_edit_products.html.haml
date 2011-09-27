@@ -14,7 +14,7 @@
         %thead
           %th= _("Name")
           %th= _("Updated")
-        - @system.products.sort.each do |product|
+        - @system.products.each do |product|
           %tr{:class => cycle(nil, 'alt')}
             %td= product['productName']
             %td= product['updated']

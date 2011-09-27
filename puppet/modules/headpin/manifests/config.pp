@@ -30,4 +30,12 @@ class headpin::config {
       require => Class["headpin::install"];
     }
   }
+  
+  # disable SELinux
+  exec {"setenforce":
+    command => "setenforce 0",
+    path    => "/usr/sbin:/bin",
+    unless  => "getenforce |egrep -iq 'disable|Permissive'"
+  }
+  
 }
