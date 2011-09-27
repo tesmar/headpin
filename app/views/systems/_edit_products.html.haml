@@ -1,0 +1,20 @@
+= content_for :title do
+  = @system.name
+
+= content_for :navigation do
+  = render_navigation(:expand_all => true, :level => 3)
+
+= content_for :remove_item do
+  = remove_link(_("Remove #{@system.name}"), :systems)
+
+= content_for :content do
+  #systems
+    .grid_8#products
+      %table
+        %thead
+          %th= _("Name")
+          %th= _("Updated")
+        - @system.products.sort.each do |product|
+          %tr{:class => cycle(nil, 'alt')}
+            %td= product['productName']
+            %td= product['updated']

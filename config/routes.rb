@@ -8,6 +8,7 @@ ComplianceManager::Application.routes.draw do
     delete :delete
     member do
       get :facts
+      get :products
       get :subscriptions
       post :subscriptions
       post :create
