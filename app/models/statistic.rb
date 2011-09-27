@@ -24,7 +24,7 @@ class Statistic < Tableless
   attr_accessor :valueType, :json_hash, :value
 
   def initialize(json_hash=nil)
-    @json_hash = (json_hash ||= {})
+    @json_hash = super(json_hash)
     # rails doesn't like variables called id or type
     if @json_hash != {}
       @valueType = @json_hash["valueType"]

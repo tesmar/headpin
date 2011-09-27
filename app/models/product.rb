@@ -29,10 +29,7 @@ class Product < Tableless
       end
       @name = @json_hash["name"]
     end
-
-    #Rails.logger.ap "NEW Prod FROM CANDLEPIN JSON:::::::::::::"
-    #Rails.logger.ap self
-  end 
+  end
 
   def self.retrieve(pid = nil)
     Product.new(JSON.parse(Candlepin::Proxy.get("/products/#{pid}")))

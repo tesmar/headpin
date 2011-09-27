@@ -21,9 +21,7 @@ class Subscription < Tableless
 
   # Our subscription is actually a pool in the Candlepin API:
   def initialize(json_hash=nil)
-    @json_hash = (json_hash ||= {})
-    # rails doesn't like variables called id or type
-
+    @json_hash = super(json_hash)
     if @json_hash != {}
       #convert the array of hashes into a hash you can access by name
       @productAttributes = @json_hash["productAttributes"].inject({}) {|result,element| result[element["name"]] = element; result }

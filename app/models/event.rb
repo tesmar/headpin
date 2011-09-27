@@ -18,7 +18,7 @@ class Event < Tableless
   attr_accessor :messageText, :timestamp
 
   def initialize(json_hash=nil)
-    @json_hash = (json_hash ||= {})
+    @json_hash = super(json_hash)
     # rails doesn't like variables called id or type
     if @json_hash != {}
       @uuid = @json_hash["id"]

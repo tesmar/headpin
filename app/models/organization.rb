@@ -25,15 +25,13 @@ class Organization < Tableless
   alias :org_key :key
 
   def initialize(json_hash=nil)
-    @json_hash = (json_hash ||= {})
+    @json_hash = super(json_hash)
     # rails doesn't like variables called id or type
     if @json_hash != {}
       @key = @json_hash["key"]
       @org_id = @json_hash["id"]
       @displayName = @json_hash["displayName"]
     end
-    Rails.logger.ap "NEW ORG FROM CANDLEPIN JSON:::::::::::::"
-    Rails.logger.ap self
   end
 
   def self.retrieve(owner_id)
