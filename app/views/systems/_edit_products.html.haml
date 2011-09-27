@@ -12,8 +12,8 @@
     .grid_8#products
       %table
         %thead
-          %th= _("Updated")
           %th= _("Name")
+          %th= _("Updated")
         - @system.products.sort.each do |product|
           %tr{:class => cycle(nil, 'alt')}
             %td= product['productName']
