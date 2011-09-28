@@ -15,7 +15,7 @@
 %global confdir deploy/common
 
 Name:           headpin
-Version:        0.0.7
+Version:        0.0.8
 Release:        1%{?dist}
 Summary:        Front end for the candlepin engine
 
@@ -214,6 +214,21 @@ if [ $1 -eq 0 ] ; then
 fi
 
 %changelog
+* Tue Sep 27 2011 Bryan Kearney <bkearney@redhat.com> 0.0.8-1
+- Have the puppet modules disable selinux (bkearney@redhat.com)
+- Changes to spec file based on packaging tests (bkearney@redhat.com)
+- removed the sort from products list. (abenari@redhat.com)
+- Fixed system merge issue (tsmart@redhat.com)
+- App now more robust, if candlepin is down, redirects to main page (dashboard)
+  with an error message (tsmart@redhat.com)
+- Fixing user bug when adding them to roles (tsmart@redhat.com)
+- fixed products list header order (abenari@redhat.com)
+- added installed products in systems view (abenari@redhat.com)
+- subscribe/unsubscribe to system subscriptions now refreshes
+  (thomasmckay@redhat.com)
+- Add the awesome_print gem to the spec file (bkearney@redhat.com)
+- Inital version of puppet modules for headpin (bkearney@redhat.com)
+
 * Mon Sep 26 2011 Bryan Kearney <bkearney@redhat.com> 0.0.7-1
 - Updating gem reuiqrements (tsmart@redhat.com)
 - Merge branch 'master' of ssh://git.fedorahosted.org/git/headpin

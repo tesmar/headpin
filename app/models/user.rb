@@ -10,14 +10,17 @@
 # have received a copy of GPLv2 along with this software; if not, see
 # http://www.gnu.org/licenses/old-licenses/gpl-2.0.txt.
 
+require 'util/password'
+
 class User < Tableless
 
-  attr_accessor :username, :superAdmin
+  attr_accessor :username, :superAdmin, :password
 
   def initialize(attrs={})
     @json_hash =  super(attrs)
     @superAdmin = TRUE_VALUES.include?(@json_hash["superAdmin"])
     @username = @json_hash["username"]
+    @password = @json_hash["hashedPassword"]
   end
 
   def to_param
@@ -35,6 +38,18 @@ class User < Tableless
       users << User.new(json_org)
     end
     users
+  end
+
+  def self.authenticate!(username, password)
+    # Need to set a current user so that the proxy will use it
+    # for the header.
+    User.current= User.new({"username" => username})
+    u = User.retrieve(username)
+    # check if user exists
+    return nil unless u
+    # check if hash is valid
+    return nil unless Password.check(password, u.password)
+    u
   end
 
   def self.current

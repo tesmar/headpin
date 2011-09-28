@@ -10,5 +10,11 @@ describe User do
       u.should be_valid
       u.superAdmin.should eql(true)
     end
+
+    it 'should authenticate with admin' do
+      u = User.authenticate!("admin", "admin")
+      puts u.password
+      u.should_not be nil
+    end
   end
 end

@@ -8,17 +8,7 @@
 # oauth_key and oauth_secre :Specify your oauth key and secret
 #   used to authenticate with Candlepin
 candlepin:
-  url: localhost
-  fullurl: https://localhost:8443/candlepin
-  port: 8443
-  prefix: /candlepin
+  url: https://localhost:8443/candlepin
   oauth_key: sam
   oauth_secret: zeusLovesJustinBieber
-  ldap:
-    host: localhost
-    base: ou=People,dc=company,dc=com
-  #warden: database
-  use_cp: true
-  use_ssl: true
   rest_client_timeout: 30
-

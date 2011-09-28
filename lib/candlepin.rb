@@ -85,7 +85,7 @@ module Candlepin
 
   class CandlepinResource < ::HttpResource
     cfg = AppConfig.candlepin
-    url = cfg.fullurl
+    url = cfg.url
     self.prefix = URI.parse(url).path
     self.site = url.gsub(self.prefix, "")
     self.consumer_secret = cfg.oauth_secret
