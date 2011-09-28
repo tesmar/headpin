@@ -14,6 +14,10 @@ class Tableless
       @uuid = @json_hash["uuid"]
       @consumer_type = @json_hash["type"]
     end
+    if Rails.env.development?
+      Rails.logger.ap "Received new #{self.class.to_s}"
+      Rails.logger.ap @json_hash
+    end
     @json_hash
   end
   #default id, override if needed

@@ -11,36 +11,32 @@
         %thead
           %th= _('Product')
           %th= _('Quantity')
-          %th= _('Trend')        
           %th= _('Contract')
           %th= _('Support Level')
           %th= _('Arch')      
           %th= _('Begins')
           %th= _('Expires')
-        %tbody         
+        %tbody
           - @subscriptions.each do |sub|
-            - new_group = sub.product.cp_id
+            - new_group = sub.name
             - if (new_group != group)
-              - group = sub.product.cp_id
+              - group = sub.name
               %tr{:id => group}
-                %td= sub.product.name
+                %td= sub.productName
                 %td
                 %td
                 %td
                 %td
                 %td
                 %td
+              %tr{:class => "child-of-#{group}", :id => sub.uuid}
+                %td= sub.productName
                 %td
-            %tr{:class => "child-of-#{group}", :id => sub.uuid}
-              %td= sub.product.name
-              %td
-                = sub.consumed
-                = "/"
-                = sub.quantity
-              %td
-                =stats_line(sub.consumed_stats) 
-              %td=sub.contractNumber            
-              %td= sub.product.attributes["support_level"] ? sub.product.attributes["support_level"]["value"] : ""
-              %td= sub.product.attributes["arch"] ? sub.product.attributes["arch"]["value"] : ""
-              %td=l sub.startDate
-              %td=l sub.endDate
+                  = sub.consumed
+                  = "/"
+                  = sub.quantity
+                %td=sub.contractNumber
+                %td= sub.productAttributes["support_level"] ? sub.productAttributes["support_level"]["value"] : ""
+                %td= sub.productAttributes["arch"] ? sub.productAttributes["arch"]["value"] : ""
+                %td=l sub.startDate
+                %td=l sub.endDate

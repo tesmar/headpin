@@ -18,7 +18,7 @@ class ActivationKey < Tableless
   attr_accessor :uuid, :name, :created, :pools, :poolCount, :owner
 
   def initialize(json_hash=nil)
-    @json_hash = (json_hash ||= {})
+    @json_hash = super(json_hash)
     # rails doesn't like variables called id or type
     if @json_hash != {}
       @uuid = @json_hash["id"]

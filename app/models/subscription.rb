@@ -16,21 +16,20 @@ class Subscription < Tableless
   include ActiveModel::Conversion
   extend ActiveModel::Naming
 
-  attr_accessor :name, :displayName, :product, :uuid, :owner, :prodAttributes
-  attr_accessor :consumed, :quantity, :contractNumber, :startDate, :endDate
+  attr_accessor :name, :displayName, :product, :uuid, :owner, :productAttributes
+  attr_accessor :consumed, :quantity, :contractNumber, :startDate, :endDate, :productName
 
   # Our subscription is actually a pool in the Candlepin API:
   def initialize(json_hash=nil)
-    @json_hash = (json_hash ||= {})
-    # rails doesn't like variables called id or type
-
+    @json_hash = super(json_hash)
     if @json_hash != {}
       #convert the array of hashes into a hash you can access by name
-      @prodAttributes = @json_hash["productAttributes"].inject({}) {|result,element| result[element["name"]] = element; result }
+      @productAttributes = @json_hash["productAttributes"].inject({}) {|result,element| result[element["name"]] = element; result }
       @name = @json_hash["productId"]
+      @productName = @json_hash["productName"]
       @uuid = @json_hash["id"]
       @displayName = @json_hash["displayName"]
-      @product = Product.retrieve(@json_hash["productId"])
+      #@product = Product.retrieve(@json_hash["productId"])
       @owner = @json_hash["owner"]
       @startDate = DateTime.parse(@json_hash["startDate"])
       @endDate= DateTime.parse(@json_hash["endDate"])
@@ -38,8 +37,6 @@ class Subscription < Tableless
       @quantity = @json_hash["quantity"].to_i
       @contractNumber = @json_hash["contractNumber"]
     end
-    Rails.logger.ap "NEW Sub FROM CANDLEPIN JSON:::::::::::::"
-    Rails.logger.ap self
   end
 
   def self.retrieve_all(optional_params = {})

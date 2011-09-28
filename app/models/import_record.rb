@@ -18,7 +18,7 @@ class ImportRecord < Tableless
   attr_accessor :created, :updated, :statusMessage, :status
 
   def initialize(json_hash=nil)
-    @json_hash = (json_hash ||= {})
+    @json_hash = super(json_hash)
     # rails doesn't like variables called id or type
     if @json_hash != {}
       @created = @json_hash["created"]
