@@ -27,13 +27,15 @@ class Admin::OrganizationsController < ApplicationController
 
   def new
     @organization = Organization.new
-    render :partial => 'new'
+    render :partial => 'new',  :layout => "tupane_layout"
   end
 
   def create
-    @organization = Organization.new(params[:organization])
+    @organization = Organization.new("displayName" => params[:displayName])
     if @organization.save
       flash[:notice] = N_("Organization '#{@organization.displayName}' was created.")
+      # If there is no working org, make this one current
+      self.working_org=@organization if not self.working_org
       redirect_to :action => :index
     else
       errors _('There were errors creating the organization:'), @organization.errors.full_messages
