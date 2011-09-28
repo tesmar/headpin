@@ -180,7 +180,15 @@ var sliding_tree = function(tree_id, options) {
                 for(var i = 0; i < crumbs.length; i++) {
                     html += create_crumb(crumbs[i]);
                 }
-                html += '<li><div id="' + id + '" class="currentCrumb fl">' + settings.breadcrumb[id].name + '</div></li>';
+                //hack for the permissions in headpin
+                //i.e. if we are on the permissions tab
+                if(trail[1] == "role_permissions" && trail.length == 3)
+                {
+                  html += '<li><div id="' + id + '" class="currentCrumb fl">' + settings.breadcrumb[id].short_name + '</div></li>';
+                }
+                else {
+                  html += '<li><div id="' + id + '" class="currentCrumb fl">' + settings.breadcrumb[id].name + '</div></li>';
+                }
             }
             
             breadcrumb.append(html);

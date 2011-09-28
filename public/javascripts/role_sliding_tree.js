@@ -616,7 +616,7 @@ var templateLibrary = (function($){
             for( item in permissions){
                 if( permissions.hasOwnProperty(item) ){
                     if( item.split("_")[0] === "permission" && permissions[item].organization === 'organization_' + organization_id ){
-                        html += permissionsListItem(item, permissions[item].name, options.show_button);
+                        html += permissionsListItem(item, permissions[item].short_name, options.show_button);
                         count += 1;
                     }
                 }
@@ -691,7 +691,7 @@ var templateLibrary = (function($){
             for( item in globals ){
                 if( globals.hasOwnProperty(item) ){
                     if( item.split("_")[0] === "permission" && item.split("_")[1] === 'global' ){
-                        html += permissionsListItem(item, globals[item].name, options.show_button);
+                        html += permissionsListItem(item, globals[item].short_name, options.show_button);
                         count += 1;
                     }
                 }

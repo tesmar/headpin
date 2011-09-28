@@ -12,7 +12,7 @@
 
 module BreadcrumbHelper
 
-  def add_crumb_node! hash, id, url, name, trail, params={}, attributes ={}
+  def add_crumb_node!(hash, id, url, name, trail, params={}, attributes ={})
     cache = false || params[:cache] #default to false
     hash[id] = {:name=>name, :url=>url, :trail=>trail, :cache=>cache}
     hash[id][:content] = params[:content] if params[:content]
@@ -193,7 +193,8 @@ module BreadcrumbHelper
         add_crumb_node!(bc, permission_bc_id(perm), "", perm["id"], ['roles', 'role_permissions', organization_bc_name(perm["owner"], perm["owner"]["key"])],
                     { :client_render => true },
                     { :organization => "organization_" + perm["owner"]["key"],
-                      :type_name =>  perm["access"], :type => 'type'
+                      :type_name =>  perm["access"], :type => 'type',
+                      :short_name => permission_short_name(perm)
                     })
         if adjust_count
           bc[organization_bc_name(perm["owner"], perm["owner"]["key"])][:count] += 1
@@ -201,17 +202,7 @@ module BreadcrumbHelper
     end
 
     def get_global_verbs_and_tags
-      details = {}
-
-      #resource_types.each do |type, value|
-      #  details[type] = {}
-      #  details[type][:verbs] = Verb.verbs_for(type, true).collect {|name, display_name| VirtualTag.new(name, display_name)}
-      #  details[type][:verbs].sort! {|a,b| a.display_name <=> b.display_name}
-      #  details[type][:global] = value["global"]
-      #  details[type][:name] = value["name"]
-      #end
-
-      return details
+      {}
     end
 
     def organization_bc_id organization
@@ -238,9 +229,13 @@ module BreadcrumbHelper
       "user_" + user["username"]
     end
 
+    def permission_short_name(permission)
+      permission["access"] + "_" +  permission["id"][-4..-1]
+    end
+
     def permission_bc_id(permission)
       if permission
-        "permission_" + permission["owner"]["key"] + "_" + permission["id"]
+        "permission_" + permission["owner"]["key"] + "_" + permission["id"] + "_" + permission["access"]
       end
     end
 
