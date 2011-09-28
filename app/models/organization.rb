@@ -70,7 +70,6 @@ class Organization < Tableless
   end
 
   def info
-    # TODO: hardcoded app prefix
     @info ||= JSON.parse(Candlepin::Proxy.get("/owners/#{key}/info"))
     @info
   end
