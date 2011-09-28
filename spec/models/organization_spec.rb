@@ -23,8 +23,8 @@ describe Organization do
       Organization.new("key" => 'asjd0', "displayName" => 'Batman/Superman').should_not be_valid
     end
 
-    it 'should not allow a nil key' do
-      Organization.new("displayName" => 'foo').should_not be_valid
+    it 'should allow a nil key if provided a displayName' do
+      Organization.new("displayName" => 'foo').should be_valid
     end
 
     it 'should allow spaces in the organization name' do
@@ -40,6 +40,11 @@ describe Organization do
     it 'should not be considered new if "org_id" not nil' do
       Organization.new("key" => 'foo', "id" => 6).should_not be_new
     end
+    
+    it 'should not take the key from the displayName if not provided' do
+      o = Organization.new("displayName" => 'foo')
+      o.key.should == 'foo'
+    end    
 
   end
 end

@@ -28,6 +28,8 @@ class Organization < Tableless
     @json_hash = super(json_hash)
     # rails doesn't like variables called id or type
     if @json_hash != {}
+      # default the key to the display name
+      @json_hash["key"]= @json_hash["displayName"] if not @json_hash["key"]
       @key = @json_hash["key"]
       @org_id = @json_hash["id"]
       @displayName = @json_hash["displayName"]
@@ -125,5 +127,17 @@ class Organization < Tableless
   def to_json(options = {})
     options.merge(:except => [:id])
     super(options)
+  end
+
+  def save
+    puts @json_hash.inspect
+    if @json_hash['id']
+      ret = JSON.parse(Candlepin::Proxy.put("/owners/#{username}",@json_hash.to_json))
+    else
+      ret = JSON.parse(Candlepin::Proxy.post("/owners",@json_hash.to_json))
+      puts ret
+      @json_hash['id'] = ret['id']
+    end
+    ret
   end
 end

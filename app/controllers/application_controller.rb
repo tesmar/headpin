@@ -88,7 +88,7 @@ class ApplicationController < ActionController::Base
 
   def working_org=(org)
     @working_org = org
-    session[:current_organization_id] = org.key
+    session[:current_organization_id] = org.key if org
   end
   
   def logged_in_user
