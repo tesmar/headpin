@@ -1,11 +1,11 @@
-# Satellite configuration
+# Headpin configuration
 #
 # :vim:sw=2:ts=2:et:
 #
 # Setup your candlepin environment here
 # url: refers to the url of the candlepin
 #     example https://localhost:8443/candlepin
-# oauth_key and oauth_secre :Specify your oauth key and secret
+# oauth_key and oauth_secret :Specify your oauth key and secret
 #   used to authenticate with Candlepin
 candlepin:
   url: https://localhost:8443/candlepin
