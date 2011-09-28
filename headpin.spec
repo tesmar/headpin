@@ -15,7 +15,7 @@
 %global confdir deploy/common
 
 Name:           headpin
-Version:        0.0.8
+Version:        0.0.9
 Release:        1%{?dist}
 Summary:        Front end for the candlepin engine
 
@@ -214,6 +214,20 @@ if [ $1 -eq 0 ] ; then
 fi
 
 %changelog
+* Wed Sep 28 2011 Bryan Kearney <bkearney@redhat.com> 0.0.9-1
+- Update the pupper module for the new configs (bkearney@redhat.com)
+- Merge branch 'master' of ssh://git.fedorahosted.org/git/headpin
+  (bkearney@redhat.com)
+- Cleaned up config to only require a candlepin url. Warden now uses the user
+  model to authenticate. (bkearney@redhat.com)
+- Removed the subscription bar from the owner info page (tsmart@redhat.com)
+- Much nicer logging in dev mode of all we receive from candlepin
+  (tsmart@redhat.com)
+- Merge branch 'master' of ssh://git.fedorahosted.org/git/headpin
+  (tsmart@redhat.com)
+- Speeding up the subscriptions page (tsmart@redhat.com)
+- remove capistrano (bkearney@redhat.com)
+
 * Tue Sep 27 2011 Bryan Kearney <bkearney@redhat.com> 0.0.8-1
 - Have the puppet modules disable selinux (bkearney@redhat.com)
 - Changes to spec file based on packaging tests (bkearney@redhat.com)
