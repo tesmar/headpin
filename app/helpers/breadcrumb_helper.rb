@@ -190,11 +190,11 @@ module BreadcrumbHelper
     end
 
     def add_permission_bc(bc, perm, adjust_count)
-        add_crumb_node!(bc, permission_bc_id(perm), "", perm["id"], ['roles', 'role_permissions', organization_bc_name(perm["owner"], perm["owner"]["key"])],
+        add_crumb_node!(bc, permission_bc_id(perm), "", permission_short_name(perm), ['roles', 'role_permissions', organization_bc_name(perm["owner"], perm["owner"]["key"])],
                     { :client_render => true },
                     { :organization => "organization_" + perm["owner"]["key"],
                       :type_name =>  perm["access"], :type => 'type',
-                      :short_name => permission_short_name(perm)
+                      :cust_id => perm["id"]
                     })
         if adjust_count
           bc[organization_bc_name(perm["owner"], perm["owner"]["key"])][:count] += 1
