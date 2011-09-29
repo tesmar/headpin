@@ -13,19 +13,22 @@
 
 $(document).ready(function() {
 
+//    KT.panel.set_expand_cb(function() {
+//      KT.env_select_scroll().bind();
+ //   });
+
    $('#new_activation_key').live('submit', function(e) {
       e.preventDefault();
       var button = $(this).find('input[type|="submit"]');
        button.attr("disabled","disabled");
       $(this).ajaxSubmit({
           success: function(data) {
-                list.add(data);
-                panel.closePanel($('#panel'));
-                panel.select_item(list.last_child());
-                notices.checkNotices();
-          }, error: function(e) {
-                button.removeAttr('disabled');
-                notices.checkNotices();
+            list.add(data);
+            KT.panel.closePanel($('#panel'));
+            KT.panel.select_item(list.last_child().attr("id"));
+          },
+          error: function(e) {
+            button.removeAttr('disabled');
           }});
    });
 

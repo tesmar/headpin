@@ -15,7 +15,7 @@ class ActivationKey < Tableless
   include ActiveModel::Conversion
   extend ActiveModel::Naming
 
-  attr_accessor :uuid, :name, :created, :pools, :poolCount, :owner
+  attr_accessor :uuid, :name, :created, :pools, :poolCount, :owner, :subscriptions
 
   def initialize(json_hash=nil)
     @json_hash = super(json_hash)
@@ -24,12 +24,10 @@ class ActivationKey < Tableless
       @uuid = @json_hash["id"]
       @name = @json_hash["name"]
       @created = @json_hash["created"]
-      @pools = @json_hash["pools"]
-      @poolCount = @pools.size
+      @subscriptions = @json_hash["pools"] ? @json_hash["pools"] : []
+      @poolCount = @subscriptions.size
       @owner = @json_hash["owner"]
     end
-    Rails.logger.ap "NEW ACTIVATION KEY FROM CANDLEPIN JSON:::::::::::::"
-    Rails.logger.ap self
   end
 
   def self.retrieve_by_org(key)
@@ -42,5 +40,26 @@ class ActivationKey < Tableless
 
   def self.retrieve(ak_id)
       ActivationKey.new(JSON.parse(Candlepin::Proxy.get("/activation_keys/#{ak_id}")))
+  end
+
+  def save
+    if @json_hash['id']
+      raise 'not implemented yet' #update
+      #ret = JSON.parse(Candlepin::Proxy.put("/owners/#{username}",@json_hash.to_json))
+    else
+      #first save the thing, get an ID so you can post all the subs to it
+      saved_key = JSON.parse(Candlepin::Proxy.post("/owners/#{owner.key}/activation_keys", {"name" => name}.to_json))
+      @json_hash['id'] = saved_key["id"]
+      @uuid = saved_key["id"]
+
+      subscriptions.each do |sub|
+        JSON.parse(Candlepin::Proxy.post("/activation_keys/#{@uuid}/pools/#{sub}"))
+      end
+    end
+    self
+  end
+
+  def destroy
+    return Candlepin::Proxy.delete("/activation_keys/#{uuid}")
   end
 end

@@ -24,6 +24,7 @@ class ActivationKeysController < ApplicationController
   end
 
   def new
+    @subscriptions = Subscription.retrieve_all
     render :partial=>"new"
   end
 
@@ -47,27 +48,20 @@ class ActivationKeysController < ApplicationController
   end
 
   def create
-    begin
-      @activation_key = ActivationKey.new(:name => params[:name])
-      @activation_key.owner= working_org
-      @activation_key.save!
-    rescue Exception => error
-      errors error.to_s
-      Rails.logger.info error.backtrace.join("\n")
-      render :text=> error.to_s, :status=>:bad_request and return
-    end
-    render :partial=>"common/list_item", :locals=>{:item=>@activation_key, :accessor=>"id", :columns=>['name', 'poolCount']}
+    @activation_key = ActivationKey.new("name" => params["name"])
+    @activation_key.subscriptions = params[:checkgroup] ?
+                                                        params[:checkgroup] : []
+    @activation_key.owner= working_org
+    @activation_key.save
+    @activation_key = ActivationKey.retrieve(@activation_key.uuid)
+    render :partial=>"common/list_item", :locals=>{:item=>@activation_key, :accessor=>"id",
+                                                    :name =>@activation_key.name ,
+                                                    :columns=>['name', 'poolCount']}
   end
 
   def destroy
-    begin
-      @activation_key.destroy
-      flash[:notice] = N_("Activation Key '#{@activation_key.name}' was deleted.")
-      redirect_to :action => 'index'
-    rescue ActiveResource::ForbiddenAccess => error
-      errors error.message
-      render :show
-    end
+    @activation_key.destroy
+    redirect_to :action => 'index', :notice => N_("Activation Key '#{@activation_key.name}' was deleted.")
   end
 
   def find_activation_key
