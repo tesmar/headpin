@@ -6,9 +6,9 @@
         %label #{_("Name")}:
       .grid_5.la
         = text_field_tag :name, params[:name]
-      .grid_2.ra
-        %label #{_("Subscriptions")}:
-      .grid_5.la
-        = subscriptions_checkboxes
+      //.grid_2.ra
+      //  %label #{_("Subscriptions")}:
+      //.grid_5.la
+      //  = subscriptions_checkboxes
     .grid_6.ra
       = button_to _("Save"), {:action => "create", :controller => "activation_keys"}, :method => :post, :id => :activation_key_save

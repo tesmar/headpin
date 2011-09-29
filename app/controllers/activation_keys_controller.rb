@@ -52,11 +52,18 @@ class ActivationKeysController < ApplicationController
     @activation_key.subscriptions = params[:checkgroup] ?
                                                         params[:checkgroup] : []
     @activation_key.owner= working_org
-    @activation_key.save
-    @activation_key = ActivationKey.retrieve(@activation_key.uuid)
-    render :partial=>"common/list_item", :locals=>{:item=>@activation_key, :accessor=>"id",
-                                                    :name =>@activation_key.name ,
-                                                    :columns=>['name', 'poolCount']}
+
+    saved, error_message = @activation_key.save
+    if saved
+      @activation_key = ActivationKey.retrieve(@activation_key.uuid)
+      render :partial=>"common/list_item", :locals=>{:item=>@activation_key, :accessor=>"id",
+                                                      :name =>@activation_key.name,
+                                                      :columns=>['name', 'poolCount']}
+    else
+      Rails.logger.ap error_message["displayMessage"]
+      errors error_message["displayMessage"]
+      render :text => error_message["displayMessage"], :status => :bad_request
+    end
   end
 
   def destroy

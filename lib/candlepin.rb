@@ -21,26 +21,42 @@ module Candlepin
     def self.post(path, body = "")
       Rails.logger.debug "Sending POST request to Candlepin: #{path}"
       client = CandlepinResource.rest_client(Net::HTTP::Post, :post, path_with_cp_prefix(path), nil)
-      handle_response(client.post body, {:accept => :json, :content_type => :json}.merge(User.current.cp_oauth_header))
+      begin
+        handle_response(client.post body, {:accept => :json, :content_type => :json}.merge(User.current.cp_oauth_header))
+      rescue Exception => e
+        handle_response(e)
+      end
     end
 
     #self.put(path(key), JSON.generate(owner), self.default_headers).body
     def self.put(path, payload)
       Rails.logger.debug "Sending PUT request to Candlepin: #{path}"
       client = CandlepinResource.rest_client(Net::HTTP::Put, :put, path_with_cp_prefix(path), nil)
-      handle_response(client.put(payload, CandlepinResource.default_headers))
+      begin
+        handle_response(client.put(payload, CandlepinResource.default_headers))
+      rescue Exception => e
+        handle_response(e)
+      end
     end
 
     def self.delete(path)
       Rails.logger.debug "Sending DELETE request to Candlepin: #{path}"
       client = CandlepinResource.rest_client(Net::HTTP::Delete, :delete, path_with_cp_prefix(path))
-      handle_response(client.delete({:accept => :json, :content_type => :json}.merge(User.current.cp_oauth_header)))
+      begin
+        handle_response(client.delete({:accept => :json, :content_type => :json}.merge(User.current.cp_oauth_header)))
+      rescue Exception => e
+        handle_response(e)
+      end
     end
 
     def self.get(path, additional_headers={})
       Rails.logger.debug "Sending GET request to Candlepin: #{path}"
       client = CandlepinResource.rest_client(Net::HTTP::Get, :get, path_with_cp_prefix(path))
-      handle_response(client.get({:accept => :json}.merge(User.current.cp_oauth_header).merge(additional_headers)))
+      begin
+        handle_response(client.get({:accept => :json}.merge(User.current.cp_oauth_header).merge(additional_headers)))
+      rescue Exception => e
+        handle_response(e)
+      end
     end
 
     def self.path_with_cp_prefix(path)
@@ -48,13 +64,21 @@ module Candlepin
     end
 
     def self.handle_response(response)
-      case response.code
-      when 200..299
-        return response
-      when 400..404
-        raise CandlepinError, response.net_http_res.message
+      code = nil
+      message = nil
+      if response.class.to_s =~ /RestClient/ #if there was a RestClient error then there is a bad status code
+        code = response.http_code
+        message = JSON.parse(response.http_body)
       else
-        raise CandlepinError, "[" + response.code.to_s + "] [" + response.net_http_res.message + "]"
+        code = response.code
+        message = response.net_http_res.message
+      end
+
+      case code
+      when 200..299
+        return response  # we know this is a proper object
+      else
+        raise(::CandlepinError, [code, message])
       end
     end
   end

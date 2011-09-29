@@ -48,7 +48,12 @@ class ActivationKey < Tableless
       #ret = JSON.parse(Candlepin::Proxy.put("/owners/#{username}",@json_hash.to_json))
     else
       #first save the thing, get an ID so you can post all the subs to it
-      saved_key = JSON.parse(Candlepin::Proxy.post("/owners/#{owner.key}/activation_keys", {"name" => name}.to_json))
+      #possibility here that we have a duplicate named activation key, so let's check for that
+      begin
+          saved_key = JSON.parse(Candlepin::Proxy.post("/owners/#{owner.key}/activation_keys", {"name" => name}.to_json))
+      rescue ::CandlepinError => e
+        return false, e.message[1]
+      end
       @json_hash['id'] = saved_key["id"]
       @uuid = saved_key["id"]
 
