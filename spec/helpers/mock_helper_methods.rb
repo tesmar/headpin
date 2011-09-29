@@ -30,7 +30,7 @@ module MockHelperMethods
 
   def random_string(prefix=nil)
     prefix ||= ''
-    "#{prefix}#{rand(100000)}"
+    "#{prefix}#{rand(1000000000)}"
   end
 
 end
