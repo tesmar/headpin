@@ -31,8 +31,6 @@ class Entitlement < Tableless
       @contractNumber = @json_hash["contractNumber"]
       @cp_id = @json_hash["id"]
     end
-    Rails.logger.ap "NEW Entitlement FROM CANDLEPIN JSON:::::::::::::"
-    Rails.logger.ap self
   end
 
   def self.retrieve_all(consumer_id)
