@@ -130,12 +130,10 @@ class Organization < Tableless
   end
 
   def save
-    puts @json_hash.inspect
     if @json_hash['id']
       ret = JSON.parse(Candlepin::Proxy.put("/owners/#{username}",@json_hash.to_json))
     else
       ret = JSON.parse(Candlepin::Proxy.post("/owners",@json_hash.to_json))
-      puts ret
       @json_hash['id'] = ret['id']
     end
     ret
