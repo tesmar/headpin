@@ -5,10 +5,10 @@
       %thead
         %tr
           %th #{_("Subscription")}
+          %th #{_("SLA")}
           %th #{_("Sockets")}
           %th #{_("Guests")}
           %th #{_("Quantity")}
-          %th #{_("Total")}
           %th #{_("Expires")}
       %tbody
         - if consumed_subs.length > 0
@@ -19,13 +19,14 @@
                   = check_box_tag "system[#{sub.cp_id}]", value="#{sub.cp_id}", false
                 &nbsp;
                 #{sub.pool.name}
-              %td #{"--"}
+              %td #{sub.pool.productAttributes["support_type"] ? sub.pool.productAttributes["support_type"]["value"] : ""}
+              %td
+                = "#{sub.pool.productAttributes["sockets"] ? sub.pool.productAttributes["sockets"]["value"] : ""}"
               %td #{"--"}
               %td
-                = number_field_tag "spinner[#{sub.cp_id}]", nil, :in => 0..sub.quantity, :step=>1, :value=>sub.quantity, :class=>"ui-spinner"
-              %td
-                = "of #{sub.pool.quantity}"
-              %td #{sub.endDate}
+                = hidden_field_tag "spinner[#{sub.pool.uuid}]", 0, :class => "ui-nonspinner"
+                = "#{sub.quantity} of #{sub.pool.quantity}"
+              %td #{sub.endDate.strftime("%m/%d/%Y")}
         - else
           %tr
             %td{:colspan=>5} #{_("The system is not currently consuming any subscriptions.")}
@@ -44,7 +45,6 @@
           %th #{_("Sockets")}
           %th #{_("Guests")}
           %th #{_("Quantity")}
-          %th #{_("Available")}
           %th #{_("Expires")}
       %tbody
         - if avail_subs.length > 0
@@ -59,13 +59,18 @@
                 #{sub.name}
               %td
                 = sub.contractNumber
-              %td #{"--"}
+              %td
+                = "#{sub.productAttributes["sockets"] ? sub.productAttributes["sockets"]["value"] : ""}"
               %td #{"--"}
               %td
-                = number_field_tag "spinner[#{sub.uuid}]", nil, :in => 0..sub.quantity-sub.consumed, :step=>1, :value=>0, :class=>"ui-spinner"
-              %td
-                = "of #{sub.quantity - sub.consumed}"
-              %td #{sub.endDate}
+                - if sub.productAttributes["multi-entitlement"] && sub.productAttributes["multi-entitlement"]["value"] == "yes"
+                  = number_field_tag "spinner[#{sub.uuid}]", nil, :in => 0..sub.quantity-sub.consumed, :step=>1, :value=>0, :class=>"ui-spinner"
+                  = "of #{sub.quantity - sub.consumed}"
+                - else
+                  = label_tag "spinner_label[#{sub.uuid}]", "0 of #{sub.quantity - sub.consumed}", :class => "ui-nonspinner-label"
+                  = hidden_field_tag "spinner[#{sub.uuid}]", 0, :class => "ui-nonspinner"
+                  -# = number_field_tag "spinner[#{sub.uuid}]", nil, :in => 0..1, :step => 1, :value => 0, :size => 3, :class => "ui-nonspinner"
+              %td #{sub.endDate.strftime("%m/%d/%Y")}
         - else
           %tr
             %td{:colspan=>5} #{_("There are no more subscriptions available.")}

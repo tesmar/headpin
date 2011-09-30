@@ -60,9 +60,9 @@ class ActivationKeysController < ApplicationController
                                                       :name =>@activation_key.name,
                                                       :columns=>['name', 'poolCount']}
     else
-      Rails.logger.ap error_message["displayMessage"]
-      errors error_message["displayMessage"]
-      render :text => error_message["displayMessage"], :status => :bad_request
+      Rails.logger.ap error_message
+      errors error_message
+      render :text => error_message, :status => :bad_request
     end
   end
 

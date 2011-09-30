@@ -78,7 +78,7 @@ module Candlepin
       when 200..299
         return response  # we know this is a proper object
       else
-        raise(::CandlepinError, [code, message])
+        raise(::CandlepinError, [code, message["displayMessage"]])
       end
     end
   end

@@ -59,6 +59,11 @@ var systems_page = (function() {
   }
 })();
 
+// Subscription value fields can either be a spinner or just a plain label (with hidden field).
+// Only subscriptions that allow multiple entitlements are displayed with a spinner; others can
+// only have a value of zero or one.
+//
+// Unsubscribe is a hidden field (w/ a class of ui-nonspinner) since the value is never adjustable.
 KT.subs = function() {
     var unsubSetup = function(){
         var unsubform = $('#unsubscribe');
@@ -72,11 +77,13 @@ KT.subs = function() {
             $(this).change(function(){
                 if($(this).is(":checked")){
                     checked++;
+                    $(this).parent().parent().parent().find(".ui-nonspinner").val(1);
                     if(!(unsubbutton.is(":visible"))){
                         fakeunsubbutton.fadeOut("fast", function(){unsubbutton.fadeIn()});
                     }
                 }else{
                     checked--;
+                    $(this).parent().parent().parent().find(".ui-nonspinner").val(0);
                     if((unsubbutton.is(":visible")) && checked == 0){
                         unsubbutton.fadeOut("fast", function(){fakeunsubbutton.fadeIn()});
                     }
@@ -90,19 +97,39 @@ KT.subs = function() {
         var subcheckboxes = $('#subscribe input[type="checkbox"]');
         var total = subcheckboxes.length;
         var checked = 0;
+        var spinner, of_string;
         subbutton.hide();
 
         subcheckboxes.each(function(){
             $(this).change(function(){
                 if($(this).is(":checked")){
                     checked++;
-                    $(this).parent().parent().parent().find(".ui-spinner").spinner("increment");
+                    spinner = $(this).parent().parent().parent().find(".ui-spinner");
+                    if (spinner.length > 0) {
+                        spinner.spinner("increment");
+                    } else {
+                        $(this).parent().parent().parent().find(".ui-nonspinner").val(1);
+                        spinner = $(this).parent().parent().parent().find(".ui-nonspinner-label")[0];
+                        of_string = "1" + spinner.innerHTML.substr(1);
+                        spinner.innerHTML = of_string;
+                        //$(this).parent().parent().parent().find(".ui-nonspinner").val(1);
+                    }
                     if(!(subbutton.is(":visible"))){
                         fakesubbutton.fadeOut("fast", function(){subbutton.fadeIn()});
                     }
                 }else{
                     checked--;
-                    $(this).parent().parent().parent().find(".ui-spinner").spinner("decrement");
+                    spinner = $(this).parent().parent().parent().find(".ui-spinner");
+                    if (spinner.length > 0) {
+                        spinner.spinner("decrement");
+                    } else {
+                        $(this).parent().parent().parent().find(".ui-nonspinner").val(0);
+                        spinner = $(this).parent().parent().parent().find(".ui-nonspinner-label")[0];
+                        of_string = "0" + spinner.innerHTML.substr(1);
+                        spinner.innerHTML = of_string;
+                        //$(this).parent().parent().parent().find(".ui-nonspinner-label").innerHTML = s;
+                        //$(this).parent().parent().parent().find(".ui-nonspinner").val(0);
+                    }
                     if((subbutton.is(":visible")) && checked == 0){
                         subbutton.fadeOut("fast", function(){fakesubbutton.fadeIn()});
                     }

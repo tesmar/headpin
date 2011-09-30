@@ -48,10 +48,12 @@ class SystemsController < ApplicationController
       @system = @system.create
       #find the newly created system
       flash[:notice] = N_("System '#{@system.name}' was created.")
-    rescue Exception => error
-      errors error.to_s
+    rescue ::CandlepinError => error
+      c = error.message[0]
+      m = error.message[1]
+      errors error.message[1]
       Rails.logger.info error.backtrace.join("\n")
-      render :text=> error.to_s, :status=>:bad_request and return
+      render :text=> error.message[1], :status=>:bad_request and return
     end
     render :partial=>"common/list_item", :locals=>{:item=>@system, :accessor=>"uuid", :name => @system.name,
                                                    :columns=>['name', 'uuid']}
@@ -93,10 +95,7 @@ class SystemsController < ApplicationController
         params[:system].keys.each do |pool|
           quantity = params[:spinner][pool].to_i
           @system.bind pool, quantity if params[:commit].downcase == "subscribe" && quantity > 0
-          # TODO: Unsubscribe should take the number subscribed minus the passed in quantity and
-          #       unsubscribe from that many (eg. 3 subscribed adjusted to 1 means unsubscribe from 2)
-          # TODO: Does Candlepin handle quantity for DELETE?
-          @system.unbind pool, quantity if params[:commit].downcase == "unsubscribe"
+          @system.unbind pool if params[:commit].downcase == "unsubscribe"
         end
         @consumed_entitlements = Entitlement.retrieve_all(@system.uuid)
         @available_subscriptions = Subscription.retrieve_by_consumer_id(@system.uuid)
