@@ -14,13 +14,6 @@ module OauthHelper
 
    def site
     "https://#{AppConfig.candlepin.url}:#{AppConfig.candlepin.port}"
-  end 
-
-  def post_file(uri, file)
-    uri = "#{AppConfig.candlepin.prefix}/#{uri}"
-
-    response = client(uri)[uri].post(:import => file)
-    JSON.parse(response.body) unless response.body.empty?
   end
 
   # OAuth implementation of this method creates a new REST resource for
