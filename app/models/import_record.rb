@@ -26,8 +26,6 @@ class ImportRecord < Tableless
       @status = @json_hash["status"]
       @statusMessage = @json_hash["statusMessage"]
     end
-    Rails.logger.ap "NEW IMPORT RECORD FROM CANDLEPIN JSON:::::::::::::"
-    Rails.logger.ap self
   end
 
   def timestamp
