@@ -28,7 +28,7 @@ class ImportsController < ApplicationController
   def create
 
     # Check if this request is a manifest upload:
-    if params.has_key? :contents
+    if params.has_key?(:contents)
       Rails.logger.info "Uploading a subscription manifest."
 
       begin
@@ -36,9 +36,16 @@ class ImportsController < ApplicationController
         temp_file.write params[:contents].read
         temp_file.close
 
-        import = params[:contents]
-        post_file "owners/#{working_org.key}/imports",
-                  File.new(temp_file.path)
+        begin
+          Candlepin::Proxy.post("/owners/#{working_org.key}/imports",
+                                {:imports => File.new(temp_file.path)},
+                                {:accept => :json,
+                                "Content-Type" => "multipart/form-data"})
+        rescue CandlepinError => e
+          errors _("Manifest upload error: Either your manifest is older than current data
+                    or not from the same upstream consumer.")
+        end
+
       ensure
         File.delete temp_file.path
       end

@@ -18,11 +18,11 @@ require 'http_resource'
 module Candlepin
 
   class Proxy
-    def self.post(path, body = "")
+    def self.post(path, body = "", headers = {:accept => :json, :content_type => :json})
       Rails.logger.debug "Sending POST request to Candlepin: #{path}"
       client = CandlepinResource.rest_client(Net::HTTP::Post, :post, path_with_cp_prefix(path), nil)
       begin
-        handle_response(client.post body, {:accept => :json, :content_type => :json}.merge(User.current.cp_oauth_header))
+        handle_response(client.post body, headers.merge(User.current.cp_oauth_header))
       rescue Exception => e
         handle_response(e)
       end
@@ -68,7 +68,7 @@ module Candlepin
       message = nil
       if response.class.to_s =~ /RestClient/ #if there was a RestClient error then there is a bad status code
         code = response.http_code
-        message = JSON.parse(response.http_body)
+        message = response.http_body
       else
         code = response.code
         message = response.net_http_res.message
