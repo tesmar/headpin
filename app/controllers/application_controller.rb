@@ -24,15 +24,16 @@ class ApplicationController < ActionController::Base
   after_filter :flash_to_headers
 
   # Global error handling, parsed bottom-up so most specific goes at the end:
+  rescue_from Exception, :with => :handle_generic_error
   rescue_from CandlepinError, :with => :handle_candlepin_server_error
   rescue_from Errno::ECONNREFUSED, :with => :handle_candlepin_connection_error
 
   # Generic handler triggered whenever a controller action doesn't explicitly
   # do it's own error handling:
-  def handle_generic_error ex
+  def handle_generic_error(ex)
     log_exception(ex)
-    errors _("An unexpected error has occurred, details have been logged.")
-    redirect_back
+    errors _("An unexpected error has occurred, details have been logged.") #to aviod the 4k cookie limit
+    redirect_to('/dashboard')
   end
 
   # Handle ISE's from Candlepin:
