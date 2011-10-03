@@ -7,7 +7,7 @@
   = render_navigation(:expand_all => true, :level => 3)
 
 = content_for :remove_item do
-  = remove_link(_("Remove #{@system.name}"), :systems)
+  = remove_link(_("Remove"), :systems)
 
 = button_to(_("Download Manifest"), manifest_dl_system_path(@system.uuid) ,:id => "download_manifest", :method => "get")
 
