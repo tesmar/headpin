@@ -15,7 +15,7 @@ class Product < Tableless
   include ActiveModel::Conversion
   extend ActiveModel::Naming
 
-  attr_accessor :name, :attributes, :cp_id
+  attr_accessor :name, :attributes, :cp_id, :productContent
 
   def initialize(json_hash=nil)
     @json_hash = super(json_hash)
@@ -27,6 +27,7 @@ class Product < Tableless
          result[element["name"]] = element
          result
       end
+      @productContent = @json_hash["productContent"]
       @name = @json_hash["name"]
     end
   end

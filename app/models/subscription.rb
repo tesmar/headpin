@@ -16,7 +16,7 @@ class Subscription < Tableless
   include ActiveModel::Conversion
   extend ActiveModel::Naming
 
-  attr_accessor :name, :displayName, :product, :uuid, :owner, :productAttributes
+  attr_accessor :name, :displayName, :providedProducts, :uuid, :owner, :productAttributes
   attr_accessor :consumed, :quantity, :contractNumber, :startDate, :endDate, :productName
 
   # Our subscription is actually a pool in the Candlepin API:
@@ -29,7 +29,7 @@ class Subscription < Tableless
       @productName = @json_hash["productName"]
       @uuid = @json_hash["id"]
       @displayName = @json_hash["displayName"]
-      #@product = Product.retrieve(@json_hash["productId"])
+      @providedProducts = @json_hash["providedProducts"].map{|p|  Product.retrieve(p["productId"]) }
       @owner = @json_hash["owner"]
       @startDate = DateTime.parse(@json_hash["startDate"])
       @endDate= DateTime.parse(@json_hash["endDate"])

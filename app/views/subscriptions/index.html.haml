@@ -22,21 +22,51 @@
             - if (new_group != group)
               - group = sub.name
               %tr{:id => group}
-                %td= sub.productName
+                %td{:style => "font-weight: bold;"}= sub.productName
                 %td
                 %td
                 %td
                 %td
                 %td
                 %td
-              %tr{:class => "child-of-#{group}", :id => sub.uuid}
-                %td= sub.productName
-                %td
-                  = sub.consumed
-                  = "/"
-                  = sub.quantity
-                %td=sub.contractNumber
-                %td= sub.productAttributes["support_level"] ? sub.productAttributes["support_level"]["value"] : ""
-                %td= sub.productAttributes["arch"] ? sub.productAttributes["arch"]["value"] : ""
-                %td=l sub.startDate
-                %td=l sub.endDate
+              - sub.providedProducts.each do |eng_product|
+                %tr{:class => "child-of-#{group}"}
+                  %td{:style => "font-size: 120%;"}= eng_product.name
+                  %td
+                    = sub.consumed
+                    = "/"
+                    = sub.quantity
+                  %td=sub.contractNumber
+                  %td= sub.productAttributes["support_level"] ? sub.productAttributes["support_level"]["value"] : ""
+                  %td= eng_product.attributes["arch"] ? eng_product.attributes["arch"]["value"] : ""
+                  %td=l sub.startDate, :format => STD_DATE_FORMAT
+                  %td=l sub.endDate, :format => STD_DATE_FORMAT
+                - eng_product.productContent.each do |pc|
+                  %tr{:class => "child-of-#{group}"}
+                    %td
+                      %hr{:class => "child-of-#{group}", :width => "20"}
+                    %td
+                    %td
+                    %td
+                    %td
+                    %td
+                    %td
+                  - [["GPG Key URL","content","gpgUrl"], |
+                     ["Content Download URL","content","contentUrl"], |
+                     ["Repo Type","content","type"], |
+                     ["Enabled by Default","enabled"]].each do |x| |
+                    %tr{:class => "child-of-#{group}"}
+                      %td{:class => "child-of-#{group} sub-subchild", :width => "190px;", :style => "padding-left: 45px;"}
+                        %spancont{:style => "margin-left: 2px;"}
+                          %span{:class => "child-of-#{group}",:style => "width:125px;white-space: nowrap;float: left;"}
+                            = x[0]
+                          %span{:class => "child-of-#{group}", :style => "width: 50px; white-space: nowrap; float: left;"}
+                            - link = (x.length == 2) ? pc.fetch(x[1]) : pc.fetch(x[1]).fetch(x[2])
+                            %a{:href => "#{link}"}
+                              = link
+                      %td
+                      %td
+                      %td
+                      %td
+                      %td
+                      %td
