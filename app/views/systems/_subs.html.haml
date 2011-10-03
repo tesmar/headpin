@@ -69,7 +69,6 @@
                 - else
                   = label_tag "spinner_label[#{sub.uuid}]", "0 of #{sub.quantity - sub.consumed}", :class => "ui-nonspinner-label"
                   = hidden_field_tag "spinner[#{sub.uuid}]", 0, :class => "ui-nonspinner"
-                  -# = number_field_tag "spinner[#{sub.uuid}]", nil, :in => 0..1, :step => 1, :value => 0, :size => 3, :class => "ui-nonspinner"
               %td #{sub.endDate.strftime("%m/%d/%Y")}
         - else
           %tr
