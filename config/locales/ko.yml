@@ -10,6 +10,7 @@ ko:
       default: "%Y/%m/%d"
       short: "%m/%d"
       long: "%Y년 %m월 %d일 (%a)"
+      app_pref: "%Y년 %-m월 %d일"
 
     day_names: [일요일, 월요일, 화요일, 수요일, 목요일, 금요일, 토요일]
     abbr_day_names: [일, 월, 화, 수, 목, 금, 토]
@@ -26,6 +27,7 @@ ko:
       default: "%Y/%m/%d %H:%M:%S"
       short: "%y/%m/%d %H:%M"
       long: "%Y년 %B월 %d일, %H시 %M분 %S초 %Z"
+      app_pref: "%Y년 %-m월 %d일"
     am: "오전"
     pm: "오후"
 

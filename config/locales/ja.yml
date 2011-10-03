@@ -7,6 +7,7 @@ ja:
       default: "%Y-%m-%d"
       short: "%b %d"
       long: "%B %d, %Y"
+      app_pref: "%Y年%-m月%d日"
 
     day_names: [Sunday, Monday, Tuesday, Wednesday, Thursday, Friday, Saturday]
     abbr_day_names: [Sun, Mon, Tue, Wed, Thu, Fri, Sat]
@@ -23,6 +24,7 @@ ja:
       default: "%a, %d %b %Y %H:%M:%S %z"
       short: "%d %b %H:%M"
       long: "%B %d, %Y %H:%M"
+      app_pref: "%Y年%-m月%d日"
     am: "am"
     pm: "pm"
 
