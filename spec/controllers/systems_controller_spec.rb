@@ -44,14 +44,38 @@ describe SystemsController do
       flash[:notice].should =~ /System .* was created./
     end
 
-   # it "should redirect to the dashboard and flash a warning upon a candlepin error" do
-#      s = ready_to_be_created_system
-#System.stub!(:new).and_return(s)
-#      s.should_receive(:create).and_raise(Exception)
-#      post 'create', post_to_headpin_create_data
-#      response.should redirect_to '/dashboard'
+    it "should flash a failure message" do
+      ##controller.stub!(:errors).and_return true
+      post 'create', post_to_headpin_create_data_bad_name
+      ##controller.should_receive(:errors)
+      #flash[:error][:summary].should =~ /System name cannot contain most special characters./
+      response.should_not be_success
+      response.body.should =~ /System name cannot contain most special characters./
+    end
+  end
 
-    #end
+  describe "POST update subscriptions" do
+    #let(:sys) { real_system }
+    it "should call bind" do
+      # This will set the @system to an instance that can be
+      # checked.
+      sys = real_system
+      controller.stub!(:find_system).and_return(true)
+      controller.instance_variable_set(:@system, sys)
+      org = Organization.retrieve(sys.owner_key)
+      controller.instance_variable_set(:@organization, org)
+      System.stub!(:bind).and_return(true)
+
+      controller.instance_variable_get(:@system).should_receive(:bind).and_return(true)
+      controller.should_receive(:notice).with("System subscriptions updated.")
+
+      params = post_to_headpin_systems_update_subscriptions
+      params[:id] = sys.uuid
+      post 'update_subscriptions', params
+
+      response.should render_template(:partial => "systems/_subs_update")
+      #flash[:notice].should =~ /System subscriptions updated./
+    end
   end
 
 end

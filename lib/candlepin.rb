@@ -68,7 +68,11 @@ module Candlepin
       message = nil
       if response.class.to_s =~ /RestClient/ #if there was a RestClient error then there is a bad status code
         code = response.http_code
-        message = response.http_body
+        if response.http_body.starts_with? "{"
+          message = JSON.parse(response.http_body)
+        else
+          message = response.http_body
+        end
       else
         code = response.code
         message = response.net_http_res.message

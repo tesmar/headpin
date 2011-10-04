@@ -48,8 +48,6 @@ class SystemsController < ApplicationController
       #find the newly created system
       flash[:notice] = N_("System '#{@system.name}' was created.")
     rescue ::CandlepinError => error
-      c = error.message[0]
-      m = error.message[1]
       errors error.message[1]
       Rails.logger.info error.backtrace.join("\n")
       render :text=> error.message[1], :status=>:bad_request and return
@@ -98,7 +96,7 @@ class SystemsController < ApplicationController
         end
         @consumed_entitlements = Entitlement.retrieve_all(@system.uuid)
         @available_subscriptions = Subscription.retrieve_by_consumer_id(@system.uuid)
-        render :partial=>"subs_update", :locals=>{:system=>@system,
+        render :partial=>"subs_update.js", :locals=>{:system=>@system,
                        :avail_subs => @available_subscriptions, :consumed_subs => @consumed_entitlements,
                        :editable => @system.editable?}
         notice _("System subscriptions updated.")
