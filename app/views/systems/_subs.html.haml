@@ -1,35 +1,46 @@
+= include_javascripts :treetable
 .grid_8
   = form_tag update_subscriptions_system_path, :id=>"unsubscribe", :method=>"post", :remote=>true do
     %h5 #{_("System Current Subscription(s)")}
-    %table
-      %thead
-        %tr
-          %th #{_("Subscription")}
-          %th #{_("SLA")}
-          %th #{_("Sockets")}
-          %th #{_("Guests")}
-          %th #{_("Quantity")}
-          %th #{_("Expires")}
-      %tbody
-        - if consumed_subs.length > 0
-          - for sub in consumed_subs
-            %tr
-              %td
-                %span.fl
-                  = check_box_tag "system[#{sub.cp_id}]", value="#{sub.cp_id}", false
-                &nbsp;
-                #{sub.pool.name}
-              %td #{sub.pool.productAttributes["support_type"] ? sub.pool.productAttributes["support_type"]["value"] : ""}
-              %td
-                = "#{sub.pool.productAttributes["sockets"] ? sub.pool.productAttributes["sockets"]["value"] : ""}"
-              %td #{"--"}
-              %td
-                = hidden_field_tag "spinner[#{sub.pool.uuid}]", 0, :class => "ui-nonspinner"
-                = "#{sub.quantity} of #{sub.pool.quantity}"
-              %td #{sub.endDate.strftime("%m/%d/%Y")}
-        - else
+    .tree
+      %table#Unsubscribe_subs
+        %thead
           %tr
-            %td{:colspan=>5} #{_("The system is not currently consuming any subscriptions.")}
+            %th
+            %th #{_("Subscription")}
+            %th #{_("SLA")}
+            %th #{_("Sockets")}
+            %th #{_("Guests")}
+            %th #{_("Quantity")}
+            %th #{_("Expires")}
+        %tbody
+          - if consumed_subs.length > 0
+            - for sub in consumed_subs
+              %tr{:id => sub.cp_id}
+                %td
+                %td
+                  %span.fl
+                    = check_box_tag "system[#{sub.cp_id}]", value="#{sub.cp_id}", false
+                  &nbsp;
+                  #{sub.pool.name}
+                %td #{sub.pool.productAttributes["support_type"] ? sub.pool.productAttributes["support_type"]["value"] : ""}
+                %td
+                  = "#{sub.pool.productAttributes["sockets"] ? sub.pool.productAttributes["sockets"]["value"] : ""}"
+                %td #{"--"}
+                %td
+                  = hidden_field_tag "spinner[#{sub.pool.uuid}]", 0, :class => "ui-nonspinner"
+                  = "#{sub.quantity} of #{sub.pool.quantity}"
+                %td #{sub.endDate.strftime("%m/%d/%Y")}
+              - sub.pool.providedProducts.each do |eng_product|
+                %tr{:class => "child-of-#{sub.cp_id}"}
+                  %td
+                  %td
+                    = eng_product.name
+                - eng_product.productContent.each do |pc|
+                  = render :partial => 'common/system_subscriptions_prod_info', :locals => {:group => sub.cp_id, :pc => pc}
+          - else
+            %tr
+              %td{:colspan=>5} #{_("The system is not currently consuming any subscriptions.")}
     - if editable && consumed_subs.length > 0
       .actions
         %a{:class=>'dialogbutton button disabled', :id=>"fake_unsub_submit"} #{_('Unsubscribe')}
@@ -37,7 +48,7 @@
 .grid_8
   = form_tag update_subscriptions_system_path, :id=>"subscribe", :method=>"post", :remote=>true do
     %h5 #{_("Available Subscriptions")}
-    %table
+    %table#Subscribe_subs
       %thead
         %tr
           %th #{_("Subscription")}
