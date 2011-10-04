@@ -19,8 +19,7 @@ class SystemsController < ApplicationController
   before_filter :require_user
   before_filter :require_org
   before_filter :find_system, :only => [:edit, :facts, :products, :subscriptions, :update_subscriptions,
-    :available_subscriptions, :bind, :unbind, :destroy, :update,
-    :events]
+                                        :available_subscriptions, :bind, :unbind, :destroy, :update, :events]
 
   def section_id
     'systems'
