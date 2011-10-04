@@ -90,13 +90,12 @@ KT.subs = function() {
                 }
             });
         });
-
-  $("#Unsubscribe_subs").treeTable({
-    expandable: true,
-    initialState: "collapsed",
-    clickableNodeNames: true,
-    onNodeShow: function(){$.sparkline_display_visible()}  	
-  });
+        $("#Unsubscribe_subs").treeTable({
+          expandable: true,
+          initialState: "collapsed",
+          clickableNodeNames: true,
+          onNodeShow: function(){$.sparkline_display_visible()}  	
+        });
     }, subSetup = function(){
         var subform = $('#subscribe');
         var subbutton = $('#sub_submit');
@@ -139,6 +138,12 @@ KT.subs = function() {
                     }
                 }
             });
+        });
+        $("#Subscribe_subs").treeTable({
+          expandable: true,
+          initialState: "collapsed",
+          clickableNodeNames: true,
+          onNodeShow: function(){$.sparkline_display_visible()}  	
         });
     }, spinnerSetup = function(){
         setTimeout("$('.ui-spinner').spinner()",1000);

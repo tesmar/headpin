@@ -51,6 +51,7 @@
     %table#Subscribe_subs
       %thead
         %tr
+          %th
           %th #{_("Subscription")}
           %th #{_("Contract")}
           %th #{_("Sockets")}
@@ -60,7 +61,8 @@
       %tbody
         - if avail_subs.length > 0
           - for sub in avail_subs
-            %tr
+            %tr{:id => sub.uuid}
+              %td
               %td
                 %span.fl
                   = check_box_tag "system[#{sub.uuid}]", false
@@ -81,6 +83,13 @@
                   = label_tag "spinner_label[#{sub.uuid}]", "0 of #{sub.quantity - sub.consumed}", :class => "ui-nonspinner-label"
                   = hidden_field_tag "spinner[#{sub.uuid}]", 0, :class => "ui-nonspinner"
               %td #{sub.endDate.strftime("%m/%d/%Y")}
+              - sub.providedProducts.each do |eng_product|
+                %tr{:class => "child-of-#{sub.uuid}"}
+                  %td
+                  %td
+                    = eng_product.name
+                - eng_product.productContent.each do |pc|
+                  = render :partial => 'common/system_subscriptions_prod_info', :locals => {:group => sub.uuid, :pc => pc}
         - else
           %tr
             %td{:colspan=>5} #{_("There are no more subscriptions available.")}
