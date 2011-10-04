@@ -15,7 +15,7 @@ class Event < Tableless
   include ActiveModel::Conversion
   extend ActiveModel::Naming
 
-  attr_accessor :messageText, :timestamp
+  attr_accessor :messageText, :timeStamp, :uuid
 
   def initialize(json_hash=nil)
     @json_hash = super(json_hash)
@@ -23,10 +23,8 @@ class Event < Tableless
     if @json_hash != {}
       @uuid = @json_hash["id"]
       @messageText = @json_hash["messageText"]
-      @timestamp = @json_hash["timestamp"]
+      @timeStamp = DateTime.parse(@json_hash["timestamp"])
     end
-    Rails.logger.ap "NEW EVENT FROM CANDLEPIN JSON:::::::::::::"
-    Rails.logger.ap self
   end
 
   def self.retrieve_by_org(key)
@@ -37,22 +35,13 @@ class Event < Tableless
     self.retrieve_by("/consumers/#{key}/events")
   end
 
-  def timestamp
-    DateTime.parse @timestamp
-  end
-
   private
 
   def self.retrieve_by(uri)
     events = []
-    begin
-      json_events = JSON.parse(Candlepin::Proxy.get(uri))
-      json_events.each do |json_event|
-        events << Event.new(json_event)
-      end
-    rescue Exception => e
-      Rails.logger.error "Unrecognized Event: " + json_events.to_s
-      raise "Unrecognized Event: " + json_events.to_s + "\n" + e.to_s
+    json_events = JSON.parse(Candlepin::Proxy.get(uri))
+    json_events.each do |json_event|
+      events << Event.new(json_event)
     end
     events
   end
