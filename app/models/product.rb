@@ -43,18 +43,6 @@ class Product < Tableless
 
   def arch
     return product_attribute(:arch)
-  end  
+  end
 
-  def product_attribute(key)
-    if @product_attributes.nil?
-      h = {}
-      if @attributes['attributes']
-        @attributes['attributes'].each do |attr|
-          h[attr.name.to_sym]=attr.value
-        end
-      end
-      @product_attributes = h      
-    end
-    return @product_attributes[key]
-  end 
 end
