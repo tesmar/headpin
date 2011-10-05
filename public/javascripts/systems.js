@@ -33,8 +33,8 @@ var systems_page = (function() {
         data.ajaxSubmit({
             success: function(data) {
                 list.add(data);
-                panel.closePanel($('#panel'));
-                panel.select_item(list.last_child().attr("id"));
+                KT.panel.closePanel($('#panel'));
+                KT.panel.select_item(list.last_child().attr("id"));
             },
             error: function(e) {
                 button.removeAttr('disabled');

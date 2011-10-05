@@ -46,14 +46,14 @@ class SystemsController < ApplicationController
       #create it in candlepin, parse the JSON and create a new ruby object to pass to the view
       @system = @system.create
       #find the newly created system
-      flash[:notice] = N_("System '#{@system.name}' was created.")
+      notice N_("Your system was created: ") + "'#{@system.name}'"
     rescue ::CandlepinError => error
       errors error.message[1]
       Rails.logger.info error.backtrace.join("\n")
       render :text=> error.message[1], :status=>:bad_request and return
     end
     render :partial=>"common/list_item", :locals=>{:item=>@system, :accessor=>"uuid", :name => @system.name,
-                                                   :columns=>['name', 'uuid']}
+                                                   :columns=>['name', 'entitlementCount','entitlement_status' ]}
   end
 
   def edit
@@ -134,7 +134,7 @@ class SystemsController < ApplicationController
 
   def destroy
     @system.destroy
-    flash[:notice] = _("Deleted system #{@system.name}.")
+    notice _("Deleted system: ") + @system.name
     redirect_to systems_path
   end
 
