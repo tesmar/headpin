@@ -20,11 +20,9 @@ class DashboardController < ApplicationController
   def index
     @candlepin_up = true
 
-    begin
-      require_user
-      require_org
-      @org = working_org
-    rescue CandlepinError => e
+    require_user
+    require_org
+    if !working_org
       @candlepin_up = false
       @candlepin_error_message = _("Unable to properly connect to the Entitlement Server")
     end

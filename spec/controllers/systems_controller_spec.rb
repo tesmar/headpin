@@ -41,7 +41,7 @@ describe SystemsController do
     it "should flash a successful creation message upon creation" do
       #new_s = ready_to_be_created_system.create
       post 'create', post_to_headpin_create_data
-      flash[:notice].should =~ /System .* was created./
+      JSON.parse(CGI.unescape(response.header['X-Message']))["notices"][0].should =~ /Your system was created: .*$/
     end
 
     it "should flash a failure message" do

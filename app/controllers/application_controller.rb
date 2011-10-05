@@ -26,7 +26,7 @@ class ApplicationController < ActionController::Base
   # Global error handling, parsed bottom-up so most specific goes at the end:
   rescue_from Exception, :with => :handle_generic_error
   rescue_from CandlepinError, :with => :handle_candlepin_server_error
-  rescue_from Errno::ECONNREFUSED, :with => :handle_candlepin_connection_error
+  rescue_from Errno::ECONNREFUSED, :with => :handle_candlepin_server_error
 
   # Generic handler triggered whenever a controller action doesn't explicitly
   # do it's own error handling:
@@ -40,21 +40,13 @@ class ApplicationController < ActionController::Base
   def handle_candlepin_server_error(ex)
     log_exception(ex)
     errors _("An error has occurred in the Entitlement Server.")
-    redirect_back
+    redirect_to('/dashboard')
   end
 
   # Handle ISE's from Candlepin:
   def handle_candlepin_connection_error ex
     log_exception(ex)
     render :text => _("Unable to connect to the Entitlement Server.")
-  end
-
-  def redirect_back
-    begin
-      redirect_to :back
-    rescue ActionController::RedirectBackError
-      redirect_to '/dashboard'
-    end
   end
 
   # Small helper to keep logging of exceptions consistent:
@@ -76,7 +68,11 @@ class ApplicationController < ActionController::Base
 
   def working_org
     org_id = session[:current_organization_id]
-    @working_org ||= Organization.retrieve(org_id) unless org_id.nil?
+    begin
+      @working_org ||= Organization.retrieve(org_id) unless org_id.nil?
+    rescue CandlepinError => e
+      return false
+    end
     @working_org
   end
 

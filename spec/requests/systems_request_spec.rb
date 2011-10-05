@@ -41,7 +41,7 @@ describe "System Request Specs" do
       s = ready_to_be_created_system.create
       delete "/systems/#{s.uuid}"
       response.should be_redirect
-      flash[:notice].should eq("Deleted system #{s.name}.")
+      JSON.parse(flash[:success])["notices"][0].should eq("Deleted system: #{s.name}")
     end
   end
 
