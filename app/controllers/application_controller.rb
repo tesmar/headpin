@@ -74,13 +74,6 @@ class ApplicationController < ActionController::Base
     'generic'
   end
 
-  def errors summary, failures = [], successes = []
-    flash[:error] ||= {}
-    flash[:error][:successes] = successes
-    flash[:error][:failures] = failures
-    flash[:error][:summary] = summary
-  end
-  
   def working_org
     org_id = session[:current_organization_id]
     @working_org ||= Organization.retrieve(org_id) unless org_id.nil?
